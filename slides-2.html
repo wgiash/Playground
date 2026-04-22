@@ -1,0 +1,702 @@
+<!doctype html>
+<!--
+  =====================================================================
+  NOTE TO AGENTS — READ BEFORE EDITING THIS FILE
+  =====================================================================
+  This deck is a single-file, auto-wired UI. When adding or generating
+  new slides:
+
+    1. Only add <section class="slide"> blocks inside <main class="deck">.
+       Use the template in the HOW TO ADD A SLIDE comment further down.
+
+    2. DO NOT hand-edit <nav id="index-nav"> — it is rebuilt from the
+       slides at page load. Any hardcoded entries will be thrown away.
+
+    3. DO NOT write slide numbers into .tag or .page by hand. The script
+       stamps "NN · label" into .tag and "NN / TOTAL" into .page on load,
+       so the numbering stays correct when slides are inserted/removed.
+
+    4. DO NOT change the DOM contract the script depends on:
+         - <main class="deck" id="deck">
+         - <nav id="index-nav">
+         - each slide = <section class="slide"> with .tag, <h1>, .page
+         - optional data-title="..." on the section (overrides h1 in the index)
+
+    5. Keep slide content to tag + h1 + (optional) p by default. If a
+       slide needs more (lists, images, two columns), add it inside the
+       <section> but DO NOT modify .slide / .deck base CSS — it is the
+       shared frame. Add scoped rules under a new class on the section.
+
+    6. Back-home button, index sidebar chrome, and scroll-spy JS are
+       infrastructure. Don't restyle or rewire them for a single slide.
+
+  If a requested change would violate any of the above, surface the
+  conflict instead of silently breaking the UI.
+  =====================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aither · Sunspoke</title>
+<link rel="stylesheet" href="./tokens.css">
+<style>
+  html, body {
+    background: var(--canvas-bg);
+    color: var(--canvas-fg);
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--font-ui);
+    letter-spacing: -0.01em;
+  }
+  html { scroll-behavior: smooth; }
+
+  /* Window scrolls (not .deck) so comments.js pins stick to body coords. */
+  .app { display: block; }
+
+  /* ---------- Left index (fixed; only the nav list scrolls) ---------- */
+  .index {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    border-right: 1px solid var(--canvas-hair);
+    padding: 20px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+    background: var(--canvas-bg);
+    z-index: 10;
+  }
+
+  .index .deck-title {
+    font-size: 20px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--canvas-fg);
+    margin: 32px 0 0;
+  }
+  .index .deck-sub {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 6px 0 0;
+  }
+
+  .index h2 {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+
+  .index nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .index nav a {
+    display: grid;
+    grid-template-columns: 28px 1fr 12px;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--canvas-hair);
+    color: var(--canvas-fg);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: -0.005em;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .index nav a .n {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--canvas-label);
+    padding-top: 2px;
+  }
+  .index nav a:hover { color: var(--canvas-fg); }
+  .index nav a:hover .n { color: var(--canvas-fg); }
+  .index nav a.is-active .n { color: var(--canvas-fg); }
+  .index nav a.is-active { color: var(--canvas-fg); }
+  .index nav a.is-active::before {
+    content: "";
+    position: absolute;
+    margin-left: -20px;
+    margin-top: 14px;
+    width: 2px;
+    height: 14px;
+    background: var(--canvas-fg);
+  }
+  .index nav a { position: relative; }
+
+  /* ---------- Deck (right) ---------- */
+  .deck {
+    margin-left: 260px;
+    padding: 48px 64px 96px;
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 48px;
+    aspect-ratio: 16 / 9;
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    display: flex;
+    flex-direction: column;
+    padding: 48px;
+    position: relative;
+    scroll-margin-top: 32px;
+  }
+  .slide .tag {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+  .slide h1 {
+    font-size: 48px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.025em;
+    line-height: 1.04;
+    color: var(--canvas-fg);
+    margin: 12px 0 16px;
+    max-width: 20ch;
+  }
+  .slide p {
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.7);
+    max-width: 56ch;
+    margin: 0;
+  }
+  .slide .page {
+    position: absolute;
+    right: 48px;
+    bottom: 32px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+
+  /* ---------- Status dot (green/red sign-off, rendered in the monochrome palette) ---------- */
+  .status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    vertical-align: middle;
+    flex: none;
+  }
+  .slide .tag { display: inline-flex; align-items: center; gap: 8px; }
+  .status-dot.is-open {
+    background: transparent;
+    border: 1px solid var(--canvas-label);
+  }
+  .status-dot.is-signed {
+    background: var(--canvas-fg);
+    border: 1px solid var(--canvas-fg);
+  }
+
+  /* ---------- Brief block (instructions to Claude for what goes on the slide) ---------- */
+  .slide .brief {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(234,228,226,0.58);
+    max-width: 64ch;
+    margin: 0 0 24px;
+    padding: 14px 18px;
+    border-left: 2px solid var(--canvas-hair);
+    letter-spacing: 0.005em;
+  }
+  .slide .brief strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+  }
+
+  /* ---------- Wireframe placeholder slot (for flow / surface slides) ---------- */
+  .wireframe-slot {
+    margin-top: auto;
+    margin-bottom: 32px;
+    padding: 32px;
+    border: 1px dashed var(--canvas-hair);
+    border-radius: var(--r-2);
+    color: var(--canvas-label);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+  }
+
+  /* scrollbars (subtle) */
+  .index nav::-webkit-scrollbar { width: 8px; }
+  .index nav::-webkit-scrollbar-thumb {
+    background: rgba(234,228,226,0.12);
+    border-radius: 4px;
+  }
+  .index nav::-webkit-scrollbar-thumb:hover { background: rgba(234,228,226,0.25); }
+
+  /* ---------- Back-home link (fixed top-left) ---------- */
+  .home-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(234,228,226,0.75);
+    background: rgba(18,13,11,0.55);
+    border: 1px solid rgba(234,228,226,0.18);
+    border-radius: var(--r-2);
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .home-link:hover {
+    color: rgba(234,228,226,1);
+    border-color: rgba(234,228,226,0.4);
+  }
+
+  @media (max-width: 720px) {
+    .index {
+      position: static;
+      width: auto;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--canvas-hair);
+    }
+    .deck { margin-left: 0; padding: 24px 20px 64px; }
+    .slide { padding: 28px; }
+    .slide h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="./index.html" title="Back to home" aria-label="Back to home">&larr; Home</a>
+
+<div class="app">
+
+  <aside class="index">
+    <div>
+      <h1 class="deck-title">PRD Template</h1>
+      <p class="deck-sub">Aither · fill-in-the-blank</p>
+    </div>
+    <h2>Index</h2>
+    <nav id="index-nav"><!-- auto-populated from .slide sections --></nav>
+  </aside>
+
+  <main class="deck" id="deck">
+    <!--
+      ============================================================
+      HOW TO ADD A SLIDE
+      ============================================================
+      Drop in a new <section class="slide"> anywhere in this <main>.
+      The script at the bottom of this file will automatically:
+        · assign an id (s1, s2, s3…) based on position
+        · prepend a status dot + the slide number to <span class="tag">
+        · fill <span class="page"> with "NN / TOTAL"
+        · add an entry to the left index (with status dot), linking to the slide
+      You only need to provide: tag label, <h1>, and (optional) <p>.
+
+      Canonical template (copy this):
+
+        <section class="slide" data-title="Short label for the index" data-status="open">
+          <span class="tag">Kicker label</span>
+          <h1>Slide title.</h1>
+          <p class="brief">A descriptive sentence of what content belongs on this slide, written in the deck's voice.</p>
+          <div class="wireframe-slot">Wireframe →</div>   (optional)
+          <span class="page"></span>
+        </section>
+
+      Notes:
+        · This deck is a REUSABLE PRD TEMPLATE — it stays product-agnostic.
+          Each slide's <p class="brief"> describes what kind of content the
+          slide holds (in the deck's voice, not as an instruction). When
+          forking for a specific product, replace the brief with real copy.
+        · data-title is optional — if omitted, the index uses the <h1> text.
+        · data-status controls the sign-off dot:
+            "open"    → hollow dot (default — not yet signed off)
+            "signed"  → filled dot (section signed off by review)
+        · The <span class="tag"> label should NOT include the number prefix;
+          the script adds "NN · " automatically.
+        · The <span class="page"> can be empty — the script fills it.
+        · Add <div class="wireframe-slot">…</div> on flow / surface slides
+          as a placeholder for the tiny wireframe shot.
+        · Do not touch #index-nav; it is rebuilt on every load.
+      ============================================================
+    -->
+
+    <!-- ===== Framing (1–6) ===== -->
+
+    <section class="slide" data-title="Cover" data-status="open">
+      <span class="tag">Cover</span>
+      <h1>Product name.</h1>
+      <p class="brief">The opening frame — product title, PRD version, date, owner, and design lead.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="What is the product" data-status="open">
+      <span class="tag">Definition</span>
+      <h1>What is this.</h1>
+      <p class="brief">A paragraph stating what the product is, who it's for, and the one-line promise.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Problem space" data-status="open">
+      <span class="tag">Problem</span>
+      <h1>Why this exists.</h1>
+      <p class="brief">Two to four bullets naming the specific pain or market gap this product addresses. Concrete, not generic.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Vision / North Star" data-status="open">
+      <span class="tag">Vision</span>
+      <h1>Where we're going.</h1>
+      <p class="brief">A paragraph on the three-to-five year vision — the aspirational end-state, not the v1 scope.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="The ecosystem" data-status="open">
+      <span class="tag">Ecosystem</span>
+      <h1>Where this sits.</h1>
+      <p class="brief">How this product relates to its sibling products, if part of a suite. A short paragraph and a simple diagram.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Phases &amp; priority" data-status="open">
+      <span class="tag">Phases</span>
+      <h1>Now, next, later.</h1>
+      <p class="brief">Three columns — v1 must-ship, v1.5 near-term, v2+ deferred. Three to five bullets each. Trade-offs made explicit.</p>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Foundations (7–10) ===== -->
+
+    <section class="slide" data-title="Personas (phase 1)" data-status="open">
+      <span class="tag">Personas</span>
+      <h1>Who we're designing for.</h1>
+      <p class="brief">One to three personas for v1. For each: who they are, what they want, what they already buy, and the onboarding emphasis line.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Mental model" data-status="open">
+      <span class="tag">Mental model</span>
+      <h1>What this feels like.</h1>
+      <p class="brief">The existing references the user already knows, composed into the product's mental model. "X meets Y." A short paragraph.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Core concepts" data-status="open">
+      <span class="tag">Vocabulary</span>
+      <h1>The words we use.</h1>
+      <p class="brief">The four to eight nouns this product introduces. One-line definition per noun. Used consistently throughout.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Design principles" data-status="open">
+      <span class="tag">Principles</span>
+      <h1>Rules we design against.</h1>
+      <p class="brief">Five to eight non-negotiable design principles. Each: a short bold phrase plus one sentence. Every decision traces back to one.</p>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Journey &amp; flows (11–13) ===== -->
+
+    <section class="slide" data-title="User journey" data-status="open">
+      <span class="tag">Journey</span>
+      <h1>The arc.</h1>
+      <p class="brief">The user's journey from first contact to steady state. Key moments labeled — onboarding, first artifact, retention moment — and how surfaces unfold over time.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="First-time user flow" data-status="open">
+      <span class="tag">Flow</span>
+      <h1>First visit.</h1>
+      <p class="brief">The screens and decisions a brand-new user walks through on their first session, with drop-off risks called out.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Second-time user flow" data-status="open">
+      <span class="tag">Flow</span>
+      <h1>Return visit.</h1>
+      <p class="brief">What a returning user sees and does, and what's different from the first visit.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Primary surfaces (14–17) ===== -->
+
+    <section class="slide" data-title="The defining artifact" data-status="open">
+      <span class="tag">Artifact</span>
+      <h1>The headline surface.</h1>
+      <p class="brief">The single most important screen or output this product produces — components, structure, and design notes.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Primary surface · A" data-status="open">
+      <span class="tag">Surface</span>
+      <h1>Primary surface.</h1>
+      <p class="brief">A primary screen beyond the headline artifact. Name, components, priority order, and CTA hierarchy.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Primary surface · B" data-status="open">
+      <span class="tag">Surface</span>
+      <h1>Another primary surface.</h1>
+      <p class="brief">Another primary surface, described in the same format.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Primary surface · C" data-status="open">
+      <span class="tag">Surface</span>
+      <h1>Another primary surface.</h1>
+      <p class="brief">A third primary surface. Duplicate this slide as needed to cover the product's surface area.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Core cases (18–20) ===== -->
+
+    <section class="slide" data-title="Core case · A" data-status="open">
+      <span class="tag">Case</span>
+      <h1>Case A.</h1>
+      <p class="brief">A core use-case flow — trigger, steps, empty state, and success state.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Core case · B" data-status="open">
+      <span class="tag">Case</span>
+      <h1>Case B.</h1>
+      <p class="brief">A second core use-case flow, described in the same format.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Core case · C" data-status="open">
+      <span class="tag">Case</span>
+      <h1>Case C.</h1>
+      <p class="brief">A third core use-case flow. Duplicate this slide as needed to cover every case.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Cross-cutting (21–26) ===== -->
+
+    <section class="slide" data-title="Onboarding" data-status="open">
+      <span class="tag">Onboarding</span>
+      <h1>First session.</h1>
+      <p class="brief">Screen-by-screen onboarding — enrollment, questions, permissions. Input budget kept under sixty seconds.</p>
+      <div class="wireframe-slot">Wireframe →</div>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Voice &amp; microcopy" data-status="open">
+      <span class="tag">Voice</span>
+      <h1>How the product speaks.</h1>
+      <p class="brief">Five to seven voice rules with two paired examples — one good, one anti-example. Gag words and accent words named.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Notifications" data-status="open">
+      <span class="tag">Notifications</span>
+      <h1>When we reach out.</h1>
+      <p class="brief">Default pushes, opt-in pushes, the never-ship list, and quiet hours.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="External / physical surfaces" data-status="open">
+      <span class="tag">Surface</span>
+      <h1>Beyond the app.</h1>
+      <p class="brief">Any hardware, extension, integration, or out-of-app surface — states and affordances. Mark N/A if none.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Edge &amp; empty states" data-status="open">
+      <span class="tag">Edges</span>
+      <h1>Quiet failures.</h1>
+      <p class="brief">Five to eight edge cases with their copy. Never shaming. Dignified on low-data weeks, pauses, deletions.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Settings" data-status="open">
+      <span class="tag">Settings</span>
+      <h1>Trust, data, control.</h1>
+      <p class="brief">Every setting the user can touch — data export, delete, notification prefs, account controls.</p>
+      <span class="page"></span>
+    </section>
+
+    <!-- ===== Close (27–31) ===== -->
+
+    <section class="slide" data-title="Out of scope for v1" data-status="open">
+      <span class="tag">Scope</span>
+      <h1>What we're not designing.</h1>
+      <p class="brief">Explicitly deferred features with the version or reason each is deferred. Protects the ship date.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Open questions" data-status="open">
+      <span class="tag">Questions</span>
+      <h1>What to bring back.</h1>
+      <p class="brief">Five to ten decisions for design to lead on. Each: one question plus what a "good answer" looks like.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Success metrics" data-status="open">
+      <span class="tag">Metrics</span>
+      <h1>How we'll know it worked.</h1>
+      <p class="brief">Five to seven measurable outcomes for v1, what a good number looks like, and what we won't optimize for.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Mood &amp; references" data-status="open">
+      <span class="tag">Mood</span>
+      <h1>Tone and references.</h1>
+      <p class="brief">Products, films, writing, visual, audio. Anti-references — what this product is explicitly not.</p>
+      <span class="page"></span>
+    </section>
+
+    <section class="slide" data-title="Close" data-status="open">
+      <span class="tag">Close</span>
+      <h1>Next steps.</h1>
+      <p class="brief">Owner, design lead, review cadence, and what happens after sign-off.</p>
+      <span class="page"></span>
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+  /*
+    Slides runtime — do not hand-edit the index or page numbers.
+    This script wires up the UI so adding a new <section class="slide">
+    is sufficient; everything else (ids, numbering, index, active state)
+    is derived. Keep the DOM contract simple so new slides always fit.
+  */
+  (function () {
+    var deck   = document.getElementById('deck');
+    var nav    = document.getElementById('index-nav');
+    var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+    var total  = slides.length;
+    var pad    = function (n) { return (n < 10 ? '0' : '') + n; };
+
+    var isSigned = function (slide) {
+      return (slide.getAttribute('data-status') || '').toLowerCase() === 'signed';
+    };
+
+    // 1. Assign ids, normalize the tag ("[dot] NN · Label"), fill the page "NN / TOTAL".
+    //    Dot is only rendered when the slide is signed off.
+    slides.forEach(function (slide, i) {
+      var num = i + 1;
+      if (!slide.id) slide.id = 's' + num;
+
+      var tag = slide.querySelector('.tag');
+      if (tag) {
+        var raw = (tag.textContent || '').trim();
+        // Strip any existing leading "NN · " so re-runs stay clean.
+        var label = raw.replace(/^\s*\d+\s*[·\-–—]\s*/, '');
+        tag.innerHTML = '';
+        if (isSigned(slide)) {
+          var dot = document.createElement('span');
+          dot.className = 'status-dot is-signed';
+          tag.appendChild(dot);
+        }
+        var text = document.createElement('span');
+        text.textContent = pad(num) + ' · ' + label;
+        tag.appendChild(text);
+      }
+
+      var page = slide.querySelector('.page');
+      if (page) page.textContent = pad(num) + ' / ' + pad(total);
+    });
+
+    // 2. Build the index from the slides (data-title wins, else the <h1>).
+    nav.innerHTML = '';
+    slides.forEach(function (slide, i) {
+      var num = i + 1;
+      var titleAttr = slide.getAttribute('data-title');
+      var h1 = slide.querySelector('h1');
+      var label = (titleAttr && titleAttr.trim())
+        || (h1 ? h1.textContent.trim().replace(/[\.!?]+$/, '') : 'Slide ' + num);
+
+      var a = document.createElement('a');
+      a.href = '#' + slide.id;
+      var n = document.createElement('span');
+      n.className = 'n';
+      n.textContent = pad(num);
+      var labelEl = document.createElement('span');
+      labelEl.className = 'label';
+      labelEl.textContent = label;
+      a.appendChild(n);
+      a.appendChild(labelEl);
+      if (isSigned(slide)) {
+        var dot = document.createElement('span');
+        dot.className = 'status-dot is-signed';
+        a.appendChild(dot);
+      } else {
+        // Keep the third grid column reserved so row height stays consistent.
+        a.appendChild(document.createElement('span'));
+      }
+      nav.appendChild(a);
+    });
+
+    // 3. Highlight the active slide as the deck scrolls.
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+    var byId  = {};
+    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (l) { l.classList.remove('is-active'); });
+        var a = byId[e.target.id];
+        if (a) a.classList.add('is-active');
+      });
+    }, { root: null, rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+    slides.forEach(function (s) { io.observe(s); });
+  })();
+</script>
+
+<script src="./firebase-config.js"></script>
+<script src="./comments.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,580 @@
+/* =========================================================
+   Chrome — reusable bits of the Aither Desktop + Mobile kits
+   (horizontal nav, vertical nav, footer, mobile status bar,
+   mobile bottom nav, back-title-action header)
+   ========================================================= */
+
+/* ===== DESKTOP ===== */
+
+/* Horizontal nav — Company · tabs · search · SIGN OUT · avatar */
+.ki-hnav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 22px 32px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-hnav .brand {
+  font-size: 14px;
+  font-weight: var(--w-title);
+  letter-spacing: -0.01em;
+}
+.ki-hnav .tabs {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  font-size: 20px;
+  font-weight: var(--w-ui);
+  letter-spacing: -0.01em;
+}
+.ki-hnav .tabs a { color: var(--fg-soft); cursor: pointer; }
+.ki-hnav .tabs a[aria-current="page"] { color: var(--fg); font-weight: var(--w-title); }
+.ki-hnav .spacer { flex: 1; }
+.ki-hnav .search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  min-width: 220px;
+  color: var(--fg-soft);
+  font-size: 13px;
+}
+.ki-hnav .btn-ghost {
+  padding: 8px 16px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: var(--w-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.ki-hnav .avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: var(--w-title);
+  letter-spacing: 0.02em;
+  position: relative;
+}
+.ki-hnav .avatar::after {
+  content: "";
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+
+/* Footer — triple-footer Aither signature */
+.ki-footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 24px 32px 20px;
+  border-top: 1px solid var(--hair);
+  color: var(--fg-soft);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+.ki-footer .l {
+  font-size: 15px;
+  font-weight: var(--w-title);
+  color: var(--fg);
+  letter-spacing: -0.01em;
+}
+.ki-footer .links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.ki-footer .meta {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--fg-mute);
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+/* ===== MOBILE ===== */
+
+/* Mobile frame container — 390×844 iPhone-ish */
+.ki-mobile {
+  width: 390px;
+  height: 844px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* iOS-style status bar */
+.ki-statusbar {
+  height: 54px;
+  padding: 18px 32px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: var(--w-title);
+  letter-spacing: -0.02em;
+  flex: 0 0 54px;
+}
+.ki-statusbar .icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+.ki-statusbar svg { display: block; }
+
+/* Back · Title · Action header */
+.ki-header {
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.ki-header .back, .ki-header .action {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--fg);
+}
+.ki-header .title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: var(--w-title);
+  letter-spacing: -0.02em;
+}
+
+/* Bottom tab bar — Home / Profile / Messages */
+.ki-bottomnav {
+  position: absolute;
+  left: 16px; right: 16px; bottom: 14px;
+  height: 54px;
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-full);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  gap: 4px;
+  z-index: 10;
+}
+.ki-bottomnav button {
+  flex: 1;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--fg-soft);
+  border-radius: var(--r-full);
+  font-weight: var(--w-ui);
+}
+.ki-bottomnav button[aria-current="page"] {
+  background: var(--input);
+  color: var(--fg);
+  font-weight: var(--w-title);
+}
+
+/* Home indicator */
+.ki-homebar {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 4px;
+  background: var(--fg);
+  opacity: 0.6;
+  border-radius: var(--r-full);
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Scroll body (between header + bottom nav) */
+.ki-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;   /* wireframe — content clips at frame edge, that's fine */
+  position: relative;
+}
+
+/* A thin separator hairline */
+.ki-sep { height: 1px; background: var(--hair); width: 100%; }
+
+/* ===== DESKTOP · nav alternatives ===== */
+
+/* MinimalNav — logo · tabs · avatar. Authenticated shell, no global search. */
+.ki-hnav-min {
+  display: flex; align-items: center; gap: 40px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-hnav-min .brand { font-size: 14px; font-weight: var(--w-title); letter-spacing: -0.01em; }
+.ki-hnav-min .tabs { display: flex; align-items: center; gap: 28px; font-size: 14px; font-weight: var(--w-ui); letter-spacing: -0.01em; }
+.ki-hnav-min .tabs a { color: var(--fg-soft); cursor: pointer; }
+.ki-hnav-min .tabs a[aria-current="page"] { color: var(--fg); font-weight: var(--w-title); }
+.ki-hnav-min .spacer { flex: 1; }
+.ki-hnav-min .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--panel); border: 1px solid var(--hair);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: var(--w-title);
+}
+
+/* MarketingNav — logo · tabs · sign in · primary CTA. Pre-auth / public. */
+.ki-hnav-mkt {
+  display: flex; align-items: center; gap: 40px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-hnav-mkt .brand { font-size: 14px; font-weight: var(--w-title); letter-spacing: -0.01em; }
+.ki-hnav-mkt .tabs { display: flex; align-items: center; gap: 28px; font-size: 14px; font-weight: var(--w-ui); letter-spacing: -0.01em; }
+.ki-hnav-mkt .tabs a { color: var(--fg-soft); cursor: pointer; }
+.ki-hnav-mkt .tabs a[aria-current="page"] { color: var(--fg); font-weight: var(--w-title); }
+.ki-hnav-mkt .spacer { flex: 1; }
+.ki-hnav-mkt .signin {
+  font-size: 13px; color: var(--fg-soft);
+  padding: 8px 4px; cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+/* WorkspaceNav — brand · breadcrumbs · status + actions + avatar. */
+.ki-hnav-ws {
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-hnav-ws .brand {
+  font-size: 14px; font-weight: var(--w-title); letter-spacing: -0.01em;
+  padding-right: 20px; border-right: 1px solid var(--hair);
+}
+.ki-hnav-ws .crumbs {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--fg-soft);
+  flex: 1; min-width: 0;
+  letter-spacing: -0.01em;
+}
+.ki-hnav-ws .crumbs .sep { color: var(--fg-mute); }
+.ki-hnav-ws .crumbs .current { color: var(--fg); font-weight: var(--w-title); }
+.ki-hnav-ws .actions { display: flex; align-items: center; gap: 12px; }
+.ki-hnav-ws .status {
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-mute);
+  padding: 6px 10px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-full);
+}
+.ki-hnav-ws .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--panel); border: 1px solid var(--hair);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: var(--w-title);
+}
+
+/* StepperNav — logo · numbered steps · save & exit. Multi-step flows. */
+.ki-hnav-step {
+  display: flex; align-items: center; gap: 32px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-hnav-step .brand { font-size: 14px; font-weight: var(--w-title); letter-spacing: -0.01em; }
+.ki-hnav-step .steps {
+  display: flex; align-items: center; gap: 14px;
+  flex: 1; justify-content: center;
+}
+.ki-hnav-step .step {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--fg-mute);
+  letter-spacing: -0.01em;
+}
+.ki-hnav-step .step .num {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--hair-2);
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: var(--w-title);
+  font-family: var(--font-mono);
+  color: var(--fg-mute);
+}
+.ki-hnav-step .step[data-state="current"] { color: var(--fg); font-weight: var(--w-title); }
+.ki-hnav-step .step[data-state="current"] .num { border-color: var(--fg); color: var(--fg); }
+.ki-hnav-step .step[data-state="done"] { color: var(--fg-soft); }
+.ki-hnav-step .step[data-state="done"] .num { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.ki-hnav-step .step-sep { width: 36px; height: 1px; background: var(--hair-2); }
+.ki-hnav-step .exit {
+  font-size: 11px; font-weight: var(--w-ui);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--fg-soft);
+  cursor: pointer;
+}
+
+/* SideNav — 240-wide vertical rail. Dashboard-shaped products. */
+.ki-snav {
+  width: 240px;
+  padding: 22px 16px 16px;
+  border-right: 1px solid var(--hair);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 240px;
+}
+.ki-snav .brand {
+  font-size: 14px; font-weight: var(--w-title); letter-spacing: -0.01em;
+  padding: 4px 12px 20px;
+}
+.ki-snav .item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--fg-soft);
+  font-weight: var(--w-ui);
+  letter-spacing: -0.01em;
+  border-radius: var(--r-1);
+  cursor: pointer;
+}
+.ki-snav .item[aria-current="page"] {
+  color: var(--fg);
+  font-weight: var(--w-title);
+  background: var(--panel);
+}
+.ki-snav .item .ic { width: 18px; display: grid; place-items: center; flex-shrink: 0; }
+.ki-snav .label {
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-mute);
+  padding: 14px 12px 6px;
+}
+.ki-snav .spacer { flex: 1; }
+.ki-snav .user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px;
+  border-top: 1px solid var(--hair);
+  margin-top: 8px;
+}
+.ki-snav .user .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--panel); border: 1px solid var(--hair);
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: var(--w-title);
+  flex-shrink: 0;
+}
+.ki-snav .user .who {
+  display: flex; flex-direction: column; gap: 2px;
+  min-width: 0;
+}
+.ki-snav .user .who .n { font-size: 12px; font-weight: var(--w-title); letter-spacing: -0.01em; }
+.ki-snav .user .who .m { font-size: 10px; color: var(--fg-mute); letter-spacing: -0.005em; }
+
+/* SubNav — secondary tab strip under a primary nav. Section navigation. */
+.ki-subnav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 32px;
+  height: 44px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--bg);
+}
+.ki-subnav .section {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-mute);
+  padding-right: 24px;
+  border-right: 1px solid var(--hair);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.ki-subnav .tabs {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+.ki-subnav .tabs a {
+  position: relative;
+  font-size: 13px;
+  color: var(--fg-soft);
+  font-weight: var(--w-ui);
+  letter-spacing: -0.01em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.ki-subnav .tabs a[aria-current="page"] {
+  color: var(--fg);
+  font-weight: var(--w-title);
+}
+.ki-subnav .tabs a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: var(--fg);
+}
+.ki-subnav .spacer { flex: 1; }
+.ki-subnav .trailing {
+  font-size: 12px;
+  color: var(--fg-soft);
+  letter-spacing: -0.01em;
+}
+
+/* ===== MOBILE · header alternatives ===== */
+
+/* LargeTitleHeader — title + meta stacked, single trailing action. */
+.ki-header-lg {
+  padding: 16px 24px 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.ki-header-lg .title {
+  font-size: 28px; font-weight: var(--w-title);
+  letter-spacing: -0.03em; line-height: 1;
+}
+.ki-header-lg .meta {
+  font-size: 12px; color: var(--fg-soft);
+  margin-top: 6px; letter-spacing: -0.01em;
+}
+.ki-header-lg .action {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--fg);
+}
+
+/* SearchHeader — search input spans, avatar trailing. */
+.ki-header-search {
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+  flex: 0 0 auto;
+}
+.ki-header-search .field {
+  flex: 1;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--input);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-full);
+  color: var(--fg-mute);
+  font-size: 13px;
+}
+.ki-header-search .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--panel); border: 1px solid var(--hair);
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: var(--w-title); color: var(--fg);
+  flex-shrink: 0;
+}
+
+/* ModalHeader — Cancel · Title · Done, for sheets and forms. */
+.ki-header-modal {
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.ki-header-modal .cancel {
+  justify-self: start; font-size: 14px;
+  color: var(--fg-soft);
+  letter-spacing: -0.01em;
+}
+.ki-header-modal .title {
+  text-align: center;
+  font-size: 17px; font-weight: var(--w-title);
+  letter-spacing: -0.02em;
+}
+.ki-header-modal .done {
+  justify-self: end; font-size: 14px;
+  font-weight: var(--w-title); color: var(--fg);
+  letter-spacing: -0.01em;
+}
+
+/* ===== MOBILE · bottom-nav alternatives ===== */
+
+/* BottomNavFive — 5 icon + label tabs. Full-width native bar. */
+.ki-bottomnav-5 {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 72px;
+  padding-bottom: 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+.ki-bottomnav-5 button {
+  flex: 1;
+  height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+  font-size: 10px;
+  color: var(--fg-mute);
+  font-weight: var(--w-ui);
+  letter-spacing: 0.01em;
+}
+.ki-bottomnav-5 button[aria-current="page"] {
+  color: var(--fg);
+  font-weight: var(--w-title);
+}
+
+/* BottomNavFab — 2 tabs · centered create · 2 tabs. Creation-forward. */
+.ki-bottomnav-fab {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 72px;
+  padding: 0 12px 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--hair);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+.ki-bottomnav-fab button {
+  flex: 1;
+  height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+  font-size: 10px;
+  color: var(--fg-mute);
+  font-weight: var(--w-ui);
+}
+.ki-bottomnav-fab button[aria-current="page"] {
+  color: var(--fg);
+  font-weight: var(--w-title);
+}
+.ki-bottomnav-fab .fab {
+  flex: 0 0 52px;
+  height: 44px;
+  margin: 0 6px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: var(--r-full);
+  display: grid;
+  place-items: center;
+}

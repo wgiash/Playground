@@ -1,0 +1,296 @@
+/* =========================================================
+   Canvas — the infinite pan/zoom gallery that holds all frames
+   ========================================================= */
+
+html, body {
+  background: var(--canvas-bg);
+  color: var(--canvas-fg);
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-ui);
+}
+
+#root { height: 100vh; width: 100vw; }
+
+/* ---------- Top bar (fixed) ---------- */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 28px;
+  background: linear-gradient(180deg, var(--canvas-bg) 0%, rgba(11,8,7,0.6) 80%, rgba(11,8,7,0) 100%);
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+
+.topbar-wordmark {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--canvas-fg);
+}
+
+.topbar-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.topbar-title .k {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(234,228,226,0.55);
+}
+.topbar-title .t {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--canvas-fg);
+}
+
+.topbar-spacer { flex: 1; }
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 12px;
+  color: rgba(234,228,226,0.7);
+}
+
+/* Light/Dark master toggle (segmented control) */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border: 1px solid rgba(234,228,226,0.2);
+  border-radius: var(--r-full);
+}
+.mode-toggle button {
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(234,228,226,0.55);
+  transition: all var(--dur) var(--ease);
+}
+.mode-toggle button[aria-pressed="true"] {
+  background: var(--canvas-fg);
+  color: var(--canvas-bg);
+}
+
+/* Zoom controls */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border: 1px solid rgba(234,228,226,0.2);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+}
+.zoom-controls button {
+  width: 28px; height: 24px;
+  display: grid; place-items: center;
+  font-size: 14px;
+  color: rgba(234,228,226,0.7);
+  border-radius: var(--r-full);
+}
+.zoom-controls button:hover { color: var(--canvas-fg); }
+.zoom-controls .zoom-val {
+  padding: 0 10px;
+  font-size: 10px;
+  color: rgba(234,228,226,0.6);
+  min-width: 48px;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.topbar-help {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(234,228,226,0.35);
+  letter-spacing: 0;
+}
+.topbar-help kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid rgba(234,228,226,0.2);
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 10px;
+  color: rgba(234,228,226,0.65);
+  margin: 0 2px;
+}
+
+/* ---------- Canvas (pan/zoom viewport) ---------- */
+.canvas-viewport {
+  position: fixed;
+  inset: 0;
+  cursor: grab;
+  user-select: none;
+  background-image:
+    radial-gradient(circle, rgba(234,228,226,0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: 0 0;
+}
+.canvas-viewport.dragging { cursor: grabbing; }
+
+.canvas-surface {
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* ---------- Section (groups frames by template) ---------- */
+.wf-section {
+  position: absolute;
+}
+
+.wf-section-header {
+  position: absolute;
+  top: -96px;
+  left: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  white-space: nowrap;
+}
+.wf-section-header .num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(234,228,226,0.4);
+  letter-spacing: 0;
+}
+.wf-section-header .name {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--canvas-fg);
+}
+.wf-section-header .tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: rgba(234,228,226,0.45);
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(234,228,226,0.15);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+}
+
+/* ---------- Frame wrapper (one panel inside a section) ---------- */
+.wf-frame {
+  position: absolute;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(234,228,226,0.06);
+}
+
+.wf-frame-label {
+  position: absolute;
+  bottom: -56px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: rgba(234,228,226,0.55);
+  letter-spacing: -0.005em;
+}
+.wf-frame-label .n {
+  font-weight: 500;
+  color: rgba(234,228,226,0.85);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+.wf-frame-label .s {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(234,228,226,0.4);
+  letter-spacing: 0;
+}
+
+/* Intro card on the canvas */
+.intro-card {
+  position: absolute;
+  width: 720px;
+  padding: 56px 64px;
+  background: var(--canvas-panel);
+  border: 1px solid rgba(234,228,226,0.08);
+  border-radius: 2px;
+  color: var(--canvas-fg);
+}
+.intro-card .num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(234,228,226,0.4);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.intro-card h1 {
+  font-size: 48px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 24px;
+  text-wrap: balance;
+}
+.intro-card .body {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(234,228,226,0.75);
+  letter-spacing: -0.01em;
+  max-width: 560px;
+  text-wrap: pretty;
+}
+.intro-card .rules {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px 24px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(234,228,226,0.12);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+.intro-card .rules dt {
+  color: rgba(234,228,226,0.4);
+  text-transform: uppercase;
+}
+.intro-card .rules dd {
+  margin: 0;
+  color: rgba(234,228,226,0.85);
+}
+
+/* Minimap / legend in bottom left (optional, simple) */
+.legend {
+  position: fixed;
+  bottom: 20px;
+  left: 24px;
+  z-index: 40;
+  background: var(--canvas-panel);
+  border: 1px solid rgba(234,228,226,0.1);
+  border-radius: 2px;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(234,228,226,0.65);
+  line-height: 1.8;
+  letter-spacing: 0;
+}
+.legend .row { display: flex; align-items: center; gap: 10px; }
+.legend .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--canvas-fg); display: inline-block; }
+.legend .dot-light { background: var(--canvas-fg); }
+.legend .dot-dark { background: rgba(234,228,226,0.35); border: 1px solid rgba(234,228,226,0.6); background: transparent; }

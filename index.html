@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aither · Home</title>
+<link rel="stylesheet" href="./tokens.css">
+<style>
+  /* Apercu Pro — display use on the home page only (per DS: "No Apercu in wireframes") */
+  @font-face {
+    font-family: "Apercu Pro";
+    src: url("./fonts/apercupro-regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Apercu Pro";
+    src: url("./fonts/apercupro-bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Apercu Pro";
+    src: url("./fonts/apercupro-bolditalic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  html, body {
+    background: var(--canvas-bg);
+    color: var(--canvas-fg);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ui);
+    letter-spacing: -0.01em;
+  }
+
+  .os {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Status bar (OS-top strip) ---------- */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--canvas-hair);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-label);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    gap: 24px;
+  }
+  .bar .brand {
+    font-family: "Apercu Pro", var(--font-ui);
+    font-size: 20px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    text-transform: none;
+    color: var(--canvas-fg);
+  }
+  .bar .right { display: flex; align-items: center; gap: 18px; }
+  .bar .search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-full);
+    min-width: 220px;
+    color: var(--canvas-label);
+    font-size: 13px;
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .bar .search:focus-within {
+    border-color: var(--canvas-label);
+    color: var(--canvas-fg);
+  }
+  .bar .search svg {
+    width: 14px;
+    height: 14px;
+    flex: none;
+  }
+  .bar .search input {
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--canvas-fg);
+    width: 100%;
+    flex: 1;
+  }
+  .bar .search input::placeholder {
+    color: var(--canvas-label);
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .bar .sys { display: flex; gap: 18px; align-items: center; }
+  .bar .sys span::before { content: "· "; color: var(--canvas-hair); margin-right: 6px; }
+  .bar .sys span:first-child::before { content: ""; margin: 0; }
+  .bar .sys .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--canvas-fg); opacity: 0.55;
+    display: inline-block; margin-right: 8px; vertical-align: middle;
+  }
+  .bar .sys .dot::before { content: none; }
+
+  /* ---------- Desktop (icons float, no frame) ---------- */
+  .desktop {
+    flex: 1;
+    padding: 72px 64px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    column-gap: 24px;
+    row-gap: 40px;
+    align-content: start;
+  }
+
+  /* ---------- Tile (app icon + label beneath) ---------- */
+  .tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .tile .icon {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    display: grid;
+    place-items: center;
+    transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .tile:hover .icon {
+    background: var(--dark-2);
+    border-color: var(--canvas-label);
+    transform: translateY(-2px);
+  }
+  .tile:focus-visible .icon { outline: 1px solid var(--canvas-fg); outline-offset: 2px; }
+
+  .tile .mark {
+    font-family: "Apercu Pro", var(--font-ui);
+    font-size: 48px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--canvas-fg);
+  }
+
+  .tile .name {
+    font-size: 12px;
+    font-weight: var(--w-ui);
+    letter-spacing: -0.005em;
+    color: var(--canvas-fg);
+    line-height: 1.25;
+    text-align: center;
+    max-width: 140px;
+    min-height: 2.5em;
+  }
+
+  .tile[hidden] { display: none; }
+
+  .empty {
+    grid-column: 1 / -1;
+    color: var(--canvas-label);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .desktop {
+      padding: 32px 24px;
+      column-gap: 16px;
+      row-gap: 28px;
+      grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    }
+    .bar { padding: 14px 16px; gap: 12px; }
+    .bar .brand { font-size: 16px; }
+    .bar .right { gap: 10px; }
+    .bar .search { min-width: 0; flex: 1; padding: 6px 12px; }
+    .bar .sys { display: none; }
+    .tile .mark { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="os">
+
+  <header class="bar">
+    <span class="brand">Aither Generative Playground</span>
+    <div class="right">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <input id="search" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+      </label>
+      <div class="sys">
+        <span>v0.3</span>
+        <span><span class="dot"></span><span id="clock">—</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="desktop">
+    <a class="tile" href="./wireframe-library.html">
+      <span class="icon"><span class="mark">D</span></span>
+      <span class="name">Design System &amp; UX Templates</span>
+    </a>
+
+    <a class="tile" href="./slide-library.html">
+      <span class="icon"><span class="mark">S</span></span>
+      <span class="name">Slide library</span>
+    </a>
+
+    <a class="tile" href="./slides.html">
+      <span class="icon"><span class="mark">P</span></span>
+      <span class="name">Slides</span>
+    </a>
+
+    <a class="tile" href="./slides-2.html">
+      <span class="icon"><span class="mark">P</span></span>
+      <span class="name">Slides 2</span>
+    </a>
+
+    <p class="empty" id="empty" hidden>No matches</p>
+  </main>
+
+</div>
+
+<script>
+  (function(){
+    var el = document.getElementById('clock');
+    function tick(){
+      var d = new Date();
+      var h = d.getHours();
+      var m = d.getMinutes();
+      var am = h < 12 ? 'AM' : 'PM';
+      h = h % 12; if (h === 0) h = 12;
+      el.textContent = h + ':' + (m < 10 ? '0' + m : m) + ' ' + am;
+    }
+    tick();
+    setInterval(tick, 30000);
+  })();
+
+  (function(){
+    var input = document.getElementById('search');
+    var empty = document.getElementById('empty');
+    var tiles = Array.prototype.slice.call(document.querySelectorAll('.tile'));
+
+    function visibleTiles() {
+      return tiles.filter(function(t){ return !t.hidden; });
+    }
+
+    function apply(){
+      var q = input.value.trim().toLowerCase();
+      tiles.forEach(function(t){
+        var name = t.querySelector('.name').textContent.toLowerCase();
+        t.hidden = q !== '' && name.indexOf(q) === -1;
+      });
+      empty.hidden = visibleTiles().length !== 0;
+    }
+
+    input.addEventListener('input', apply);
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        var v = visibleTiles();
+        if (v.length === 1) { window.location.href = v[0].href; }
+      } else if (e.key === 'Escape') {
+        input.value = '';
+        apply();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

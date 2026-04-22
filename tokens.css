@@ -1,0 +1,229 @@
+/* =========================================================
+   Aither Wireframe Library — tokens
+   Subset of the full Aither DS — wireframes use bone/dark
+   + TWK Lausanne Pan (300 licensed locally) as the primary
+   body font, with Inter as fallback for heavier weights.
+   No Apercu (display-only).
+   ========================================================= */
+
+@font-face {
+  font-family: "TWK Lausanne Pan";
+  src: url("./fonts/TWKLausannePan-300.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+
+:root {
+  /* Neutrals */
+  --bone:            #EAE4E2;
+  --bone-soft:       rgba(234, 228, 226, 0.70);
+  --bone-muted:      rgba(234, 228, 226, 0.40);
+  --bone-dim:        rgba(234, 228, 226, 0.20);
+  --bone-hairline:   rgba(234, 228, 226, 0.10);
+  --bone-raised:     rgba(234, 228, 226, 0.06);
+
+  --dark:            #120D0B;
+  --dark-2:          #1E1816;
+  --dark-3:          #271E1E;
+  --dark-raised:     rgba(0, 0, 0, 0.4);
+  --dark-hairline:   rgba(18, 13, 11, 0.10);
+  --dark-soft:       rgba(18, 13, 11, 0.70);
+  --dark-muted:      rgba(18, 13, 11, 0.40);
+
+  --warm-100:        #F8E5D9;
+  --warm-200:        #E0D5CE;
+  --warm-primary:    #AEA08F;
+  --warm-secondary:  #6E615B;
+  --cool-primary:    #796958;
+  --stone:           #777777;
+
+  /* Canvas used BY the wireframes (dark = product default, light = annotated review) */
+  --wf-dark-bg:      #120D0B;
+  --wf-dark-fg:      #EAE4E2;
+  --wf-dark-panel:   #1E1816;         /* raised surface on dark */
+  --wf-dark-input:   #15110F;         /* input well */
+  --wf-dark-hair:    rgba(234,228,226,0.12);
+  --wf-dark-hair-2:  rgba(234,228,226,0.22);
+
+  --wf-light-bg:     #EAE4E2;
+  --wf-light-fg:     #120D0B;
+  --wf-light-panel:  #E0D5CE;         /* raised surface on light */
+  --wf-light-input:  #F3EEEC;         /* input well */
+  --wf-light-hair:   rgba(18,13,11,0.14);
+  --wf-light-hair-2: rgba(18,13,11,0.28);
+
+  /* Canvas background (the gallery behind the frames — warm dark, subtle) */
+  --canvas-bg:       #0B0807;
+  --canvas-fg:       #EAE4E2;
+  --canvas-hair:     rgba(234,228,226,0.08);
+  --canvas-label:    rgba(234,228,226,0.45);
+  --canvas-panel:    #15100E;
+
+  /* Type — TWK Lausanne Pan is the primary body font (300 licensed locally).
+     Inter carries the heavier weights until more Lausanne weights are licensed. */
+  --font-ui:         "TWK Lausanne Pan", "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --font-mono:       "Space Mono", ui-monospace, monospace;
+  --font-note:       "Caveat", "Bradley Hand", cursive;  /* for canvas labels only */
+
+  /* Weights — body renders in Lausanne 300; UI 500 / title 600 / bold 700 fall to Inter */
+  --w-ui:            500;
+  --w-title:         600;
+  --w-meta:          400;
+  --w-bold:          700;
+
+  /* Spacing (4px base) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px;
+  --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px;
+  --s-20: 80px; --s-24: 96px;
+
+  /* Radii — 0 / 2 structural, pill for chips */
+  --r-0: 0;
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-full: 9999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur:  280ms;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-ui); font-weight: 300; letter-spacing: -0.01em; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; letter-spacing: -0.01em; }
+input, textarea, select { font: inherit; color: inherit; letter-spacing: -0.01em; }
+img { display: block; max-width: 100%; }
+
+/* ---------- Wireframe frame base ---------- */
+/* A single mixin mode: .wf is the outer frame, with data-mode="dark|light" controlling palette. */
+
+.wf {
+  /* Defaults are light; .wf[data-mode="dark"] overrides. */
+  --bg:       var(--wf-light-bg);
+  --fg:       var(--wf-light-fg);
+  --fg-soft:  rgba(18,13,11,0.70);
+  --fg-mute:  rgba(18,13,11,0.48);
+  --panel:    var(--wf-light-panel);
+  --input:    var(--wf-light-input);
+  --hair:     var(--wf-light-hair);
+  --hair-2:   var(--wf-light-hair-2);
+  --placeholder: rgba(18,13,11,0.15);
+
+  background: var(--bg);
+  color: var(--fg);
+  position: relative;
+  overflow: hidden;
+}
+
+.wf[data-mode="dark"] {
+  --bg:       var(--wf-dark-bg);
+  --fg:       var(--wf-dark-fg);
+  --fg-soft:  rgba(234,228,226,0.65);
+  --fg-mute:  rgba(234,228,226,0.42);
+  --panel:    var(--wf-dark-panel);
+  --input:    var(--wf-dark-input);
+  --hair:     var(--wf-dark-hair);
+  --hair-2:   var(--wf-dark-hair-2);
+  --placeholder: rgba(234,228,226,0.18);
+}
+
+/* ---------- Shared wireframe primitives ---------- */
+.wf-kicker {
+  font-size: 10px;
+  font-weight: var(--w-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+.wf-meta {
+  font-size: 12px;
+  color: var(--fg-soft);
+  font-weight: var(--w-meta);
+}
+
+.wf-placeholder {
+  background: var(--placeholder);
+  display: grid;
+  place-items: center;
+  color: var(--fg-mute);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: var(--r-1);
+}
+
+.wf-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: var(--w-ui);
+  white-space: nowrap;
+  color: var(--fg);
+}
+.wf-pill[data-active="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: var(--w-ui);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  cursor: pointer;
+}
+.wf-btn[data-primary="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+.wf-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--input);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--fg);
+  width: 100%;
+}
+.wf-input input, .wf-input textarea {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+}
+.wf-input input::placeholder, .wf-input textarea::placeholder { color: var(--fg-mute); }
+
+.wf-label {
+  font-size: 10px;
+  font-weight: var(--w-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.wf-hair { height: 1px; background: var(--hair); width: 100%; }
+
+/* Dots (for "more" / status) */
+.wf-dot {
+  width: 4px; height: 4px; border-radius: 50%; background: currentColor;
+  display: inline-block;
+}
