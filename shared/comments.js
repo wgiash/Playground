@@ -174,6 +174,46 @@
 
   const escapeHTML = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+  // Resolve the author behind a pin — prefer fields stored on the pin itself,
+  // then fall back to the first message's author info, then to a generic '?'.
+  const authorOfPin = data => {
+    const pick = (...objs) => {
+      for (const o of objs) {
+        if (o && (o.displayName || o.photoURL || o.email)) {
+          return { displayName: o.displayName || '', email: o.email || '', photoURL: o.photoURL || '' };
+        }
+      }
+      return { displayName: '', email: '', photoURL: '' };
+    };
+    return pick(data, (data.messages || [])[0]);
+  };
+  const initialsFor = a => {
+    const src = a.displayName || (a.email || '').split('@')[0] || '';
+    return (src.match(/[A-Za-z0-9]+/g) || []).slice(0, 2).map(s => s[0].toUpperCase()).join('') || '?';
+  };
+
+  // ---------- Read / unread tracking (others' pins only) ----------
+  // A pin is unread when its latest activity timestamp is newer than the
+  // timestamp we've stored locally for it. Own pins never carry this state.
+  const seenKey = id => 'cm-seen-' + id;
+  const markSeen = id => {
+    try { localStorage.setItem(seenKey(id), String(Date.now())); } catch (e) {}
+  };
+  const lastActivityMs = data => {
+    const msgs = data.messages || [];
+    const last = msgs.length ? msgs[msgs.length - 1].createdAt : data.createdAt;
+    if (!last) return 0;
+    try { return last.toDate ? last.toDate().getTime() : new Date(last).getTime(); }
+    catch (e) { return 0; }
+  };
+  const isUnread = (id, data) => {
+    if (data.deviceId === deviceId) return false;            // my own pin — never unread
+    if (openThreadId === id) return false;                   // actively viewing — treat as read
+    let seen = 0;
+    try { const s = localStorage.getItem(seenKey(id)); if (s) seen = parseInt(s, 10) || 0; } catch (e) {}
+    return lastActivityMs(data) > seen;
+  };
+
   const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
@@ -193,9 +233,17 @@
       attachPinInteractions(id, el);
     }
     entry.data = data;
-    entry.el.classList.toggle('mine', data.deviceId === deviceId);
-    const idx = Array.from(pinsById.keys()).indexOf(id) + 1;
-    entry.el.textContent = String(idx);
+    const mine = data.deviceId === deviceId;
+    entry.el.classList.toggle('mine', mine);
+    entry.el.classList.toggle('unread', !mine && isUnread(id, data));
+    const author = authorOfPin(data);
+    const initials = initialsFor(author);
+    entry.el.title = author.displayName || author.email || 'Comment';
+    entry.el.setAttribute('aria-label', author.displayName || author.email || 'Comment pin');
+    const img = author.photoURL
+      ? `<img src="${escapeHTML(author.photoURL)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()" />`
+      : '';
+    entry.el.innerHTML = `<span class="cm-pin-init">${escapeHTML(initials)}</span>${img}`;
     entry.el.style.left = data.x + 'px';
     entry.el.style.top = data.y + 'px';
   };
@@ -354,6 +402,9 @@
     if (openThreadId === id) { closeThread(); return; }
     closeThread();
     openThreadId = id;
+    markSeen(id);
+    const entry = pinsById.get(id);
+    if (entry) entry.el.classList.remove('unread');
     openThreadEl = document.createElement('div');
     openThreadEl.className = 'cm-thread';
     openThreadEl.onclick = e => e.stopPropagation();
@@ -363,6 +414,11 @@
   };
 
   const closeThread = () => {
+    if (openThreadId) {
+      markSeen(openThreadId);
+      const entry = pinsById.get(openThreadId);
+      if (entry) entry.el.classList.remove('unread');
+    }
     openThreadId = null;
     openThreadEl?.remove();
     openThreadEl = null;
@@ -476,11 +532,16 @@
     const y = (e.clientY - rect.top) / scale;
 
     try {
+      const user = window.AITHER_USER || {};
       const ref = db.collection('pins').doc();
       await ref.set({
         contextId: currentContext.id,
         x, y,
         deviceId,
+        displayName: user.displayName || '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+        uid: user.uid || '',
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         messages: []
       });

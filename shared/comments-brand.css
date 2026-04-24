@@ -55,19 +55,55 @@
 
 /* ---------- Pins (warm + bone, keep the Figma tear-drop shape) ---------- */
 /* Do not override `transform` — comments.js manages pin positioning. */
+/* Default pin = others', read (muted). .unread = others' with new activity.
+   .mine = my own pin; never carries the unread state. */
 .cm-pin {
-  background: var(--warm-primary);
-  color: var(--dark);
-  border: 2px solid var(--dark);
+  background: var(--warm-secondary);
+  color: var(--bone);
+  border: 2px solid rgba(18,13,11,0.55);
   border-radius: 50% 50% 50% 3px;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 10px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+  font-size: 9px;
+  letter-spacing: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.cm-pin.unread {
+  background: var(--warm-primary);
+  color: var(--dark);
+  border-color: var(--dark);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.45), 0 0 0 3px rgba(174,160,143,0.3);
 }
 .cm-pin.mine {
   background: var(--bone);
   color: var(--dark);
+  border-color: var(--dark);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+}
+.cm-pin .cm-pin-init {
+  line-height: 1;
+  pointer-events: none;
+}
+.cm-pin img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: filter 0.2s;
+}
+/* Read (others', default) — slightly muted photo for lower attention */
+.cm-pin:not(.mine):not(.unread) img {
+  filter: grayscale(0.6) opacity(0.78);
+}
+.cm-pin.unread img,
+.cm-pin.mine img {
+  filter: none;
 }
 
 /* ---------- Thread popover (light mode, on brand) ---------- */
