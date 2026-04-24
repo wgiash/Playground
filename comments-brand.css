@@ -1,0 +1,174 @@
+/* =========================================================
+   Brand overrides for comments.js (Figma-style pin system).
+   Loaded AFTER comments.js in each HTML file so these rules
+   win the cascade against the runtime-injected stylesheet in
+   that script. Do not modify comments.js itself.
+
+   Scope:
+     · Toolbar — bottom-right floating pill.
+     · Pins    — remain distinctive but warm (yellow → warm).
+     · Thread  — stays light mode, rebuilt in brand palette.
+
+   Tokens: uses variables from tokens.css.
+   ========================================================= */
+
+/* ---------- Toolbar (dark pill, bottom-right) ---------- */
+.cm-toolbar {
+  background: var(--dark);
+  color: var(--bone);
+  border: 1px solid var(--bone-hairline);
+  padding: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+.cm-btn {
+  padding: 7px 14px;
+  border-radius: var(--r-full);
+  font-weight: var(--w-ui);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cm-btn:hover { background: var(--bone-raised); }
+.cm-btn.active {
+  background: var(--bone);
+  color: var(--dark);
+}
+.cm-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.6;
+  letter-spacing: 0;
+}
+.cm-kbd {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--bone-soft);
+  background: var(--bone-raised);
+  border: 1px solid var(--bone-hairline);
+  border-radius: var(--r-1);
+  letter-spacing: 0;
+}
+
+/* ---------- Pins (warm + bone, keep the Figma tear-drop shape) ---------- */
+/* Do not override `transform` — comments.js manages pin positioning. */
+.cm-pin {
+  background: var(--warm-primary);
+  color: var(--dark);
+  border: 2px solid var(--dark);
+  border-radius: 50% 50% 50% 3px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+}
+.cm-pin.mine {
+  background: var(--bone);
+  color: var(--dark);
+}
+
+/* ---------- Thread popover (light mode, on brand) ---------- */
+.cm-thread {
+  background: var(--wf-light-bg);
+  color: var(--wf-light-fg);
+  border: 1px solid var(--wf-light-hair-2);
+  border-radius: var(--r-2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+}
+
+.cm-head {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--wf-light-hair);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: var(--w-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(18,13,11,0.55);
+}
+.cm-ibtn {
+  color: rgba(18,13,11,0.5);
+  border-radius: var(--r-1);
+}
+.cm-ibtn:hover {
+  background: var(--wf-light-input);
+  color: var(--dark);
+}
+.cm-ibtn.del:hover {
+  background: rgba(150,40,40,0.08);
+  color: #8a2a2a;
+}
+
+/* Messages */
+.cm-msgs { max-height: 280px; }
+.cm-msg {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--wf-light-hair);
+}
+.cm-msg .txt {
+  color: var(--wf-light-fg);
+  line-height: 1.5;
+}
+.cm-msg .when {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0;
+  color: rgba(18,13,11,0.4);
+}
+.cm-msg.mine .txt {
+  color: var(--cool-primary);
+}
+
+/* Input footer */
+.cm-input {
+  padding: 10px;
+  gap: 8px;
+  border-top: 1px solid var(--wf-light-hair);
+  background: var(--wf-light-panel);
+}
+.cm-input textarea {
+  background: var(--wf-light-input);
+  border: 1px solid var(--wf-light-hair-2);
+  border-radius: var(--r-1);
+  padding: 8px 10px;
+  color: var(--wf-light-fg);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+.cm-input textarea::placeholder { color: rgba(18,13,11,0.35); }
+.cm-input textarea:focus {
+  border-color: var(--dark);
+  outline: 0;
+}
+.cm-input button {
+  background: var(--dark);
+  color: var(--bone);
+  border-radius: var(--r-full);
+  padding: 0 16px;
+  font-family: var(--font-ui);
+  font-weight: var(--w-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cm-input button:disabled { opacity: 0.3; }
+
+/* ---------- Error toast ---------- */
+.cm-err {
+  background: var(--dark);
+  color: var(--bone);
+  border: 1px solid var(--bone-hairline);
+  border-radius: var(--r-2);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
