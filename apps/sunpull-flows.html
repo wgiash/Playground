@@ -1151,6 +1151,329 @@ function FTULibrary() {
   );
 }
 
+/* ========== Sunpull · Add-from-phone flow (§5.6 FR-X1 → X5) ==========
+   Mobile 390×844. Five screens: pair (auth), send, suggestion, confirm,
+   error (EC5 malformed URL). Messaging-bot interface. */
+
+function SpfmStatusBar() {
+  return (
+    <div className="spfm-statusbar">
+      <span>9:41</span>
+      <span className="icons">●●●● · 100</span>
+    </div>
+  );
+}
+function SpfmMsgHead({ sub = "Sunpull bot · online" }) {
+  return (
+    <div className="spfm-msghead">
+      <span className="back">‹</span>
+      <div className="avatar">S</div>
+      <div className="who">
+        <span className="name">Sunpull</span>
+        <span className="sub">{sub}</span>
+      </div>
+      <span className="info">ⓘ</span>
+    </div>
+  );
+}
+function SpfmInput({ value = "Message…" }) {
+  return (
+    <div className="spfm-input">
+      <div className="field">{value}</div>
+      <div className="send">↑</div>
+    </div>
+  );
+}
+function SpfmHome() { return <div className="spfm-homebar" />; }
+
+/* --- Screen 1 · Pair phone (auth · FR-X1 setup) --- */
+function APPair() {
+  return (
+    <div className="wf spfm-screen" style={{ position: "relative" }}>
+      <SpfmStatusBar />
+      <div className="spfm-pair">
+        <span className="kicker">Settings · Pair phone</span>
+        <h1>Add your phone to Sunpull.</h1>
+        <p>Text any link + optional context to save it. Add "personal" to keep a save off company queries.</p>
+        <div className="spfm-code">
+          <div className="sub">Text this code to</div>
+          <div className="n">+1 (415) 555-0142</div>
+          <div className="n" style={{ fontSize: 18, letterSpacing: "0.1em", color: "var(--fg-soft)" }}>SUN-PAIR-347</div>
+        </div>
+        <div className="spfm-status">
+          <div className="dot" />
+          <span>Waiting for your first message…</span>
+        </div>
+        <p style={{ fontSize: 11, color: "var(--fg-mute)" }}>
+          Works with iMessage, Telegram, or SMS. Once paired, you can send links from any chat thread on your phone.
+        </p>
+      </div>
+      <SpfmHome />
+    </div>
+  );
+}
+
+/* --- Screen 2 · Send (FR-X1 · link + context) --- */
+function APConvSend() {
+  return (
+    <div className="wf spfm-screen" style={{ position: "relative" }}>
+      <SpfmStatusBar />
+      <SpfmMsgHead />
+      <div className="spfm-thread">
+        <div className="spfm-day">Today</div>
+        <div className="spfm-bubble them">
+          Welcome. Send me a link and I'll save it to your library. Add context like "for our brand" to help me tag.
+        </div>
+        <div className="spfm-bubble me">
+          <span className="link">are.na/block/2f3k-signage</span><br />
+          thinking about this for our brand direction
+        </div>
+      </div>
+      <SpfmInput value="Message…" />
+      <SpfmHome />
+    </div>
+  );
+}
+
+/* --- Screen 3 · Tag suggestion reply (FR-X3) --- */
+function APConvSuggestion() {
+  return (
+    <div className="wf spfm-screen" style={{ position: "relative" }}>
+      <SpfmStatusBar />
+      <SpfmMsgHead />
+      <div className="spfm-thread">
+        <div className="spfm-day">Today</div>
+        <div className="spfm-bubble me">
+          <span className="link">are.na/block/2f3k-signage</span><br />
+          thinking about this for our brand direction
+        </div>
+        <div className="spfm-bubble them">
+          Saved. Here's what I got:
+          <div className="spfm-preview">
+            <div className="ph">PREVIEW</div>
+            <div className="meta">
+              <span className="dom">are.na</span>
+              <span className="t">Hotel signage system — warm cream, serif, tight letter-spacing.</span>
+            </div>
+          </div>
+        </div>
+        <div className="spfm-bubble them same">
+          Tagged <strong>brand inspo</strong> based on your note. Reply "yes" to confirm, or type a different tag.
+        </div>
+      </div>
+      <SpfmInput value="yes" />
+      <SpfmHome />
+    </div>
+  );
+}
+
+/* --- Screen 4 · User retags (FR-X4 · confirm/adjust) --- */
+function APConvConfirm() {
+  return (
+    <div className="wf spfm-screen" style={{ position: "relative" }}>
+      <SpfmStatusBar />
+      <SpfmMsgHead />
+      <div className="spfm-thread">
+        <div className="spfm-day">Today</div>
+        <div className="spfm-bubble them">
+          Tagged <strong>brand inspo</strong>. Reply "yes" or type a different tag.
+        </div>
+        <div className="spfm-bubble me">partnership</div>
+        <div className="spfm-bubble them">
+          Retagged <strong>partnership</strong>. Linked to your Sunrun workflow <em>draft-outreach</em> (partnership tone). Ready when you queue a Run.
+        </div>
+        <div className="spfm-bubble them same" style={{ fontSize: 11, color: "var(--fg-soft)" }}>
+          Tip: you can say "personal" to keep a save off all company queries.
+        </div>
+      </div>
+      <SpfmInput value="Message…" />
+      <SpfmHome />
+    </div>
+  );
+}
+
+/* --- Screen 5 · Error: malformed URL (EC5 · §11 Edge Cases) --- */
+function APConvError() {
+  return (
+    <div className="wf spfm-screen" style={{ position: "relative" }}>
+      <SpfmStatusBar />
+      <SpfmMsgHead />
+      <div className="spfm-thread">
+        <div className="spfm-day">Today</div>
+        <div className="spfm-bubble me">this one's cool actually</div>
+        <div className="spfm-bubble them">
+          Hmm — I don't see a link in that. Send me a URL to save, or reply "help" for what I can do.
+        </div>
+        <div className="spfm-bubble them same" style={{ fontSize: 11, color: "var(--fg-soft)" }}>
+          Tip: paste a URL anywhere in your message. Add context after it — "for our brand", "personal", or a tag name.
+        </div>
+      </div>
+      <SpfmInput value="Message…" />
+      <SpfmHome />
+    </div>
+  );
+}
+
+/* ========== Sunpull · Browser extension flow (§5.5 FR-B1 → B6) ==========
+   Desktop 1440×900. Five screens: first-run auth, trigger (detecting),
+   suggested (confirm/save), saved (toast), error (EC4 page blocks scripts).
+   Faux browser page renders behind a 360-wide popover pinned top-right. */
+
+function SpfxBackdrop({ url = "are.na/block/2f3k-signage" }) {
+  return (
+    <div className="spfx-backdrop">
+      <div className="spfx-chrome">
+        <div className="dots"><span /><span /><span /></div>
+        <div className="urlbar">{url}</div>
+      </div>
+      <div className="spfx-page">
+        <div className="h" />
+        <div className="p" />
+        <div className="p" />
+        <div className="p short" />
+        <div className="img" />
+        <div className="p" style={{ marginTop: 10 }} />
+        <div className="p" />
+        <div className="p short" />
+      </div>
+    </div>
+  );
+}
+
+/* --- Screen 1 · First-run auth (FR-B1) --- */
+function XTExtAuth() {
+  return (
+    <div className="wf spfx-screen">
+      <SpfxBackdrop />
+      <div className="spfx-dim" />
+      <div className="spfx-pop">
+        <div className="h">Sunpull · First run<span className="kbd">Esc</span></div>
+        <div className="body" style={{ padding: 20, gap: 14 }}>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: "var(--w-title)", letterSpacing: "-0.01em", marginBottom: 6, textTransform: "none" }}>
+              Connect the extension to your workspace.
+            </div>
+            <div style={{ fontSize: 12, color: "var(--fg-soft)", lineHeight: 1.5 }}>
+              The extension uses a short-lived token scoped to your Aither workspace. Revoke anytime from Sunpull settings.
+            </div>
+          </div>
+          <button className="wf-btn" data-primary="true">Sign in with Aither</button>
+          <div style={{ fontSize: 10, color: "var(--fg-mute)", fontFamily: "var(--font-mono)", letterSpacing: 0, textTransform: "none" }}>
+            Workspace: aither.co · Shortcut: ⌘+Shift+S (configurable)
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- Screen 2 · Triggered, detecting (FR-B2 · popup opens) --- */
+function XTExtTrigger() {
+  return (
+    <div className="wf spfx-screen">
+      <SpfxBackdrop />
+      <div className="spfx-dim" />
+      <div className="spfx-pop">
+        <div className="h">Sunpull · Save to library<span className="kbd">⌘⇧S</span></div>
+        <div className="preview">
+          <div className="thumb" />
+          <div className="meta">
+            <span className="src">are.na</span>
+            <span className="t">Hotel signage system — warm cream, serif, tight letter-spacing.</span>
+          </div>
+        </div>
+        <div className="body">
+          <div className="label">Suggested tags · detecting…</div>
+          <div className="tags">
+            <span className="wf-pill" style={{ opacity: 0.4 }}>…</span>
+            <span className="wf-pill" style={{ opacity: 0.4 }}>…</span>
+          </div>
+          <div className="label">Note (optional)</div>
+          <div className="note">Why are you saving this?</div>
+        </div>
+        <div className="actions">
+          <button className="wf-btn" style={{ flex: 1 }}>Cancel</button>
+          <button className="wf-btn" data-primary="true" style={{ flex: 1, opacity: 0.5 }}>Save</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- Screen 3 · Suggested, filled (FR-B3 · confirm/tweak) --- */
+function XTExtSuggested() {
+  return (
+    <div className="wf spfx-screen">
+      <SpfxBackdrop />
+      <div className="spfx-dim" />
+      <div className="spfx-pop">
+        <div className="h">Sunpull · Save to library<span className="kbd">⌘⇧S</span></div>
+        <div className="preview">
+          <div className="thumb" />
+          <div className="meta">
+            <span className="src">are.na</span>
+            <span className="t">Hotel signage system — warm cream, serif, tight letter-spacing.</span>
+          </div>
+        </div>
+        <div className="body">
+          <div className="label">Suggested tags</div>
+          <div className="tags">
+            <span className="wf-pill" data-active="true">Brand inspo</span>
+            <span className="wf-pill">+ Marketing</span>
+            <span className="wf-pill">+ Personal</span>
+          </div>
+          <div className="label">Note (optional)</div>
+          <div className="note" style={{ color: "var(--fg)" }}>
+            signage tone for the new brand direction — compact serif, cream background
+          </div>
+        </div>
+        <div className="actions">
+          <button className="wf-btn" style={{ flex: 1 }}>Cancel</button>
+          <button className="wf-btn" data-primary="true" style={{ flex: 1 }}>Save · ↵</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- Screen 4 · Saved (FR-B4 · auto-dismiss toast) --- */
+function XTExtSaved() {
+  return (
+    <div className="wf spfx-screen">
+      <SpfxBackdrop />
+      <div className="spfx-toast">
+        <div className="check">✓</div>
+        <span>Saved to Sunpull · Brand inspo</span>
+      </div>
+    </div>
+  );
+}
+
+/* --- Screen 5 · Error: page blocks content scripts (EC4 · §11) --- */
+function XTExtError() {
+  return (
+    <div className="wf spfx-screen">
+      <SpfxBackdrop url="linkedin.com/in/someone/saved" />
+      <div className="spfx-dim" />
+      <div className="spfx-pop spfx-err-pop">
+        <div className="h">Can't capture this page<span className="kbd">Esc</span></div>
+        <div className="body" style={{ padding: 18, gap: 12 }}>
+          <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--fg)", letterSpacing: "-0.005em" }}>
+            This page blocks browser extensions (common on LinkedIn, Instagram, some paywalled news).
+          </div>
+          <div style={{ fontSize: 12, color: "var(--fg-soft)", lineHeight: 1.5 }}>
+            Forward the URL by text instead — Sunpull will fetch the preview and save it for you.
+          </div>
+          <button className="wf-btn" data-primary="true">Copy link for texting</button>
+          <span className="spf-err-note">EC4 · §11 Edge Cases</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- [removed intermediate pointer — screen 6 of flow 01 kept below] --- */
+
 /* --- Screen 6 · Error: LinkedIn export format not recognized (EC1 / §13 Tech Risks) --- */
 function FTUError() {
   return (
