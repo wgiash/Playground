@@ -105,11 +105,36 @@
     setTimeout(() => e.remove(), 8000);
   };
 
-  const loadScript = src => new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = rej;
-    document.head.appendChild(s);
-  });
+  const loadScript = src => {
+    // De-dupe: auth-gate may have already loaded firebase-app-compat.
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) {
+      if (existing.dataset.loaded === '1') return Promise.resolve();
+      return new Promise((res, rej) => {
+        existing.addEventListener('load', res);
+        existing.addEventListener('error', rej);
+      });
+    }
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => { s.dataset.loaded = '1'; res(); };
+      s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  };
+
+  // Warm the TLS handshake to Firestore's CDN while the SDK loads.
+  (function preconnect() {
+    ['https://www.gstatic.com', 'https://firestore.googleapis.com'].forEach(href => {
+      if (document.querySelector('link[rel="preconnect"][href="' + href + '"]')) return;
+      const l = document.createElement('link');
+      l.rel = 'preconnect';
+      l.href = href;
+      l.crossOrigin = '';
+      document.head.appendChild(l);
+    });
+  })();
 
   let db = null;
   const initFirebase = async () => {
@@ -118,9 +143,13 @@
       showError('Comments disabled — firebase-config.js not filled in.');
       return false;
     }
-    await loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js');
-    firebase.initializeApp(cfg);
+    // Load app + firestore SDKs in parallel (was sequential — two round-trips).
+    await Promise.all([
+      loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'),
+      loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js'),
+    ]);
+    // Reuse the app auth-gate already initialized (avoids redundant init).
+    if (!firebase.apps.length) firebase.initializeApp(cfg);
     db = firebase.firestore();
     return true;
   };
@@ -250,9 +279,20 @@
     const isMine = entry.data.deviceId === deviceId;
     const msgs = (entry.data.messages || []).map(m => {
       const mine = m.deviceId === deviceId;
+      const displayName = m.displayName || '';
+      const email = m.email || '';
+      const nameSrc = displayName || email.split('@')[0] || 'Someone';
+      const initials = (nameSrc.match(/[A-Za-z0-9]+/g) || []).slice(0, 2).map(s => s[0].toUpperCase()).join('') || '?';
+      const imgTag = m.photoURL
+        ? `<img src="${escapeHTML(m.photoURL)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()" />`
+        : '';
       return `<div class="cm-msg ${mine ? 'mine' : ''}">
+        <div class="cm-who">
+          <div class="cm-av"><span class="cm-av-init">${escapeHTML(initials)}</span>${imgTag}</div>
+          <span class="cm-nm">${escapeHTML(nameSrc)}</span>
+          <div class="when">${fmtTime(m.createdAt)}</div>
+        </div>
         <div class="txt">${escapeHTML(m.text)}</div>
-        <div class="when">${fmtTime(m.createdAt)}</div>
       </div>`;
     }).join('');
     const count = entry.data.messages?.length || 0;
@@ -283,9 +323,16 @@
       if (!text || !db) return;
       send.disabled = true;
       try {
+        const user = window.AITHER_USER || {};
         await db.collection('pins').doc(openThreadId).update({
           messages: firebase.firestore.FieldValue.arrayUnion({
-            text, deviceId, createdAt: new Date()
+            text,
+            deviceId,
+            createdAt: new Date(),
+            displayName: user.displayName || '',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            uid: user.uid || ''
           })
         });
         ta.value = '';
@@ -492,9 +539,20 @@
   (async () => {
     const ok = await initFirebase();
     if (!ok) return;
-    await waitForContainer();
-    observeCanvasSurface();
+    // Kick off the Firestore subscription immediately — don't block on the
+    // canvas container mounting. Pins render once the container resolves.
     currentContext = getContext();
     subscribe();
+    await waitForContainer();
+    // Re-resolve context (canvas-surface may now exist) and re-render pins
+    // against the real container.
+    const next = getContext();
+    if (next.id !== currentContext.id || next.container !== currentContext.container) {
+      currentContext = next;
+      subscribe();
+    } else {
+      currentContext = next;
+    }
+    observeCanvasSurface();
   })();
 })();
