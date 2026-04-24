@@ -1596,12 +1596,15 @@ function App() {
      Per-flow frameW/frameH/gap lets mobile + desktop flows coexist cleanly.
      Light-mode only. Standing rule: every flow must include auth + error states.
   */
-  const sections = [
+  /* All flows stack vertically at x=0. Screens inside each flow still
+     run horizontally. y values computed from running height + gap. */
+  const STACK_GAP = 280; // vertical breathing room between flows (fits the section header + frame label)
+
+  const rawSections = [
     {
       num: "01",
       name: "First-time user flow",
       tag: "Onboarding ritual · §5.10 FR-O1 → O6 · auth + EC1 error",
-      x: 0,
       frameW: 1440, frameH: 900, gap: 100,
       screens: [
         { C: FTUSignIn,    label: "Sign in",       sub: "Auth · invite-only" },
@@ -1616,7 +1619,6 @@ function App() {
       num: "02",
       name: "Add from phone",
       tag: "Text forwarding · §5.6 FR-X1 → X5 · auth pairing + EC5 error",
-      x: 12000,
       frameW: 390, frameH: 844, gap: 60,
       screens: [
         { C: APPair,           label: "Pair phone",     sub: "Auth · first run" },
@@ -1630,7 +1632,6 @@ function App() {
       num: "03",
       name: "Browser extension",
       tag: "Quick capture · §5.5 FR-B1 → B6 · auth + EC4 error",
-      x: 15500,
       frameW: 1440, frameH: 900, gap: 100,
       screens: [
         { C: XTExtAuth,      label: "First run",     sub: "Auth · sign in" },
@@ -1641,6 +1642,13 @@ function App() {
       ],
     },
   ];
+
+  let runningY = 0;
+  const sections = rawSections.map((s) => {
+    const y = runningY;
+    runningY += s.frameH + STACK_GAP;
+    return { ...s, x: 0, y };
+  });
 
   return (
     <>
@@ -1657,7 +1665,7 @@ function App() {
           const maxX = Math.max(...items.map(it => it.x + it.w), 0);
           const maxY = Math.max(...items.map(it => it.y + it.h), 0);
           return (
-            <Section key={s.num} x={s.x} y={0} w={maxX} h={maxY} num={s.num} name={s.name} tag={s.tag}>
+            <Section key={s.num} x={s.x} y={s.y} w={maxX} h={maxY} num={s.num} name={s.name} tag={s.tag}>
               {items.map((it, j) => {
                 const Comp = it.C;
                 return (
