@@ -763,7 +763,7 @@ function IntroCard({ x, y }) {
       </p>
       <dl className="rules">
         <dt>Covered</dt><dd>FR-O1 connect · FR-O2 importing · FR-O3 archetype · FR-O4 library landing · FR-O5 skip allowed · EC1 error</dd>
-        <dt>Frames</dt><dd>Web 1440×900. Dark at y=0; light at y=1060 in paired mode.</dd>
+        <dt>Frames</dt><dd>Web 1440×900 · light-mode only</dd>
         <dt>Grid</dt><dd>12-col web · 4-col mobile · 24px gutter · 24px side margin</dd>
         <dt>Required</dt><dd>Every flow ships with auth path(s) and error/failure states, not just the happy path</dd>
         <dt>Next flows</dt><dd>Add-from-phone (§5.6) · Bulk import (§5.1–2) · Categorization dialogue (§5.3) · Search (§5.7)</dd>
@@ -774,7 +774,7 @@ function IntroCard({ x, y }) {
 }
 
 /* ========== Topbar ========== */
-function Topbar({ mode, setMode, scale, setScale, resetView }) {
+function Topbar({ scale, setScale, resetView }) {
   return (
     <div className="topbar" style={{ paddingLeft: 120 }}>
       <a href="../index.html" title="Back to home" aria-label="Back to home"
@@ -790,11 +790,6 @@ function Topbar({ mode, setMode, scale, setScale, resetView }) {
       <div className="topbar-help">
         Drag to pan · <kbd>⌘</kbd>+scroll to zoom · <kbd>0</kbd> to reset
       </div>
-      <div className="mode-toggle" role="group" aria-label="Light / dark master toggle">
-        <button aria-pressed={mode === "dark"}  onClick={() => setMode("dark")}>Dark</button>
-        <button aria-pressed={mode === "light"} onClick={() => setMode("light")}>Light</button>
-        <button aria-pressed={mode === "paired"} onClick={() => setMode("paired")}>Paired</button>
-      </div>
       <div className="zoom-controls">
         <button onClick={() => setScale(s => Math.max(0.08, s / 1.15))} aria-label="Zoom out">−</button>
         <span className="zoom-val">{Math.round(scale * 100)}%</span>
@@ -807,15 +802,8 @@ function Topbar({ mode, setMode, scale, setScale, resetView }) {
 
 /* ========== Main app ========== */
 function App() {
-  const [mode, setMode] = useState("paired");
   const [scale, setScale] = useState(0.28);
   const [pan, setPan] = useState({ x: 120, y: 140 });
-
-  useEffect(() => {
-    const saved = localStorage.getItem("aither-sunpull-flows-mode");
-    if (saved) setMode(saved);
-  }, []);
-  useEffect(() => { localStorage.setItem("aither-sunpull-flows-mode", mode); }, [mode]);
 
   const resetView = () => { setScale(0.28); setPan({ x: 120, y: 140 }); };
 
@@ -830,16 +818,13 @@ function App() {
   }, []);
 
   /* ====== Sections ======
-     Each entry = one flow. Screens stack horizontally within a section;
-     in paired mode dark sits at y=0, light at y=1060.
-     Standing rule: every flow must include auth + error states.
+     Each entry = one flow. Screens stack horizontally within a section.
+     Light-mode only. Standing rule: every flow must include auth + error states.
   */
   const FRAME_W = 1440;
   const FRAME_H = 900;
   const GAP = 100;
   const stepX = (i) => i * (FRAME_W + GAP);
-
-  const shouldShow = (variant) => mode === "paired" ? true : variant === mode;
 
   const sections = [
     {
@@ -860,23 +845,15 @@ function App() {
 
   return (
     <>
-      <Topbar mode={mode} setMode={setMode} scale={scale} setScale={setScale} resetView={resetView} />
+      <Topbar scale={scale} setScale={setScale} resetView={resetView} />
       <Canvas scaleState={[scale, setScale]} panState={[pan, setPan]}>
         <IntroCard x={-100} y={-1400} />
 
         {sections.map((s) => {
-          const items = [];
-          s.screens.forEach((scr, i) => {
-            const x = stepX(i);
-            if (shouldShow("dark")) {
-              items.push({ x, y: 0, w: FRAME_W, h: FRAME_H, mode: "dark",
-                C: scr.C, title: `${i + 1} · ${scr.label}`, sub: `dark · ${scr.sub}` });
-            }
-            if (shouldShow("light")) {
-              items.push({ x, y: shouldShow("dark") ? 1060 : 0, w: FRAME_W, h: FRAME_H, mode: "light",
-                C: scr.C, title: `${i + 1} · ${scr.label}`, sub: `light · ${scr.sub}` });
-            }
-          });
+          const items = s.screens.map((scr, i) => ({
+            x: stepX(i), y: 0, w: FRAME_W, h: FRAME_H,
+            C: scr.C, title: `${i + 1} · ${scr.label}`, sub: scr.sub,
+          }));
           const maxX = Math.max(...items.map(it => it.x + it.w), 0);
           const maxY = Math.max(...items.map(it => it.y + it.h), 0);
           return (
@@ -884,7 +861,7 @@ function App() {
               {items.map((it, j) => {
                 const Comp = it.C;
                 return (
-                  <Frame key={j} x={it.x} y={it.y} w={it.w} h={it.h} mode={it.mode} title={it.title} subtitle={it.sub}>
+                  <Frame key={j} x={it.x} y={it.y} w={it.w} h={it.h} mode="light" title={it.title} subtitle={it.sub}>
                     <Comp />
                   </Frame>
                 );
@@ -893,11 +870,6 @@ function App() {
           );
         })}
       </Canvas>
-
-      <div className="legend">
-        <div className="row"><span className="dot dot-light" /> Dark · product default</div>
-        <div className="row"><span className="dot dot-dark" /> Light · annotated review</div>
-      </div>
     </>
   );
 }
