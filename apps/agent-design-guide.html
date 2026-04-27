@@ -2234,7 +2234,7 @@ mobile layout
         <div class="recipe-render">
           <p style="margin: 0 0 8px;"><strong>Palette.</strong> Bone + dark + warm/cool neutrals; canvas + frame palettes for both modes. <em>Anchors every rendered surface.</em></p>
           <p style="margin: 0 0 8px;"><strong>Hairlines.</strong> Alpha ladder over dark and over light. <em>Borders, dividers, depth without elevation.</em></p>
-          <p style="margin: 0 0 8px;"><strong>Type.</strong> Lausanne 300 / 550 / 700, Space Mono, Caveat. Five weight tokens, six size roles. <em>Every rendered glyph.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Type.</strong> Lausanne 300 / 550 / 700; Caveat for canvas annotations only. Five weight tokens, six size roles. No Space Mono (removed); the legacy <code>--font-mono</code> aliases <code>--font-ui</code>. <em>Every rendered glyph.</em></p>
           <p style="margin: 0 0 8px;"><strong>Spacing.</strong> 4px base, 12 stops (s-1 → s-24). <em>Every gap, padding, margin.</em></p>
           <p style="margin: 0 0 8px;"><strong>Radii.</strong> r-0 / r-1 / r-2 / r-full. <em>Hard edges by default; pill reserved for chips and avatars.</em></p>
           <p style="margin: 0;"><strong>Grid.</strong> 1440 × 12 col / 390 × 4 col, 24px gutter + margin. <em>Every rendered frame.</em></p>
@@ -2536,7 +2536,7 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
 --cool-*      Cool system colors. Project layer only.
 --font-ui     TWK Lausanne Pan — only face inside wireframes.
               Three weights: 300 / 550 / 700.
---font-mono   Space Mono.
+--font-mono   Legacy alias of --font-ui (Lausanne). Space Mono is removed; do not reintroduce.
 --font-note   Caveat (canvas annotation only — never UI).
 --w-body      300 · body, lede                 (Lausanne 300)
 --w-meta      300 · meta, captions             (Lausanne 300)
@@ -2635,7 +2635,7 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
     <p class="lede">A consolidated list of moves that are wrong inside this system. If you find yourself reaching for one of these, stop and reach for the recipe instead.</p>
 
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hardcoded hex codes in component styles.</p><p>Always <code>var(--token)</code>. The hex below is the same color but unsubscribed from the system.</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro or Inter inside a wireframe.</p><p>Apercu is display-only and lives on the home tile. Inter is not in the system at all. Wireframes use <code>--font-ui</code> (Lausanne 300 / 550 / 700) and <code>--font-mono</code> (Space Mono) — nothing else.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro, Inter, or Space Mono inside a wireframe.</p><p>Apercu is display-only and lives on the home tile. Inter is not in the system at all. Space Mono was removed; the legacy <code>--font-mono</code> token aliases <code>--font-ui</code> so old callers keep resolving to Lausanne. Wireframes use <code>--font-ui</code> (Lausanne 300 / 550 / 700) — nothing else.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Color used to indicate state, severity, or selection in a wireframe.</p><p>Use weight, size, position, or filled-fg inversion. Color in a wireframe reads as branding intent (Rule 04).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">A new H1/H2 size, a new spacing value, a new radius.</p><p>The scale is sparse on purpose. Pick the closest existing token (§Typography, §Spacing, §Radii).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, <code>shared/comments.js</code>, or pan/zoom logic in <code>system/app.jsx</code>.</p><p>Frozen infrastructure (Rule 02). Add new content under scoped classes; don't edit the frame.</p></div>
@@ -2646,7 +2646,8 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§Atomic taxonomy).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Render OS or device chrome inside a wireframe.</p><p>No iOS / Android status bar (carrier · time · battery), no notch or Dynamic Island, no home indicator, no Mac menu bar / Touch Bar, no browser address bar, no scroll bars drawn into the frame. Wireframes show only the product surface. The mobile frame starts at the app's first pixel — the surrounding device is implied by the 390 × 844 ratio, not drawn.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-draw icons in Paper from rectangles, lines, or freehand shapes.</p><p>Pull from a real icon library — Lucide first (matches the Playground kit), Phosphor or Heroicons if Lucide can't express the metaphor. If the icon you need isn't available, surface the gap rather than improvising one (Rule 08).</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Compose typography in Paper without first confirming Lausanne Pan + Space Mono are loaded.</p><p>Call <code>get_font_family_info</code> as your first typographic move. If the system fonts are missing, stop and tell the PM — do not substitute system-ui, Inter, or any other fallback (Rule 09).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Compose typography in Paper without first confirming Lausanne Pan is loaded.</p><p>Call <code>get_font_family_info</code> as your first typographic move. Look for TWK Lausanne Pan at 300 / 550 / 700. If it's missing, stop and tell the PM — do not substitute system-ui, Inter, Space Mono, or any other fallback (Rule 09).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Place an icon whose container <code>color</code> matches its surface.</p><p>Icons inherit <code>currentColor</code>, so a black icon on a black button (or bone on bone) disappears. Set the parent's <code>color</code> to the opposite-side foreground; check visually after every placement (Rule 08).</p></div>
   </section>
 
 </main>
