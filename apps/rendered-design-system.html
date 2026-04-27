@@ -12022,7 +12022,7 @@ function DsFoundations() {
 
         <DsTile title="Faces" tag="--font-ui / --font-mono / --font-note" foot="Apercu reserved for covers / merch" stack>
           <div className="ds-type-row"><span className="lab">UI</span><span className="spec" style={{fontFamily:'"TWK Lausanne Pan", Inter, sans-serif', fontSize:15, fontWeight:300}}>TWK Lausanne Pan 300 · quick brown fox</span></div>
-          <div className="ds-type-row"><span className="lab">Mono</span><span className="spec" style={{fontFamily:'"Space Mono", monospace', fontSize:13}}>Space Mono · 1234567890</span></div>
+          <div className="ds-type-row"><span className="lab">Mono</span><span className="spec" style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:13}}>Space Mono · 1234567890</span></div>
           <div className="ds-type-row"><span className="lab">Note</span><span className="spec" style={{fontFamily:'Caveat, cursive', fontSize:20}}>Caveat · canvas annotations only</span></div>
         </DsTile>
       </div>
@@ -13869,9 +13869,9 @@ function DsPatterns() {
 
             <DsTile title="Section header · canvas" tag="num · name · tag pill" foot=".wf-section-header — every template section" stack>
               <div style={{display:'flex', alignItems:'baseline', gap: 20, flexWrap:'wrap'}}>
-                <span style={{fontFamily:'"Space Mono", monospace', fontSize:12, color:'rgba(18,13,11,0.4)'}}>02</span>
+                <span style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:12, color:'rgba(18,13,11,0.4)'}}>02</span>
                 <span style={{fontSize:28, fontWeight:500, letterSpacing:'-0.02em'}}>Editorial Detail</span>
-                <span style={{fontFamily:'"Space Mono", monospace', fontSize:10, textTransform:'uppercase', color:'rgba(18,13,11,0.5)', letterSpacing:'0.08em', border:'1px solid rgba(18,13,11,0.2)', padding:'2px 8px', borderRadius: 9999}}>
+                <span style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:10, textTransform:'uppercase', color:'rgba(18,13,11,0.5)', letterSpacing:'0.08em', border:'1px solid rgba(18,13,11,0.2)', padding:'2px 8px', borderRadius: 9999}}>
                   Full-bleed hero · sticky scroll
                 </span>
               </div>
@@ -13885,17 +13885,17 @@ function DsPatterns() {
               </div>
               <div className="wf-hair" style={{margin:'8px 0 4px'}}/>
               <div style={{display:'flex', alignItems:'baseline', gap: 12, fontSize:13}}>
-                <span style={{fontFamily:'"Space Mono", monospace', fontSize:11, opacity:0.5, width: 16}}>01</span>
+                <span style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:11, opacity:0.5, width: 16}}>01</span>
                 <span style={{fontWeight:500}}>North Star Listening</span>
                 <span className="wf-meta" style={{marginLeft:'auto'}}>10pm</span>
               </div>
               <div style={{display:'flex', alignItems:'baseline', gap: 12, fontSize:13}}>
-                <span style={{fontFamily:'"Space Mono", monospace', fontSize:11, opacity:0.5, width: 16}}>02</span>
+                <span style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:11, opacity:0.5, width: 16}}>02</span>
                 <span style={{fontWeight:500}}>Vinyl Hours</span>
                 <span className="wf-meta" style={{marginLeft:'auto'}}>8pm</span>
               </div>
               <div style={{display:'flex', alignItems:'baseline', gap: 12, fontSize:13}}>
-                <span style={{fontFamily:'"Space Mono", monospace', fontSize:11, opacity:0.5, width: 16}}>03</span>
+                <span style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:11, opacity:0.5, width: 16}}>03</span>
                 <span style={{fontWeight:500}}>Late Dinner w/ Hosts</span>
                 <span className="wf-meta" style={{marginLeft:'auto'}}>11pm</span>
               </div>
@@ -13915,12 +13915,12 @@ function DsPatterns() {
             <DsTile title="Paired light / dark" tag="light is default · dark fully specced" foot="the reading frame of the whole library" stack>
               <div style={{display:'flex', gap: 12, width:'100%', maxWidth: 560}}>
                 <div style={{flex:1, aspectRatio:'3/4', background:'#120D0B', border:'1px solid rgba(18,13,11,0.14)', borderRadius: 2, padding:14, color:'#EAE4E2'}}>
-                  <div style={{fontFamily:'"Space Mono", monospace', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>Product · dark</div>
+                  <div style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>Product · dark</div>
                   <div style={{marginTop:10, fontSize:14, fontWeight:500}}>Tonight</div>
                   <div style={{marginTop:4, opacity:0.6, fontSize:10}}>the real thing</div>
                 </div>
                 <div style={{flex:1, aspectRatio:'3/4', background:'#EAE4E2', border:'1px solid rgba(18,13,11,0.14)', borderRadius: 2, padding:14, color:'#120D0B'}}>
-                  <div style={{fontFamily:'"Space Mono", monospace', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>Review · light</div>
+                  <div style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>Review · light</div>
                   <div style={{marginTop:10, fontSize:14, fontWeight:500}}>Tonight</div>
                   <div style={{marginTop:4, opacity:0.6, fontSize:10}}>annotated · legible</div>
                 </div>
@@ -13940,7 +13940,7 @@ function DsPatterns() {
               ].map(c => (
                 <div key={c.k} style={{border:'1px solid rgba(18,13,11,0.14)', borderRadius:2, padding:10, display:'flex', flexDirection:'column', gap:6}}>
                   <span className="wf-kicker">{c.k}</span>
-                  <div style={{fontFamily:'"Space Mono", monospace', fontSize:9, color:'rgba(18,13,11,0.45)'}}>{c.s}</div>
+                  <div style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:9, color:'rgba(18,13,11,0.45)'}}>{c.s}</div>
                   <div style={{display:'flex', flexDirection:'column', gap:4, marginTop:4}}>
                     <div className="sf-skel h14" style={{width:'88%'}}/>
                     <div className="sf-skel h10" style={{width:'64%'}}/>
@@ -14025,7 +14025,7 @@ function DsPatterns() {
                   <span className="state">empty</span>
                   <div className="spec" style={{padding:'12px 0'}}>
                     <div style={{fontSize:13, color:'var(--fg)', letterSpacing:'-0.005em'}}>Nothing here yet.</div>
-                    <div style={{fontSize:11, color:'var(--fg-mute)', fontFamily:'"Space Mono", monospace', marginTop:2}}>try a different spelling, or browse all</div>
+                    <div style={{fontSize:11, color:'var(--fg-mute)', fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', marginTop:2}}>try a different spelling, or browse all</div>
                   </div>
                 </div>
                 <div className="ds-state-row">
