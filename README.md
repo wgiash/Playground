@@ -17,9 +17,11 @@ Live site: **https://wgiash.github.io/Playground**
   a fill-in-the-blank, auto-wired deck that's the foundation for PRD clones.
 - **Sunspell PRD** — [apps/sunspell-prd-template.html](apps/sunspell-prd-template.html) —
   a working PRD cloned from the template.
-- **Design Reference** — [apps/design-reference.html](apps/design-reference.html) —
-  a linear, document-style walkthrough of every token, foundation, and
-  atom in the system. The non-canvas counterpart to the wireframe library.
+- **Agent Design Guide** — [apps/agent-design-guide.html](apps/agent-design-guide.html) —
+  the operational manual for agents and humans composing inside the system.
+  A linear, document-style walkthrough of every token, foundation, atom,
+  rule, and agent-architecture pattern. The non-canvas counterpart to the
+  wireframe library.
 - **AI Design Process** — [apps/ai-design-process.html](apps/ai-design-process.html) —
   one-slide diagram of the Playground → Claude Code → Rivet → Handoff
   pipeline.

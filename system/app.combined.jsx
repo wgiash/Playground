@@ -1116,8 +1116,8 @@ function App() {
       </Canvas>
 
       <div className="legend">
-        <div className="row"><span className="dot dot-light" /> Dark · product default</div>
-        <div className="row"><span className="dot dot-dark" /> Light · annotated review</div>
+        <div className="row"><span className="dot dot-dark" /> Light · default mode</div>
+        <div className="row"><span className="dot dot-light" /> Dark · companion mode</div>
       </div>
     </>
   );

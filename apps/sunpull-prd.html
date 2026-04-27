@@ -5,12 +5,14 @@
   =====================================================================
   Same DOM contract as prd-template.html:
     1. Only add <section class="slide"> blocks inside <main class="deck">.
-    2. Do not hand-edit <nav id="index-nav"> — it is rebuilt from slides.
+    2. Do not hand-edit <nav id="ds-menu-nav"> — the shared menu component
+       (../shared/ds-menu.css + ../shared/ds-menu.js) rebuilds it.
     3. Do not write slide numbers into .tag or .page by hand.
-    4. Keep <main class="deck" id="deck">, <nav id="index-nav">, and the
+    4. Keep <main class="deck" id="deck">, <aside class="ds-menu" id="ds-menu">
+       with <nav id="ds-menu-nav">, the mobile bar + backdrop, and the
        .tag / <h1> / .page structure per slide.
     5. Scoped additions go inside the <section> with a new class — never
-       modify .slide / .deck base CSS.
+       modify .slide / .deck base CSS or the shared menu styles.
   =====================================================================
 -->
 <html lang="en">
@@ -19,8 +21,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aither · Sunpull PRD</title>
 <link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../shared/ds-menu.css">
 <script src="../shared/firebase-config.js"></script>
 <script src="../shared/auth-gate.js"></script>
+<script src="../shared/ds-menu.js" defer></script>
 <style>
   html, body {
     background: var(--canvas-bg);
@@ -33,111 +37,6 @@
   html { scroll-behavior: smooth; }
 
   .app { display: block; }
-
-  /* ---------- Left index (fixed; only the nav list scrolls) ---------- */
-  .index {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 280px;
-    height: 100vh;
-    border-right: 1px solid var(--canvas-hair);
-    padding: 20px 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-height: 0;
-    background: var(--canvas-bg);
-    z-index: 10;
-  }
-
-  .index .deck-title {
-    font-size: 20px;
-    font-weight: var(--w-title);
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    color: var(--canvas-fg);
-    margin: 32px 0 0;
-  }
-  .index .deck-sub {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--canvas-label);
-    margin: 6px 0 0;
-  }
-
-  .index h2 {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--canvas-label);
-    margin: 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--canvas-hair);
-  }
-
-  .index nav {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .index nav a {
-    display: grid;
-    grid-template-columns: 28px 1fr 12px;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--canvas-hair);
-    color: var(--canvas-fg);
-    text-decoration: none;
-    font-size: 13px;
-    letter-spacing: -0.005em;
-    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
-    position: relative;
-  }
-  .index nav a .n {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    color: var(--canvas-label);
-    padding-top: 2px;
-  }
-  .index nav a:hover { color: var(--canvas-fg); }
-  .index nav a:hover .n { color: var(--canvas-fg); }
-  .index nav a.is-active .n { color: var(--canvas-fg); }
-  .index nav a.is-active { color: var(--canvas-fg); }
-  .index nav a.is-active::before {
-    content: "";
-    position: absolute;
-    margin-left: -20px;
-    margin-top: 14px;
-    width: 2px;
-    height: 14px;
-    background: var(--canvas-fg);
-  }
-  /* Group headings in the index — non-clickable labels that divide the deck
-     into its spec groups (Framing, Master, Product, Brand, Design, Tech,
-     Website, Roadmap, Cross-cutting). Rendered by the script from
-     data-group on the first slide of each group. */
-  .index nav .nav-group {
-    padding: 18px 0 8px;
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--canvas-label);
-  }
-  .index nav .nav-group:first-child {
-    padding-top: 4px;
-  }
 
   /* ---------- Deck (right) ---------- */
   .deck {
@@ -197,25 +96,6 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--canvas-label);
-  }
-
-  /* Status dot (sign-off) */
-  .status-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    box-sizing: border-box;
-    vertical-align: middle;
-    flex: none;
-  }
-  .status-dot.is-open {
-    background: transparent;
-    border: 1px solid var(--canvas-label);
-  }
-  .status-dot.is-signed {
-    background: var(--canvas-fg);
-    border: 1px solid var(--canvas-fg);
   }
 
   /* Brief block */
@@ -317,53 +197,15 @@
   }
 
   /* Scrollbars */
-  .index nav::-webkit-scrollbar,
   .slide .body::-webkit-scrollbar { width: 8px; height: 8px; }
-  .index nav::-webkit-scrollbar-thumb,
   .slide .body::-webkit-scrollbar-thumb {
     background: rgba(234,228,226,0.12);
     border-radius: 4px;
   }
-  .index nav::-webkit-scrollbar-thumb:hover,
   .slide .body::-webkit-scrollbar-thumb:hover { background: rgba(234,228,226,0.25); }
 
-  /* Back-home link */
-  .home-link {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 9999;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(234,228,226,0.75);
-    background: rgba(18,13,11,0.55);
-    border: 1px solid rgba(234,228,226,0.18);
-    border-radius: var(--r-2);
-    text-decoration: none;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
-  }
-  .home-link:hover {
-    color: rgba(234,228,226,1);
-    border-color: rgba(234,228,226,0.4);
-  }
-
-  @media (max-width: 720px) {
-    .index {
-      position: static;
-      width: auto;
-      height: auto;
-      border-right: 0;
-      border-bottom: 1px solid var(--canvas-hair);
-    }
-    .deck { margin-left: 0; padding: 24px 20px 64px; }
+  @media (max-width: 900px) {
+    .deck { margin-left: 0; padding: 80px 32px 64px; }
     .slide { padding: 28px; aspect-ratio: auto; min-height: 80vh; }
     .slide h1 { font-size: 30px; }
   }
@@ -373,18 +215,27 @@
 
 <a class="home-link" href="../index.html" title="Back to home" aria-label="Back to home">&larr; Home</a>
 
-<div class="app">
+<header class="ds-menu-bar" id="ds-menu-bar">
+  <a class="ds-menu-home" href="../index.html" aria-label="Back to home">&larr; Home</a>
+  <button type="button" class="ds-menu-toggle" id="ds-menu-toggle" aria-controls="ds-menu" aria-expanded="false">
+    <span class="cur-num"></span>
+    <span class="cur-label"></span>
+    <span class="caret" aria-hidden="true">&#9662;</span>
+  </button>
+</header>
 
-  <aside class="index">
-    <div>
-      <h1 class="deck-title">Sunpull</h1>
-      <p class="deck-sub">Memory layer · PRD v1.0 · 2026-04-24</p>
-    </div>
-    <h2>Index</h2>
-    <nav id="index-nav"><!-- auto-populated --></nav>
-  </aside>
+<div class="ds-menu-backdrop" id="ds-menu-backdrop" aria-hidden="true"></div>
 
-  <main class="deck" id="deck">
+<aside class="ds-menu" id="ds-menu">
+  <div>
+    <h1 class="deck-title">Sunpull</h1>
+    <p class="deck-sub">Memory layer · PRD v1.0 · 2026-04-24</p>
+  </div>
+  <h2>Index</h2>
+  <nav id="ds-menu-nav"><!-- auto-built by shared/ds-menu.js --></nav>
+</aside>
+
+<main class="deck" id="deck">
 
     <!-- ============================================================
          INTRO (1–6)
@@ -1882,28 +1733,22 @@ Product Spec     Metric in Success Metrics slide ← event feeds this</pre>
 
   </main>
 
-</div>
-
 <script>
   /*
-    Slides runtime — same contract as prd-template.html. Adds:
-      · data-group="<label>" on a slide inserts a non-clickable group heading
-        into the index before that slide's row. Used to divide the deck into
-        spec groups (Framing, Master, Product, Brand, Design, Tech, Website,
-        Roadmap, Cross-cutting) without spending slides on divider pages.
+    Slides runtime — stamp tag ("[dot] NN · Label") and page ("NN / TOTAL")
+    on every <section class="slide">. The sidebar nav (with data-group dividers
+    and sign-off dots) is owned by shared/ds-menu.js — adding a slide is enough.
   */
   (function () {
     var deck   = document.getElementById('deck');
-    var nav    = document.getElementById('index-nav');
+    if (!deck) return;
     var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
     var total  = slides.length;
     var pad    = function (n) { return (n < 10 ? '0' : '') + n; };
-
     var isSigned = function (slide) {
       return (slide.getAttribute('data-status') || '').toLowerCase() === 'signed';
     };
 
-    // 1. Assign ids, normalize tag, fill page.
     slides.forEach(function (slide, i) {
       var num = i + 1;
       if (!slide.id) slide.id = 's' + num;
@@ -1926,61 +1771,6 @@ Product Spec     Metric in Success Metrics slide ← event feeds this</pre>
       var page = slide.querySelector('.page');
       if (page) page.textContent = pad(num) + ' / ' + pad(total);
     });
-
-    // 2. Build the index.
-    nav.innerHTML = '';
-    slides.forEach(function (slide, i) {
-      var num = i + 1;
-
-      // If this slide starts a new group, insert a non-clickable heading first.
-      var group = slide.getAttribute('data-group');
-      if (group && group.trim()) {
-        var h = document.createElement('div');
-        h.className = 'nav-group';
-        h.textContent = group.trim();
-        nav.appendChild(h);
-      }
-
-      var titleAttr = slide.getAttribute('data-title');
-      var h1 = slide.querySelector('h1');
-      var label = (titleAttr && titleAttr.trim())
-        || (h1 ? h1.textContent.trim().replace(/[\.!?]+$/, '') : 'Slide ' + num);
-
-      var a = document.createElement('a');
-      a.href = '#' + slide.id;
-      var n = document.createElement('span');
-      n.className = 'n';
-      n.textContent = pad(num);
-      var labelEl = document.createElement('span');
-      labelEl.className = 'label';
-      labelEl.textContent = label;
-      a.appendChild(n);
-      a.appendChild(labelEl);
-      if (isSigned(slide)) {
-        var dot = document.createElement('span');
-        dot.className = 'status-dot is-signed';
-        a.appendChild(dot);
-      } else {
-        a.appendChild(document.createElement('span'));
-      }
-      nav.appendChild(a);
-    });
-
-    // 3. Active state on scroll.
-    var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
-    var byId  = {};
-    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        links.forEach(function (l) { l.classList.remove('is-active'); });
-        var a = byId[e.target.id];
-        if (a) a.classList.add('is-active');
-      });
-    }, { root: null, rootMargin: '-40% 0px -55% 0px', threshold: 0 });
-
-    slides.forEach(function (s) { io.observe(s); });
   })();
 </script>
 

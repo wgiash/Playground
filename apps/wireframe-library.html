@@ -14,7 +14,7 @@
    Aither Wireframe Library — tokens
    Subset of the full Aither DS — wireframes use bone/light
    + TWK Lausanne Pan (300 licensed locally) as the primary
-   body font, with Inter as fallback for heavier weights.
+   the only body and heading face inside wireframes (300 / 550 / 700).
    No Apercu (display-only).
    ========================================================= */
 
@@ -25,9 +25,22 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "TWK Lausanne Pan";
+  src: url("../fonts/TWKLausannePan-550.ttf") format("truetype");
+  font-weight: 550;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TWK Lausanne Pan";
+  src: url("../fonts/TWKLausannePan-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;500;600&display=swap');
 
 :root {
   /* Neutrals */
@@ -53,7 +66,7 @@
   --cool-primary:    #796958;
   --stone:           #777777;
 
-  /* Canvas used BY the wireframes (dark = product default, light = annotated review) */
+  /* Canvas used BY the wireframes — full token values for both modes; light is the default. */
   --wf-dark-bg:      #120D0B;
   --wf-dark-fg:      #EAE4E2;
   --wf-dark-panel:   #1E1816;         /* raised surface on dark */
@@ -76,16 +89,18 @@
   --canvas-panel:    #15100E;
 
   /* Type — TWK Lausanne Pan is the primary body font (300 licensed locally).
-     Inter carries the heavier weights until more Lausanne weights are licensed. */
-  --font-ui:         "TWK Lausanne Pan", "Inter", "Helvetica Neue", system-ui, sans-serif;
+     Apercu is display-only on the home tile; Inter is not in the system. */
+  --font-ui:         "TWK Lausanne Pan", system-ui, -apple-system, sans-serif;
   --font-mono:       "Space Mono", ui-monospace, monospace;
   --font-note:       "Caveat", "Bradley Hand", cursive;  /* for canvas labels only */
 
-  /* Weights — body renders in Lausanne 300; UI 500 / title 600 / bold 700 fall to Inter */
-  --w-ui:            500;
-  --w-title:         600;
-  --w-meta:          400;
-  --w-bold:          700;
+  /* Weights — three Lausanne weights resolve directly: 300 body, 550 medium, 700 bold */
+  --w-body:          300;   /* Lausanne 300 — body, lede */
+  --w-meta:          300;   /* Lausanne 300 — meta, captions */
+  --w-ui:            550;   /* Lausanne 550 — UI, labels */
+  --w-medium:        550;   /* Lausanne 550 — alias of --w-ui */
+  --w-title:         550;   /* Lausanne 550 — H2 / H3 titles */
+  --w-bold:          700;   /* Lausanne 700 — Display, H1, strong */
 
   /* Spacing (4px base) */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px;
@@ -11833,7 +11848,7 @@ Object.assign(window, { AuthWeb, AuthMobile });
 // Design System zone — sits to the LEFT of the templates row.
 // Organized atomically, top-to-bottom:
 //   Foundations → Atoms → Molecules → Organisms → Patterns
-// Light-panel aesthetic (annotated review). Uses only ds-atomic.css
+// Light-panel aesthetic — light is the default mode. Uses only ds-atomic.css
 // primitives and existing .wf-* / .ki-* / Icons / chrome components.
 
 const DS_ZONE_X = -10500;        // left edge of the zone on the canvas
@@ -12986,7 +13001,7 @@ function DsPatterns() {
               </div>
             </DsTile>
 
-            <DsTile title="Paired dark / light" tag="product default + annotated review" foot="the reading frame of the whole library" stack>
+            <DsTile title="Paired light / dark" tag="light is default · dark fully specced" foot="the reading frame of the whole library" stack>
               <div style={{display:'flex', gap: 12, width:'100%', maxWidth: 560}}>
                 <div style={{flex:1, aspectRatio:'3/4', background:'#120D0B', border:'1px solid rgba(18,13,11,0.14)', borderRadius: 2, padding:14, color:'#EAE4E2'}}>
                   <div style={{fontFamily:'"Space Mono", monospace', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>Product · dark</div>

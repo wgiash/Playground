@@ -1,0 +1,316 @@
+/* shared/ds-menu.css
+   Shared sidebar / menu component used by:
+     · apps/agent-design-guide.html (numbered .ds-section rows + .ds-part dividers)
+     · apps/prd-template.html, sunpull-prd.html, sunspell-prd-template.html
+       (numbered .slide rows with optional data-group dividers + sign-off dots)
+   The host page provides its own content container and is responsible for
+   its own left margin to clear the 280px-wide menu.
+*/
+
+/* ---------- Status dot ---------- */
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  vertical-align: middle;
+  flex: none;
+}
+.status-dot.is-open {
+  background: transparent;
+  border: 1px solid var(--canvas-label);
+}
+.status-dot.is-signed {
+  background: var(--canvas-fg);
+  border: 1px solid var(--canvas-fg);
+}
+
+/* ---------- Sidebar (fixed left, desktop) ---------- */
+.ds-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  border-right: 1px solid var(--canvas-hair);
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+  background: var(--canvas-bg);
+  z-index: 10;
+}
+
+.ds-menu .deck-title {
+  font-size: 20px;
+  font-weight: var(--w-title);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--canvas-fg);
+  margin: 32px 0 0;
+}
+.ds-menu .deck-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--canvas-label);
+  margin: 6px 0 0;
+}
+
+.ds-menu h2 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--canvas-label);
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--canvas-hair);
+}
+
+.ds-menu nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.ds-menu nav a {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--canvas-hair);
+  color: var(--canvas-fg);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  transition: color var(--dur) var(--ease);
+  position: relative;
+}
+.ds-menu nav a .n {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--canvas-label);
+  padding-top: 2px;
+}
+.ds-menu nav a:hover .n,
+.ds-menu nav a.is-active .n { color: var(--canvas-fg); }
+.ds-menu nav a:hover { color: var(--canvas-fg); }
+.ds-menu nav a.is-active { color: var(--canvas-fg); }
+.ds-menu nav a.is-active::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 13px;
+  width: 2px;
+  height: 14px;
+  background: var(--canvas-fg);
+}
+.ds-menu nav::-webkit-scrollbar { width: 8px; }
+.ds-menu nav::-webkit-scrollbar-thumb {
+  background: rgba(234,228,226,0.12);
+  border-radius: 4px;
+}
+.ds-menu nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(234,228,226,0.25);
+}
+
+/* Part divider (agent-design-guide: <div class="ds-part" data-part="...">) */
+.ds-menu nav .part {
+  display: block;
+  padding: 18px 0 8px;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(234,228,226,0.35);
+  border-bottom: 1px solid var(--canvas-hair);
+  pointer-events: none;
+}
+.ds-menu nav .part:first-child { padding-top: 0; }
+
+/* Group divider (PRD: <section class="slide" data-group="...">) */
+.ds-menu nav .group {
+  display: block;
+  padding: 18px 0 8px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--canvas-label);
+  border-bottom: 1px solid var(--canvas-hair);
+  pointer-events: none;
+}
+.ds-menu nav .group:first-child { padding-top: 4px; }
+
+/* ---------- Mobile bar (hidden on desktop) ---------- */
+.ds-menu-bar { display: none; }
+.ds-menu-bar .ds-menu-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--canvas-hair);
+  border-radius: var(--r-2);
+  color: rgba(234,228,226,0.85);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.ds-menu-bar .ds-menu-toggle {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--canvas-hair);
+  border-radius: var(--r-full);
+  background: rgba(234,228,226,0.04);
+  color: var(--canvas-fg);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.ds-menu-bar .ds-menu-toggle:hover { border-color: var(--canvas-label); }
+.ds-menu-bar .ds-menu-toggle .cur-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--canvas-label);
+  flex-shrink: 0;
+}
+.ds-menu-bar .ds-menu-toggle .cur-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--canvas-fg);
+}
+.ds-menu-bar .ds-menu-toggle .caret {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--canvas-label);
+  transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
+  flex-shrink: 0;
+}
+.ds-menu-bar .ds-menu-toggle[aria-expanded="true"] .caret {
+  transform: rotate(180deg);
+  color: var(--canvas-fg);
+}
+
+/* Backdrop while the sheet is open on mobile */
+.ds-menu-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11,8,7,0.6);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+.ds-menu-backdrop.open { display: block; }
+
+/* ---------- Desktop back-home pill ---------- */
+.home-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(234,228,226,0.75);
+  background: rgba(18,13,11,0.55);
+  border: 1px solid rgba(234,228,226,0.18);
+  border-radius: var(--r-2);
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.home-link:hover {
+  color: rgba(234,228,226,1);
+  border-color: rgba(234,228,226,0.4);
+}
+
+/* ---------- Tablet / mobile (≤900px): menu becomes a drop-down sheet ---------- */
+@media (max-width: 900px) {
+  body.ds-menu-locked { overflow: hidden; }
+
+  .home-link { display: none; }
+
+  .ds-menu-bar {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: rgba(11,8,7,0.92);
+    border-bottom: 1px solid var(--canvas-hair);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 60;
+  }
+
+  .ds-menu {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: auto;
+    max-height: calc(100vh - 56px);
+    border-right: 0;
+    border-bottom: 1px solid var(--canvas-hair);
+    padding: 20px 18px 24px;
+    gap: 14px;
+    background: rgba(11,8,7,0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transform: translateY(-105%);
+    transition: transform var(--dur) var(--ease);
+    z-index: 50;
+    will-change: transform;
+  }
+  .ds-menu.open { transform: translateY(0); }
+  .ds-menu .deck-title { margin: 0; font-size: 18px; }
+  .ds-menu .deck-sub { margin: 4px 0 0; }
+  .ds-menu nav a { padding: 12px 0; font-size: 14px; }
+  .ds-menu nav a.is-active::before { display: none; }
+  .ds-menu nav a.is-active { color: var(--canvas-fg); }
+}
+
+@media (max-width: 640px) {
+  .ds-menu-bar { padding: 8px 12px; gap: 8px; height: 52px; }
+  .ds-menu-bar .ds-menu-home { padding: 6px 10px; font-size: 9px; }
+  .ds-menu-bar .ds-menu-toggle { padding: 6px 12px; font-size: 11px; gap: 8px; }
+  .ds-menu {
+    top: 52px;
+    max-height: calc(100vh - 52px);
+    padding: 16px 16px 20px;
+  }
+}

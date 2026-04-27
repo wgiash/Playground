@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Design Reference — the operational manual for the Aither design system.
+  Agent Design Guide — the operational manual for the Aither design system.
   Audience: humans reviewing the system, and AI agents composing inside it.
   Source of truth: system/tokens.css + CLAUDE.md + the canvas IntroCard in
   system/app.jsx. If those change, this file must be regenerated to match.
@@ -12,10 +12,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aither · Design Reference</title>
+<title>Aither · Agent Design Guide</title>
 <link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../shared/ds-menu.css">
 <script src="../shared/firebase-config.js"></script>
 <script src="../shared/auth-gate.js"></script>
+<script src="../shared/ds-menu.js" defer></script>
 <style>
   html, body {
     background: var(--canvas-bg);
@@ -27,92 +29,6 @@
     font-weight: 300;
   }
   html { scroll-behavior: smooth; }
-
-  /* ========== Left index (fixed) ========== */
-  .ds-index {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 280px;
-    height: 100vh;
-    border-right: 1px solid var(--canvas-hair);
-    padding: 20px 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background: var(--canvas-bg);
-    z-index: 10;
-  }
-  .ds-index .deck-title {
-    font-size: 20px;
-    font-weight: var(--w-title);
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    color: var(--canvas-fg);
-    margin: 32px 0 0;
-  }
-  .ds-index .deck-sub {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--canvas-label);
-    margin: 6px 0 0;
-  }
-  .ds-index h2 {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--canvas-label);
-    margin: 0;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--canvas-hair);
-  }
-  .ds-index nav {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .ds-index nav a {
-    display: grid;
-    grid-template-columns: 24px 1fr;
-    gap: 10px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--canvas-hair);
-    color: var(--canvas-fg);
-    text-decoration: none;
-    font-size: 13px;
-    letter-spacing: -0.005em;
-    transition: color var(--dur) var(--ease);
-    position: relative;
-  }
-  .ds-index nav a .n {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: var(--canvas-label);
-    padding-top: 2px;
-  }
-  .ds-index nav a:hover .n,
-  .ds-index nav a.is-active .n { color: var(--canvas-fg); }
-  .ds-index nav a.is-active::before {
-    content: "";
-    position: absolute;
-    left: -20px;
-    top: 13px;
-    width: 2px;
-    height: 14px;
-    background: var(--canvas-fg);
-  }
-  .ds-index nav::-webkit-scrollbar { width: 8px; }
-  .ds-index nav::-webkit-scrollbar-thumb {
-    background: rgba(234,228,226,0.12);
-    border-radius: 4px;
-  }
 
   /* ========== Document (right) ========== */
   .ds-doc {
@@ -140,7 +56,7 @@
   /* Heading roles — these are the SAME styles documented in §Typography. */
   .ds-section h1 {
     font-size: 64px;
-    font-weight: var(--w-title);
+    font-weight: var(--w-bold);
     letter-spacing: -0.03em;
     line-height: 1.02;
     color: var(--canvas-fg);
@@ -663,153 +579,218 @@
   .recipe pre { margin: 0; }
   @media (max-width: 800px) { .recipe-anatomy { grid-template-columns: 1fr; } }
 
-  /* ========== Home link (desktop) ========== */
-  .home-link {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 9999;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(234,228,226,0.75);
-    background: rgba(18,13,11,0.55);
-    border: 1px solid rgba(234,228,226,0.18);
-    border-radius: var(--r-2);
-    text-decoration: none;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
-  }
-  .home-link:hover { color: rgba(234,228,226,1); border-color: rgba(234,228,226,0.4); }
-
-  /* ========== Mobile bar (hidden on desktop) ========== */
-  .ds-mobile-bar { display: none; }
-  .ds-mobile-bar .ds-mobile-home {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
+  /* ========== Quickstart steps ========== */
+  .quickstart {
     border: 1px solid var(--canvas-hair);
     border-radius: var(--r-2);
-    color: rgba(234,228,226,0.85);
-    text-decoration: none;
+    overflow: hidden;
+  }
+  .qs-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--canvas-hair);
+    align-items: baseline;
+  }
+  .qs-step:last-child { border-bottom: 0; }
+  .qs-step .num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--canvas-fg);
+  }
+  .qs-step .body { display: flex; flex-direction: column; gap: 6px; }
+  .qs-step .title {
+    font-size: 16px;
+    font-weight: var(--w-ui);
+    color: var(--canvas-fg);
+    line-height: 1.3;
+  }
+  .qs-step .sub {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.62);
+  }
+  .qs-step .ref {
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    flex-shrink: 0;
+    color: var(--canvas-label);
+    letter-spacing: 0.04em;
   }
-  .ds-mobile-bar .ds-mobile-toggle {
-    appearance: none;
+
+  /* ========== States matrix ========== */
+  .states-matrix {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    background: var(--canvas-panel);
+  }
+  .states-row {
+    display: grid;
+    grid-template-columns: 130px repeat(5, 1fr);
+    gap: 1px;
+    background: var(--canvas-hair);
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+  .states-row:last-child { border-bottom: 0; }
+  .states-row.head { background: var(--canvas-hair); }
+  .states-row.head > * {
+    background: var(--canvas-bg);
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+  .states-row > * {
+    background: var(--canvas-panel);
+    padding: 18px 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex: 1;
-    min-width: 0;
-    padding: 8px 14px;
-    border: 1px solid var(--canvas-hair);
-    border-radius: var(--r-full);
-    background: rgba(234,228,226,0.04);
-    color: var(--canvas-fg);
-    font-family: var(--font-ui);
-    font-size: 12px;
-    letter-spacing: -0.005em;
-    cursor: pointer;
-    text-align: left;
-    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+    justify-content: center;
+    min-height: 64px;
   }
-  .ds-mobile-bar .ds-mobile-toggle:hover { border-color: var(--canvas-label); }
-  .ds-mobile-bar .ds-mobile-toggle .cur-num {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--canvas-label);
-    flex-shrink: 0;
-  }
-  .ds-mobile-bar .ds-mobile-toggle .cur-label {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--canvas-fg);
-  }
-  .ds-mobile-bar .ds-mobile-toggle .caret {
+  .states-row .name {
+    justify-content: flex-start;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--canvas-label);
-    transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
-    flex-shrink: 0;
-  }
-  .ds-mobile-bar .ds-mobile-toggle[aria-expanded="true"] .caret {
-    transform: rotate(180deg);
     color: var(--canvas-fg);
   }
 
-  /* Backdrop while the index sheet is open on mobile */
-  .ds-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(11,8,7,0.6);
-    backdrop-filter: blur(2px);
-    z-index: 40;
+  /* ========== Action hierarchy display ========== */
+  .actions-stack {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 24px;
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    margin-bottom: 12px;
+    align-items: center;
   }
-  .ds-backdrop.open { display: block; }
+  .actions-stack .key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+  .actions-stack .demo { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .actions-stack .text-action {
+    font-size: 13px;
+    color: var(--canvas-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--canvas-hair);
+  }
 
-  /* ========== Tablet / mobile (≤900px): index becomes a drop-down sheet ========== */
+  /* ========== Data-display patterns ========== */
+  .data-table {
+    width: 100%;
+    border-top: 1px solid var(--canvas-hair);
+    border-bottom: 1px solid var(--canvas-hair);
+    margin-bottom: 12px;
+  }
+  .data-table-row {
+    display: grid;
+    grid-template-columns: 32px 1.4fr 1fr 96px 80px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--canvas-hair);
+    font-size: 13px;
+    color: var(--canvas-fg);
+  }
+  .data-table-row:last-child { border-bottom: 0; }
+  .data-table-row.head {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+  .data-table-row .num { font-family: var(--font-mono); color: var(--canvas-label); }
+  .data-table-row .meta { font-size: 12px; color: rgba(234,228,226,0.55); }
+  .data-table-row .right { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--canvas-hair);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .kpi {
+    background: var(--canvas-panel);
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .kpi .kpi-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+  .kpi .kpi-value {
+    font-size: 36px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--canvas-fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .kpi-delta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(234,228,226,0.55);
+  }
+
+  /* ========== Shipping checklist ========== */
+  .checklist {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .check-row {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--canvas-hair);
+    align-items: baseline;
+  }
+  .check-row:last-child { border-bottom: 0; }
+  .check-row .box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--canvas-fg);
+    border-radius: var(--r-1);
+    display: inline-block;
+    margin-top: 1px;
+  }
+  .check-row .text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.78);
+  }
+  .check-row .text strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+  }
+
+  /* ========== Tablet / mobile (≤900px): document content reflows ========== */
   @media (max-width: 900px) {
     body { overflow-x: hidden; }
-    body.ds-locked { overflow: hidden; }
-
-    .home-link { display: none; }
-
-    .ds-mobile-bar {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 56px;
-      background: rgba(11,8,7,0.92);
-      border-bottom: 1px solid var(--canvas-hair);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 60;
-    }
-
-    .ds-index {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      right: 0;
-      bottom: auto;
-      width: auto;
-      max-height: calc(100vh - 56px);
-      border-right: 0;
-      border-bottom: 1px solid var(--canvas-hair);
-      padding: 20px 18px 24px;
-      gap: 14px;
-      background: rgba(11,8,7,0.97);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transform: translateY(-105%);
-      transition: transform var(--dur) var(--ease);
-      z-index: 50;
-      will-change: transform;
-    }
-    .ds-index.open { transform: translateY(0); }
-    .ds-index .deck-title { margin: 0; font-size: 18px; }
-    .ds-index .deck-sub { margin: 4px 0 0; }
-    .ds-index nav a { padding: 12px 0; font-size: 14px; }
-    .ds-index nav a.is-active::before { display: none; }
-    .ds-index nav a.is-active { color: var(--canvas-fg); }
 
     .ds-doc {
       margin-left: 0;
@@ -831,16 +812,6 @@
 
   /* ========== Small phone (≤640px) ========== */
   @media (max-width: 640px) {
-    .ds-mobile-bar { padding: 8px 12px; gap: 8px; height: 52px; }
-    .ds-mobile-bar .ds-mobile-home { padding: 6px 10px; font-size: 9px; }
-    .ds-mobile-bar .ds-mobile-toggle { padding: 6px 12px; font-size: 11px; gap: 8px; }
-
-    .ds-index {
-      top: 52px;
-      max-height: calc(100vh - 52px);
-      padding: 16px 16px 20px;
-    }
-
     .ds-doc { padding: 72px 20px 80px; }
     .ds-section { padding-block: 44px; }
     .ds-section h1 { font-size: 34px; letter-spacing: -0.025em; }
@@ -918,45 +889,117 @@
 
 <a class="home-link" href="../index.html" title="Back to home">&larr; Home</a>
 
-<header class="ds-mobile-bar" id="ds-mobile-bar">
-  <a class="ds-mobile-home" href="../index.html" aria-label="Back to home">&larr; Home</a>
-  <button type="button" class="ds-mobile-toggle" id="ds-mobile-toggle" aria-controls="ds-index" aria-expanded="false">
-    <span class="cur-num" id="ds-cur-num">01</span>
-    <span class="cur-label" id="ds-cur-label">Overview</span>
+<header class="ds-menu-bar" id="ds-menu-bar">
+  <a class="ds-menu-home" href="../index.html" aria-label="Back to home">&larr; Home</a>
+  <button type="button" class="ds-menu-toggle" id="ds-menu-toggle" aria-controls="ds-menu" aria-expanded="false">
+    <span class="cur-num"></span>
+    <span class="cur-label"></span>
     <span class="caret" aria-hidden="true">&#9662;</span>
   </button>
 </header>
 
-<div class="ds-backdrop" id="ds-backdrop" aria-hidden="true"></div>
+<div class="ds-menu-backdrop" id="ds-menu-backdrop" aria-hidden="true"></div>
 
-<aside class="ds-index" id="ds-index">
+<aside class="ds-menu" id="ds-menu">
   <div>
-    <h1 class="deck-title">Design Reference</h1>
+    <h1 class="deck-title">Agent Design Guide</h1>
     <p class="deck-sub">Aither · system manual · v0.1</p>
   </div>
   <h2>Sections</h2>
-  <nav id="ds-nav"><!-- auto-built --></nav>
+  <nav id="ds-menu-nav"><!-- auto-built by shared/ds-menu.js --></nav>
 </aside>
 
 <main class="ds-doc">
+
+  <div class="ds-part" data-part="Part I — Orientation"></div>
 
   <!-- ===== 01 · Overview ===== -->
   <section class="ds-section" id="overview" data-title="Overview">
     <span class="kicker">Manual</span>
     <h1>The system, as rules.</h1>
-    <p class="lede">A linear, operational reference for the Aither design system. Read it before you ship anything inside this repo. Every token, scale, and atom has exactly one canonical use; this page documents what that use is, why it exists, and what's forbidden.</p>
+    <p class="lede">An operational reference for the Aither wireframe system — the studio's scaffold for producing high-fidelity, brandable wireframes that can become finals. Every token, scale, atom, and pattern has exactly one canonical use. This document is where that use is recorded.</p>
 
-    <p>The audience is two-headed. Humans read this to review the system. Agents read this to compose inside it without re-deriving conventions every prompt. Both should be able to find a single answer to "what does <code>--canvas-hair</code> do" or "which heading do I use here" without parsing source files.</p>
+    <p>The audience is two-headed. Humans read this to review the system. Agents read this to compose inside it without re-deriving conventions every prompt. Both should be able to find a single answer to "what does <code>--hair</code> resolve to in dark mode" or "which heading do I use here" without parsing source files.</p>
 
     <p><strong>Source of truth.</strong> If something on this page disagrees with <code>system/tokens.css</code>, tokens.css wins and this page is wrong — regenerate it. If something here disagrees with <code>CLAUDE.md</code>, CLAUDE.md wins. This document is downstream of both.</p>
+
+    <h3>How this manual is organised</h3>
+    <ul>
+      <li><strong>Part I — Orientation.</strong> Quickstart, what Aither is, the standing rules, and the atomic taxonomy.</li>
+      <li><strong>Part II — Foundations.</strong> Color, typography, spacing, grid, radii, motion, modes, and the brand layer.</li>
+      <li><strong>Part III — Components.</strong> Atoms, their states, action hierarchy, and iconography.</li>
+      <li><strong>Part IV — Composition.</strong> Frames, recipes, pattern templates, data display, and flows.</li>
+      <li><strong>Part V — Language.</strong> Voice and microcopy.</li>
+      <li><strong>Part VI — Appendix.</strong> Naming conventions, file map, shipping checklist, and anti-patterns.</li>
+    </ul>
 
     <h3>How to read</h3>
     <ul>
       <li><strong>Rule blocks</strong> (left-bar pull-outs) are non-negotiable.</li>
       <li><strong>Do / Never</strong> pairs show the legal form next to the most common wrong form.</li>
       <li><strong>Mono labels</strong> (Space Mono) name tokens, files, and class selectors. If it's mono, it's a literal that exists in the codebase.</li>
-      <li><strong>Sections are numbered</strong> in the left index. Cross-references in the body use those numbers.</li>
+      <li><strong>Cross-references</strong> in body copy use named sections (e.g. §Color, §Atoms), so they survive renumbering.</li>
     </ul>
+  </section>
+
+  <!-- ===== Quickstart ===== -->
+  <section class="ds-section" id="quickstart" data-title="Quickstart">
+    <span class="kicker">Manual</span>
+    <h2>Quickstart.</h2>
+    <p class="lede">To compose a wireframe, do these things in this order. Each step links to the chapter that covers it. If you can't complete a step, stop and read that chapter before continuing.</p>
+
+    <div class="quickstart">
+      <div class="qs-step">
+        <span class="num">01</span>
+        <div class="body">
+          <span class="title">Pick the pattern.</span>
+          <span class="sub">Match your surface to <strong>dense list</strong>, <strong>editorial detail</strong>, or <strong>multi-step form</strong>. If it doesn't fit one, surface the gap before inventing.</span>
+          <span class="ref">→ §Pattern templates</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">02</span>
+        <div class="body">
+          <span class="title">Open the four frames.</span>
+          <span class="sub">Every surface ships as four frames: <strong>web 1440 × 900</strong> and <strong>mobile 390 × 844</strong>, each in <strong>dark</strong> and <strong>light</strong>. Wrap each in <code>.wf[data-mode]</code>.</span>
+          <span class="ref">→ §Frames &amp; pairing · §Modes</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">03</span>
+        <div class="body">
+          <span class="title">Use only tokens.</span>
+          <span class="sub">Color via the wireframe-mode tokens (<code>--bg</code>, <code>--fg</code>, <code>--panel</code>, <code>--input</code>, <code>--hair</code>) inherited from the <code>.wf</code> wrapper. Type via the role ladder (Display → Caption). Spacing via <code>--s-*</code>. Radii via <code>--r-*</code>. Never raw hex, raw px, or a font name.</span>
+          <span class="ref">→ §Color · §Typography · §Spacing · §Radii</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">04</span>
+        <div class="body">
+          <span class="title">Compose with atoms.</span>
+          <span class="sub"><code>.wf-*</code> primitives are the only legal building blocks at the wireframe stage. Frame chrome is <code>.ki-*</code>, frozen.</span>
+          <span class="ref">→ §Atoms · §Iconography · §Naming conventions</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">05</span>
+        <div class="body">
+          <span class="title">Pick one primary action.</span>
+          <span class="sub">Each surface has exactly one <code>data-primary</code> button. Secondaries are outlined; tertiaries are inline text.</span>
+          <span class="ref">→ §Action hierarchy</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">06</span>
+        <div class="body">
+          <span class="title">Run the shipping checklist.</span>
+          <span class="sub">Paired? Token-bound? Atomic? Mode-clean? One primary? Auth + error (flows)? Anti-patterns scanned? If anything's no, the frame isn't done.</span>
+          <span class="ref">→ §Shipping checklist · §Anti-patterns</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 18px;"><strong>Brand color and photography come later.</strong> The wireframe stage uses bone, dark, and hairlines only. Per-client branding is a separate layer applied to the approved wireframe — see §Brand layer.</p>
   </section>
 
   <!-- ===== About Aither ===== -->
@@ -971,7 +1014,7 @@
       <span class="v">Frame of mind</span>
       <p class="r">Compose for a real product, not a placeholder.</p>
       <p><strong>Why.</strong> These wireframes are meant to ship. Generic stand-in content (<em>"Lorem ipsum"</em>, <em>"Item 1, 2, 3"</em>) makes the wireframe untestable and re-anchors the visual hierarchy when real copy arrives.</p>
-      <p><strong>How.</strong> Use plausible domain content for whichever product you're composing for. The example wireframes in <code>templates/</code> show event-domain content (drawn from the Partiful project) — that's an example, not the canon. A finance dashboard, a CRM, a marketplace, a control panel — all live equally inside this system as long as they speak in the brand posture below.</p>
+      <p><strong>How.</strong> Use plausible domain content for whichever product you're composing for. The example wireframes in <code>templates/</code> use event-domain placeholder content because that was the test-batch subject — it is not a real client surface. A finance dashboard, a CRM, a marketplace, a control panel all live equally inside this system as long as they speak in the brand posture below.</p>
     </div>
 
     <h3>Brand posture</h3>
@@ -994,7 +1037,7 @@
   <section class="ds-section" id="rules" data-title="Standing rules">
     <span class="kicker">Manual</span>
     <h2>Standing rules.</h2>
-    <p class="lede">Five rules that override everything else. They are the operational form of <code>CLAUDE.md</code>. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
+    <p class="lede">Seven rules that override everything else. They are the operational form of <code>CLAUDE.md</code> — same numbering, same order. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
 
     <div class="rule">
       <span class="v">Rule 01</span>
@@ -1006,8 +1049,8 @@
     <div class="rule">
       <span class="v">Rule 02</span>
       <p class="r">Don't touch infrastructure.</p>
-      <p><strong>Why.</strong> The pan/zoom logic, canvas chrome, comment system, and base slide CSS are tuned. Edits ripple silently.</p>
-      <p><strong>How.</strong> Never modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, the pan/zoom in <code>system/app.jsx</code> beyond registering new sections, the comment system in <code>shared/comments.js</code>, or the base <code>.slide</code> / <code>.deck</code> CSS in PRD templates. Add new content under scoped classes; never override the frame.</p>
+      <p><strong>Why.</strong> The pan/zoom logic, canvas chrome, comment system, shared menu component, and base slide CSS are tuned. Edits ripple silently.</p>
+      <p><strong>How.</strong> Never modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, the pan/zoom in <code>system/app.jsx</code> beyond registering new sections, the comment system in <code>shared/comments.js</code>, the shared menu component (<code>shared/ds-menu.css</code> / <code>shared/ds-menu.js</code>), or the base <code>.slide</code> / <code>.deck</code> CSS in PRD templates. Add new content under scoped classes; never override the frame.</p>
     </div>
 
     <div class="rule">
@@ -1018,10 +1061,10 @@
     </div>
 
     <div class="rule">
-      <span class="v">Rule 04</span>
-      <p class="r">Color: none. Emphasis by weight and size only.</p>
-      <p><strong>Why.</strong> Wireframes communicate hierarchy through type and spacing — not hue. Color in a wireframe reads as branding intent, which is wrong at this stage.</p>
-      <p><strong>How.</strong> Use bone, dark, and the canvas neutrals. Warm and cool tones (§Color) exist as system colors but are not used to indicate state, severity, or selection in wireframes. Selection = filled background; severity = position; state = label.</p>
+      <span class="v">Rule 04 · studio convention</span>
+      <p class="r">At the wireframe stage, no color. Emphasis by weight and size only.</p>
+      <p><strong>Why.</strong> Wireframes communicate hierarchy through type and spacing — not hue. Color introduced this early reads as branding intent, which short-circuits the review of structure. The brand layer (§Brand layer) is where color enters, after the wireframe is approved.</p>
+      <p><strong>How.</strong> Compose with bone and dark via the wireframe-mode tokens (<code>--bg</code>, <code>--fg</code>, <code>--panel</code>, <code>--input</code>, <code>--hair</code>) inherited from the <code>.wf</code> wrapper. Warm and cool tones in §Color exist as system colors but are not used to indicate state, severity, or selection at this stage. Selection = filled background; severity = position; state = label.</p>
     </div>
 
     <div class="rule">
@@ -1029,6 +1072,88 @@
       <p class="r">Flows always include auth and error states.</p>
       <p><strong>Why.</strong> Happy-path flows hide every interesting design decision.</p>
       <p><strong>How.</strong> Any flow added to the Flows zone must show its auth path(s) and at least one error/failure state in addition to the happy path. If a source template is missing them, surface the gap rather than shipping the flow without them.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 06</span>
+      <p class="r">No OS or device chrome in wireframes.</p>
+      <p><strong>Why.</strong> Device chrome belongs to the platform, not the product. Drawing it ages the wireframe to a specific moment (today's iOS), distracts from the surface under review, and quietly biases the design toward platform conventions instead of product clarity.</p>
+      <p><strong>How.</strong> No iOS / Android status bar (carrier · time · battery), no notch or Dynamic Island, no home indicator, no Mac menu bar / Touch Bar, no browser address bar, no scrollbars drawn into the frame. The mobile frame starts at the app's first pixel; the device is implied by the 390 × 844 ratio, not rendered.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 07</span>
+      <p class="r">Keep canvas maintenance current.</p>
+      <p><strong>Why.</strong> The wireframe canvas is read at zoom — labelled header rows are the navigation. The IntroCard is the entry point for every new agent and reviewer. Both rot the moment they fall behind the actual structure.</p>
+      <p><strong>How.</strong> Preserve zoomed-out readability of labelled header rows when adding to the canvas. If a change alters the taxonomy, canonical file, or growth rules, update the <code>IntroCard</code> and <code>DsIntro</code> in <code>apps/wireframe-library.html</code> — mirrored in <code>system/app.jsx</code> and <code>system/app.combined.jsx</code>.</p>
+    </div>
+  </section>
+
+  <!-- ===== Agent architecture ===== -->
+  <section class="ds-section" id="agents" data-title="Agent architecture">
+    <span class="kicker">Manual</span>
+    <h2>Agent architecture.</h2>
+    <p class="lede">How the studio actually produces work. A small crew of agents — one product manager, a flexible number of builders, one auditor — coordinates around a single orchestrator. Canvas, scope, and crew size are decided in the first conversation with the PM.</p>
+
+    <h3>The first conversation with the PM</h3>
+    <p>Before any building starts, the user talks to the product manager to settle three things:</p>
+    <ul>
+      <li><strong>Output location.</strong> Where does the work land — Paper, the Playground canvas, a specific repo file, somewhere else? The PM picks the canvas with the user; builders never assume.</li>
+      <li><strong>How many builders.</strong> One for a tight, single-surface brief. Two for parallel split work. Three or more for larger briefs where the seam can be drawn cleanly.</li>
+      <li><strong>How the builders relate.</strong> Either <em>all on the same thing</em> (each composing a variant of the same surface, so the user can compare options) or <em>split across different things</em> (each owning a non-overlapping slice). The PM decides the seam with the user, never alone.</li>
+    </ul>
+
+    <h3>The crew</h3>
+    <ul>
+      <li><strong>Product manager.</strong> The orchestrator. Holds the first conversation with the user, decides canvas / crew size / seam, spins up the builders, runs the auditor when work is in, and relays notes back. Does not draw.</li>
+      <li><strong>Builders.</strong> One or more product designer agents, created by the product manager for the brief. Working in parallel, either on the same thing (variants) or on different things (split scope), depending on what the PM agreed with the user.</li>
+      <li><strong>Auditor.</strong> One agent whose only job is to double-check completed work against the system (tokens, taxonomy, frame pairing, voice) and the user's actual needs. Does not edit; writes notes and hands them to the PM.</li>
+    </ul>
+
+    <h3>The loop</h3>
+    <div class="quickstart">
+      <div class="qs-step">
+        <span class="num">01</span>
+        <div class="body">
+          <span class="title">PM creates the builders.</span>
+          <span class="sub">After the first conversation with the user, the product manager spins up the agreed number of builders as high-level product designer agents, with their scopes (variant or split) and the relevant chapters of this manual.</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">02</span>
+        <div class="body">
+          <span class="title">Builders compose in parallel.</span>
+          <span class="sub">Each builder ships into the canvas the PM agreed with the user, and signals the PM when their slice or variant is complete.</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">03</span>
+        <div class="body">
+          <span class="title">PM runs the auditor.</span>
+          <span class="sub">Once the builders both report complete, the PM runs the audit agent across the full deliverable — not per-builder, so cross-builder consistency gets caught.</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">04</span>
+        <div class="body">
+          <span class="title">PM relays notes.</span>
+          <span class="sub">Audit notes go back through the PM to the builders. Builders never receive notes directly from the auditor — the PM mediates so scope and priority stay coherent.</span>
+        </div>
+      </div>
+      <div class="qs-step">
+        <span class="num">05</span>
+        <div class="body">
+          <span class="title">Iterate, then ship.</span>
+          <span class="sub">Loop steps 02–04 until the auditor signs off. The PM is the only agent that hands the work back to the human.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule</span>
+      <p class="r">The product manager is the only agent with a write channel to the human, and the only agent that talks to the auditor.</p>
+      <p><strong>Why.</strong> Without a single mediator, builders interpret audit notes inconsistently and the human gets four parallel narratives. One mouth to speak through keeps the loop legible.</p>
+      <p><strong>How.</strong> Builders surface blockers up to the PM. The auditor reports to the PM. The PM is the only agent that posts the deliverable, summarises progress, or asks the human a clarifying question.</p>
     </div>
   </section>
 
@@ -1070,7 +1195,7 @@
       <div class="tax-row">
         <span class="layer">Patterns</span>
         <div>
-          <div class="desc">Reusable composition templates that span several frames. Currently three: dense-list, editorial-detail, multistep-form. Source under <code>templates/</code>.</div>
+          <div class="desc">Page-template patterns — reusable composition shells that define a whole surface. In Atomic Design these are sometimes called <em>templates</em>; we keep the name <em>Patterns</em> for continuity with the canvas. Currently three: dense-list, editorial-detail, multistep-form. Source under <code>templates/</code>.</div>
           <div class="examples">dense-list · editorial-detail · multistep-form</div>
         </div>
       </div>
@@ -1083,6 +1208,8 @@
       </div>
     </div>
   </section>
+
+  <div class="ds-part" data-part="Part II — Foundations"></div>
 
   <!-- ===== 04 · Color ===== -->
   <section class="ds-section" id="color" data-title="Color">
@@ -1122,38 +1249,28 @@
       <div class="swatch" data-solid="true" style="--c:#777777;"><div class="chip"></div><div class="meta"><span class="name">--stone</span><span class="value">#777777</span></div></div>
     </div>
 
-    <h3>Canvas</h3>
-    <p>The gallery behind the wireframes — warmer and darker than the dark surface, intentionally subdued so it never competes with the frames in front of it.</p>
-    <div class="swatches">
-      <div class="swatch" data-solid="true" style="--c:#0B0807;"><div class="chip"></div><div class="meta"><span class="name">--canvas-bg</span><span class="value">#0B0807</span><span class="use">Page/canvas background.</span></div></div>
-      <div class="swatch" data-solid="true" style="--c:#15100E;"><div class="chip"></div><div class="meta"><span class="name">--canvas-panel</span><span class="value">#15100E</span><span class="use">Cards, slides, atom stages.</span></div></div>
-      <div class="swatch" data-solid="true" style="--c:#EAE4E2;"><div class="chip"></div><div class="meta"><span class="name">--canvas-fg</span><span class="value">#EAE4E2</span><span class="use">All foreground.</span></div></div>
-      <div class="swatch" style="--c:rgba(234,228,226,0.45);"><div class="chip"></div><div class="meta"><span class="name">--canvas-label</span><span class="value">rgba 0.45</span><span class="use">Mono labels, kickers, meta.</span></div></div>
-      <div class="swatch" style="--c:rgba(234,228,226,0.08);"><div class="chip"></div><div class="meta"><span class="name">--canvas-hair</span><span class="value">rgba 0.08</span><span class="use">Default separator on canvas.</span></div></div>
-    </div>
-
     <h3>Do / Never</h3>
     <div class="dodont">
       <div class="cell do">
         <span class="verb">Do</span>
-        <code>color: var(--canvas-fg);
-border: 1px solid var(--canvas-hair);</code>
-        <p class="note">Tokens via custom properties. Hairlines via the canvas hair.</p>
+        <code>color: var(--fg);
+border: 1px solid var(--hair);</code>
+        <p class="note">Wireframe-mode tokens, inherited from the <code>.wf</code> wrapper. Switches modes automatically.</p>
       </div>
       <div class="cell never">
         <span class="verb">Never</span>
         <code>color: #EAE4E2;
-border: 1px solid rgba(234,228,226,0.08);</code>
-        <p class="note">Bypasses the system; impossible to retheme; rots silently.</p>
+border: 1px solid rgba(234,228,226,0.12);</code>
+        <p class="note">Bypasses the system; impossible to retheme; doesn't switch with mode.</p>
       </div>
     </div>
     <div class="dodont">
       <div class="cell do">
         <span class="verb">Do</span>
         <code>/* selection state */
-background: var(--canvas-fg);
-color: var(--canvas-bg);</code>
-        <p class="note">Selection by inversion. Reads at every zoom.</p>
+background: var(--fg);
+color: var(--bg);</code>
+        <p class="note">Selection by inversion. Inherits the active mode.</p>
       </div>
       <div class="cell never">
         <span class="verb">Never</span>
@@ -1169,14 +1286,23 @@ color: white;</code>
   <section class="ds-section" id="typography" data-title="Typography">
     <span class="kicker">Foundations</span>
     <h2>Typography.</h2>
-    <p class="lede">TWK Lausanne Pan 300 carries the body. Inter steps in for the heavier weights until more Lausanne weights are licensed. Space Mono labels the system. <strong>No Apercu in wireframes</strong> — it is display-only and lives on the home tile.</p>
+    <p class="lede">TWK Lausanne Pan is the only face inside wireframes, licensed locally at <strong>300, 550, and 700</strong>. Space Mono labels the system. Caveat is for canvas annotations only. <strong>No Apercu, no Inter</strong> — Apercu is display-only on the home tile, Inter is not in the system at all.</p>
+
+    <div class="rule">
+      <span class="v">Three weights, one face</span>
+      <p class="r">Every weight token in this system resolves to Lausanne 300, 550, or 700.</p>
+      <p><strong>300 — Body.</strong> Default body, lede, meta, captions. <code>--w-body</code>, <code>--w-meta</code>.</p>
+      <p><strong>550 — Medium.</strong> UI, labels, H2, H3. <code>--w-medium</code>, <code>--w-ui</code>, <code>--w-title</code>.</p>
+      <p><strong>700 — Bold.</strong> Display, H1, strong, primary actions when a heavier hit is needed. <code>--w-bold</code>.</p>
+      <p><strong>How to apply.</strong> Use the weight token (<code>var(--w-…)</code>), not the integer. The token may be re-tuned later; integers can't.</p>
+    </div>
 
     <h3>Families</h3>
     <div class="atom-grid">
       <div class="atom">
         <div class="label">
           <span class="name">--font-ui</span>
-          <span class="desc">Body, headings, UI. Lausanne 300 → Inter 500/600/700 fallback.</span>
+          <span class="desc">Body, headings, UI. TWK Lausanne Pan only — three licensed weights (300 / 550 / 700).</span>
         </div>
         <div class="stage" style="display:block; padding: 28px 32px;">
           <div style="font-family: var(--font-ui); font-size: 28px; font-weight: 300; line-height: 1.2; letter-spacing: -0.02em;">The brief is the vibe.</div>
@@ -1208,24 +1334,24 @@ color: white;</code>
     <p>Each role has exactly one set of values. Pick the role first, then write the markup. Never invent a size.</p>
     <div class="type-ladder">
       <div class="type-row">
-        <div class="tmeta"><span class="key">Display</span><span class="px">64 / 1.02 / 600 / -0.030em</span><span class="use">Page-cover hero. Once per artifact.</span></div>
-        <div class="sample" style="font-size: 64px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.02;">Composing the system.</div>
+        <div class="tmeta"><span class="key">Display</span><span class="px">64 / 1.02/ 700 / -0.030em</span><span class="use">Page-cover hero. Once per artifact.</span></div>
+        <div class="sample" style="font-size: 64px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.02;">Composing the system.</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">H1</span><span class="px">48 / 1.04 / 600 / -0.025em</span><span class="use">Section opener within a page.</span></div>
-        <div class="sample" style="font-size: 48px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;">A new section.</div>
+        <div class="tmeta"><span class="key">H1</span><span class="px">48 / 1.04/ 700 / -0.025em</span><span class="use">Section opener within a page.</span></div>
+        <div class="sample" style="font-size: 48px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.04;">A new section.</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">H2</span><span class="px">28 / 1.15 / 600 / -0.020em</span><span class="use">Subsection within a section.</span></div>
-        <div class="sample" style="font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15;">A meaningful heading.</div>
+        <div class="tmeta"><span class="key">H2</span><span class="px">28 / 1.15/ 700 / -0.020em</span><span class="use">Subsection within a section.</span></div>
+        <div class="sample" style="font-size: 28px; font-weight: 550; letter-spacing: -0.02em; line-height: 1.15;">A meaningful heading.</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">H3</span><span class="px">14 / 1.0 / 500 / 0.08em uc</span><span class="use">Group label within a subsection. Caps + tracked.</span></div>
-        <div class="sample" style="font-size: 14px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.0;">Group heading</div>
+        <div class="tmeta"><span class="key">H3</span><span class="px">14 / 1.0/ 550 / 0.08em uc</span><span class="use">Group label within a subsection. Caps + tracked.</span></div>
+        <div class="sample" style="font-size: 14px; font-weight: 550; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.0;">Group heading</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">H4</span><span class="px">11 / 1.0 / 400 / 0.14em mono uc</span><span class="use">Inline-row heading. Mono.</span></div>
-        <div class="sample" style="font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Sub-group label</div>
+        <div class="tmeta"><span class="key">H4</span><span class="px">11 / 1.0/ 300 / 0.14em mono uc</span><span class="use">Inline-row heading. Mono.</span></div>
+        <div class="sample" style="font-family: var(--font-mono); font-size: 11px; font-weight: 550; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Sub-group label</div>
       </div>
       <div class="type-row">
         <div class="tmeta"><span class="key">Lede</span><span class="px">18 / 1.55 / 300</span><span class="use">First paragraph after H1/H2. One only.</span></div>
@@ -1240,30 +1366,29 @@ color: white;</code>
         <div class="sample" style="font-size: 12px; font-weight: 300; line-height: 1.5; color: rgba(234,228,226,0.62);">Dense body for table rows, card captions, and second-line meta.</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">Meta</span><span class="px">12 / 1.5 / 400</span><span class="use">Metadata pinned to a row.</span></div>
-        <div class="sample" style="font-size: 12px; font-weight: 400; line-height: 1.5; color: rgba(234,228,226,0.55);">Updated · 2026-04-24 · v0.1</div>
+        <div class="tmeta"><span class="key">Meta</span><span class="px">12 / 1.5 / 300</span><span class="use">Metadata pinned to a row.</span></div>
+        <div class="sample" style="font-size: 12px; font-weight: 300; line-height: 1.5; color: rgba(234,228,226,0.55);">Updated · 2026-04-24 · v0.1</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">Kicker</span><span class="px">10 / 1.0 / 500 / 0.12em uc</span><span class="use">Section pre-label. Above an H1/H2.</span></div>
-        <div class="sample" style="font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Foundations · 05</div>
+        <div class="tmeta"><span class="key">Kicker</span><span class="px">10 / 1.0/ 550 / 0.12em uc</span><span class="use">Section pre-label. Above an H1/H2.</span></div>
+        <div class="sample" style="font-family: var(--font-mono); font-size: 10px; font-weight: 550; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Foundations · 05</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">Caption</span><span class="px">10 / 1.4 / 400</span><span class="use">Image / placeholder caption.</span></div>
-        <div class="sample" style="font-size: 10px; font-weight: 400; line-height: 1.4; color: rgba(234,228,226,0.55);">Fig. 01 — atom grid, dark mode.</div>
+        <div class="tmeta"><span class="key">Caption</span><span class="px">10 / 1.4 / 300</span><span class="use">Image / placeholder caption.</span></div>
+        <div class="sample" style="font-size: 10px; font-weight: 300; line-height: 1.4; color: rgba(234,228,226,0.55);">Fig. 01 — atom grid, dark mode.</div>
       </div>
       <div class="type-row">
-        <div class="tmeta"><span class="key">Mono</span><span class="px">11 / 1.6 / 400 mono</span><span class="use">Token names, code, paths.</span></div>
+        <div class="tmeta"><span class="key">Mono</span><span class="px">11 / 1.6/ 300 mono</span><span class="use">Token names, code, paths.</span></div>
         <div class="sample" style="font-family: var(--font-mono); font-size: 11px; line-height: 1.6; color: var(--canvas-fg);">var(--canvas-fg) · system/tokens.css · .wf-pill[data-active]</div>
       </div>
     </div>
 
     <h3>Weights</h3>
-    <p>Four weights are defined. Use the variable, not the integer.</p>
-    <div class="swatches" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
-      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 400; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-meta</span><span class="value">400 · meta</span></div></div>
-      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 500; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-ui</span><span class="value">500 · UI</span></div></div>
-      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 600; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-title</span><span class="value">600 · title</span></div></div>
-      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 700; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-bold</span><span class="value">700 · bold</span></div></div>
+    <p>Three real Lausanne weights — 300 / 550 / 700. The historical role names (<code>--w-meta</code>, <code>--w-ui</code>, <code>--w-title</code>) are kept for continuity but each one resolves to one of the three. Use the variable, not the integer.</p>
+    <div class="swatches" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 36px; font-weight: 300; line-height: 1;">Aa</div><div class="meta"><span class="name">300 · Body</span><span class="value">--w-body &nbsp;·&nbsp; --w-meta</span></div></div>
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 36px; font-weight: 550; line-height: 1;">Aa</div><div class="meta"><span class="name">550 · Medium</span><span class="value">--w-medium &nbsp;·&nbsp; --w-ui &nbsp;·&nbsp; --w-title</span></div></div>
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 36px; font-weight: 700; line-height: 1;">Aa</div><div class="meta"><span class="name">700 · Bold</span><span class="value">--w-bold</span></div></div>
     </div>
 
     <h3>Do / Never</h3>
@@ -1293,7 +1418,7 @@ font-weight: var(--w-title);</code>
       <div class="cell never">
         <span class="verb">Never</span>
         <code>font-family: "Apercu Pro";
-font-weight: 600;</code>
+font-weight: 700;</code>
         <p class="note">Apercu is display-only — never inside a wireframe.</p>
       </div>
     </div>
@@ -1329,9 +1454,61 @@ font-weight: 600;</code>
       <li><strong>Between top-level sections</strong> (between H1 sections of a doc): <code>--s-20</code> to <code>--s-24</code>.</li>
       <li><strong>Frame side margin</strong> on the canvas: 24px (locked, see §Grid).</li>
     </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>padding: var(--s-4) var(--s-6);
+gap: var(--s-3);
+margin-block: var(--s-12);</code>
+        <p class="note">Token-bound. Reads at every zoom; survives a token re-tune.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>padding: 17px 25px;
+gap: 11px;
+margin: 50px 0;</code>
+        <p class="note">Off-scale values. Sprawl. Impossible to maintain.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- ===== 07 · Radii ===== -->
+  <!-- ===== Grid ===== -->
+  <section class="ds-section" id="grid" data-title="Grid">
+    <span class="kicker">Foundations</span>
+    <h2>Grid.</h2>
+    <p class="lede">Two grids, one per surface family. The numbers below are locked from the canvas IntroCard (<code>system/app.jsx</code>) and apply to every Aither wireframe in this library.</p>
+
+    <div class="taxonomy">
+      <div class="tax-row">
+        <span class="layer">Web</span>
+        <div>
+          <div class="desc">12 columns. 24px gutter. 24px side margin. Working width on a 1440 frame: 1392.</div>
+          <div class="examples">12-col · 24 gutter · 24 side · width 1392 on 1440</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Mobile</span>
+        <div>
+          <div class="desc">4 columns. 24px gutter. 24px side margin. Working width on a 390 frame: 342.</div>
+          <div class="examples">4-col · 24 gutter · 24 side · width 342 on 390</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The gutter and side margin are the same on both surface families. Don't widen the side margin to "breathe" a frame; widen the inset of the content instead.</p>
+
+    <h3>Common spans</h3>
+    <ul>
+      <li><strong>Hero / full-bleed surface</strong> — 12 of 12 (web) · 4 of 4 (mobile).</li>
+      <li><strong>Editorial body / form</strong> — 8 of 12 centred (web) · 4 of 4 (mobile).</li>
+      <li><strong>List + detail (paired)</strong> — 5 + 7 (web). Mobile collapses to 4 of 4 stacked.</li>
+      <li><strong>Sidebar layout</strong> — 3 + 9 (web). Sidebar fixed, content scrolls.</li>
+      <li><strong>KPI row</strong> — 3-col or 4-col equal-width (web). Mobile stacks 1-up.</li>
+    </ul>
+  </section>
+
+  <!-- ===== Radii ===== -->
   <section class="ds-section" id="radii" data-title="Radii">
     <span class="kicker">Foundations</span>
     <h2>Radii.</h2>
@@ -1397,7 +1574,7 @@ font-weight: 600;</code>
   <section class="ds-section" id="modes" data-title="Modes">
     <span class="kicker">Foundations</span>
     <h2>Modes.</h2>
-    <p class="lede">Two modes, paired everywhere. <strong>Dark</strong> is the product default — what users see. <strong>Light</strong> is the annotated review context — what the team marks up. Every wireframe ships in both, and the canvas displays them side-by-side.</p>
+    <p class="lede">Two modes, paired everywhere. <strong>Light</strong> is the default — what users see. <strong>Dark</strong> is the companion mode, with a full set of token values defined for every atom. Every wireframe ships in both, and the canvas displays them side-by-side.</p>
 
     <p>The mode lives on the outer <code>.wf</code> wrapper as <code>data-mode="dark"</code> or <code>data-mode="light"</code>. Atoms inside the wrapper inherit <code>--bg</code>, <code>--fg</code>, <code>--fg-soft</code>, <code>--fg-mute</code>, <code>--panel</code>, <code>--input</code>, <code>--hair</code>, <code>--hair-2</code>, and <code>--placeholder</code> from it. <strong>Atoms never hardcode a palette.</strong></p>
 
@@ -1412,7 +1589,69 @@ font-weight: 600;</code>
 &lt;/div&gt;</code></pre>
 
     <p>Both blocks render the same atoms; the wrapper supplies the palette. To restyle, retheme, or pair a frame in both modes, change the wrapper, never the atom.</p>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>.wf-pill {
+  border-color: var(--hair-2);
+  color: var(--fg);
+}</code>
+        <p class="note">Atom inherits palette via mode tokens. One CSS rule, two themes.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>.wf-pill { border-color: rgba(234,228,226,0.22); }
+.wf-pill[data-mode="light"] { border-color: rgba(18,13,11,0.28); }</code>
+        <p class="note">Mode hardcoded into the atom. Doubles every rule; breaks pairing.</p>
+      </div>
+    </div>
   </section>
+
+  <!-- ===== Brand layer ===== -->
+  <section class="ds-section" id="brand-layer" data-title="Brand layer">
+    <span class="kicker">Foundations</span>
+    <h2>Brand layer.</h2>
+    <p class="lede">A wireframe in this library is the bone of a project. The brand layer is the meat — accent color, photography, brand typeface, micro-illustration, motion accent — that lives on top of the wireframe to make it that specific client's product. The two are sequential, not contradictory.</p>
+
+    <h3>Sequence</h3>
+    <ol style="font-size: 14px; line-height: 1.7; color: rgba(234,228,226,0.7); padding-left: 22px;">
+      <li><strong>Compose the wireframe</strong> in this system. Bone, dark, hairlines only. Approve the structure.</li>
+      <li><strong>Branch to a project surface</strong> (a separate file under <code>apps/</code>, or a project-specific repo).</li>
+      <li><strong>Layer the brand</strong> on top. Add a project-specific tokens file that <em>extends</em> <code>system/tokens.css</code> — never replaces it.</li>
+      <li><strong>Cross-check</strong> the branded surface against this manual. Atom anatomy, action hierarchy, naming, type ladder all stay system. Color + display typography + photography become project.</li>
+    </ol>
+
+    <h3>What stays system, what becomes project</h3>
+    <div class="taxonomy">
+      <div class="tax-row">
+        <span class="layer">System</span>
+        <div>
+          <div class="desc">Type role ladder · spacing scale · radii · motion curve · atomic anatomy (.wf-* primitives) · action hierarchy · naming conventions · file map · grid.</div>
+          <div class="examples">Never overridden by a project</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Project</span>
+        <div>
+          <div class="desc">Accent color(s) · photography · illustration · brand display typeface (headlines only — body always falls back to <code>--font-ui</code>) · domain copy · custom motion accents.</div>
+          <div class="examples">Lives in a project tokens file, never in system/tokens.css</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule (brand layer)</span>
+      <p class="r">A project's brand layer extends the system; it never replaces it.</p>
+      <p><strong>Why.</strong> Replacing the system means we lose the through-line between the wireframe and every other Aither project. Extension keeps the system shape and the brand voice both intact.</p>
+      <p><strong>How.</strong> Add a project tokens file. Define <em>only</em> the new tokens (<code>--accent</code>, <code>--brand-display</code>, etc.) and the few overrides the brand needs. Reference them from project-level CSS. Re-import <code>system/tokens.css</code> first so all base tokens still resolve.</p>
+    </div>
+
+    <h3>Brand display typeface</h3>
+    <p>If a project's brand has a display typeface (e.g. a custom Apercu, a Pangram, a project-specific cut), it lives at the <strong>Display</strong> and <strong>H1</strong> roles only. <strong>H2 onwards stays on <code>--font-ui</code></strong>. This keeps body legibility consistent across every project the studio ships.</p>
+  </section>
+
+  <div class="ds-part" data-part="Part III — Components"></div>
 
   <!-- ===== 10 · Atoms ===== -->
   <section class="ds-section" id="atoms" data-title="Atoms">
@@ -1501,7 +1740,7 @@ font-weight: 600;</code>
       </div>
 
       <div class="atom">
-        <div class="label"><span class="name">.wf[data-mode="light"]</span><span class="desc">Same atoms, swapped palette. Used for annotated review.</span></div>
+        <div class="label"><span class="name">.wf[data-mode="light"]</span><span class="desc">Default mode. Same atoms, light palette inherited from the wrapper.</span></div>
         <div class="stage wf" data-mode="light" style="background:var(--wf-light-bg);"><span class="wf-pill">Default</span><span class="wf-pill" data-active="true">Active</span><button class="wf-btn" data-primary="true">Primary</button></div>
         <pre class="anatomy"><span class="k">--bg</span>: #EAE4E2
 <span class="k">--fg</span>: #120D0B
@@ -1509,6 +1748,174 @@ font-weight: 600;</code>
 <span class="k">--input</span>: #F3EEEC</pre>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ===== States ===== -->
+  <section class="ds-section" id="states" data-title="States">
+    <span class="kicker">Components</span>
+    <h2>States.</h2>
+    <p class="lede">Every interactive atom has five canonical states. The wireframe renders the state relevant to the frame; the others belong to the prototype. State is communicated through weight, fill, and outline — never color.</p>
+
+    <h3>The five states</h3>
+    <div class="states-matrix">
+      <div class="states-row head">
+        <div class="name">Atom</div>
+        <div>Default</div>
+        <div>Hover</div>
+        <div>Focus</div>
+        <div>Active / On</div>
+        <div>Disabled</div>
+      </div>
+
+      <div class="states-row wf" data-mode="dark">
+        <div class="name">.wf-pill</div>
+        <div><span class="wf-pill">Tag</span></div>
+        <div><span class="wf-pill" style="border-color: var(--canvas-fg);">Tag</span></div>
+        <div><span class="wf-pill" style="outline: 1px solid var(--canvas-fg); outline-offset: 2px;">Tag</span></div>
+        <div><span class="wf-pill" data-active="true">Tag</span></div>
+        <div><span class="wf-pill" style="opacity: 0.4;">Tag</span></div>
+      </div>
+
+      <div class="states-row wf" data-mode="dark">
+        <div class="name">.wf-btn</div>
+        <div><button class="wf-btn">Action</button></div>
+        <div><button class="wf-btn" style="border-color: var(--canvas-fg);">Action</button></div>
+        <div><button class="wf-btn" style="outline: 1px solid var(--canvas-fg); outline-offset: 2px;">Action</button></div>
+        <div><button class="wf-btn" data-primary="true">Action</button></div>
+        <div><button class="wf-btn" style="opacity: 0.35;">Action</button></div>
+      </div>
+
+      <div class="states-row wf" data-mode="dark">
+        <div class="name">.wf-input</div>
+        <div style="padding: 14px;"><div class="wf-input"><input type="text" placeholder="Email"></div></div>
+        <div style="padding: 14px;"><div class="wf-input" style="border-color: var(--canvas-label);"><input type="text" placeholder="Email"></div></div>
+        <div style="padding: 14px;"><div class="wf-input" style="border-color: var(--canvas-fg); box-shadow: 0 0 0 2px rgba(234,228,226,0.18);"><input type="text" placeholder="Email"></div></div>
+        <div style="padding: 14px;"><div class="wf-input" style="border-color: var(--canvas-fg);"><input type="text" value="you@aither.co"></div></div>
+        <div style="padding: 14px;"><div class="wf-input" style="opacity: 0.45;"><input type="text" placeholder="Email" disabled></div></div>
+      </div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Default</strong> always renders. Inherits palette from parent <code>.wf[data-mode]</code>.</li>
+      <li><strong>Hover</strong> brightens the border to <code>--fg</code>. Web only.</li>
+      <li><strong>Focus</strong> is a <strong>2px outline</strong> at <code>--fg</code> with 2px offset. Always visible — never <code>outline: none</code>. Keyboard users depend on it.</li>
+      <li><strong>Active / On</strong> = filled background with foreground inverted. Use <code>data-active="true"</code> on toggleables and <code>data-primary="true"</code> on the primary action.</li>
+      <li><strong>Disabled</strong> = the same atom + <code>disabled</code> attribute + <code>aria-disabled="true"</code> + <code>cursor: not-allowed</code> + opacity 0.4. All four — opacity alone isn't enough to communicate the state to assistive tech.</li>
+    </ul>
+
+    <h3>Additional input states</h3>
+    <p>Inputs and buttons carry two more states beyond the matrix above. Both are valid wireframe-stage states (the form has to render its own loading and error frames).</p>
+
+    <div class="atom-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="atom">
+        <div class="label">
+          <span class="name">Loading</span>
+          <span class="desc">Async work pending. The atom keeps its outline; foreground dims; the action label is replaced with a verb in progress (<em>"Continuing…"</em>). No spinner inside the wireframe — copy carries the state.</span>
+        </div>
+        <div class="stage wf" data-mode="dark">
+          <button class="wf-btn" data-primary="true" style="opacity: 0.6;" disabled aria-busy="true">Continuing…</button>
+          <div class="wf-input" style="opacity: 0.6;" aria-busy="true"><input type="text" value="you@aither.co" disabled></div>
+        </div>
+      </div>
+      <div class="atom">
+        <div class="label">
+          <span class="name">Error</span>
+          <span class="desc">Validation failed. Border on the input switches to <code>--fg</code> at full strength; a 12px error message in mono sits below it. <strong>No red.</strong> Severity carried by position and copy.</span>
+        </div>
+        <div class="stage wf" data-mode="dark" style="display:block;">
+          <label class="wf-label">Email</label>
+          <div class="wf-input" style="border-color: var(--canvas-fg); border-width: 1.5px;"><input type="text" value="not-an-email"></div>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--canvas-fg); margin-top: 6px; letter-spacing: 0.02em;">— Use the email you signed up with.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>&lt;button class="wf-btn"
+        data-primary="true"&gt;Continue&lt;/button&gt;
+&lt;button class="wf-btn"
+        disabled aria-disabled="true"
+        style="opacity:0.4; cursor:not-allowed"&gt;
+  Continue
+&lt;/button&gt;</code>
+        <p class="note">Same atom, state via attribute + aria + cursor + opacity.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>&lt;button class="wf-btn-primary-active"&gt;Continue&lt;/button&gt;
+&lt;button class="wf-btn-disabled"&gt;Continue&lt;/button&gt;
+&lt;button class="wf-btn" style="outline:none"&gt;…</code>
+        <p class="note">State baked into class names. Suppressed focus ring breaks keyboard nav.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Action hierarchy ===== -->
+  <section class="ds-section" id="actions" data-title="Action hierarchy">
+    <span class="kicker">Components</span>
+    <h2>Action hierarchy.</h2>
+    <p class="lede">Every surface has exactly one primary action. This is not a guideline — it's the load-bearing rule for surface clarity. If two candidates feel primary, one of them isn't.</p>
+
+    <div class="actions-stack wf" data-mode="dark">
+      <span class="key">Primary</span>
+      <div class="demo">
+        <button class="wf-btn" data-primary="true">Continue</button>
+        <span style="font-size: 12px; color: rgba(234,228,226,0.55);"><code>data-primary="true"</code> · one per surface · the action the user came for</span>
+      </div>
+    </div>
+
+    <div class="actions-stack wf" data-mode="dark">
+      <span class="key">Secondary</span>
+      <div class="demo">
+        <button class="wf-btn">Save draft</button>
+        <button class="wf-btn">Cancel</button>
+        <span style="font-size: 12px; color: rgba(234,228,226,0.55);">Default <code>.wf-btn</code> outline · up to two per surface</span>
+      </div>
+    </div>
+
+    <div class="actions-stack wf" data-mode="dark">
+      <span class="key">Tertiary</span>
+      <div class="demo">
+        <a class="text-action" href="#">Skip for now</a>
+        <a class="text-action" href="#">Learn more</a>
+        <span style="font-size: 12px; color: rgba(234,228,226,0.55);">Inline text · underline-on-hover · unlimited</span>
+      </div>
+    </div>
+
+    <div class="actions-stack wf" data-mode="dark">
+      <span class="key">Destructive</span>
+      <div class="demo">
+        <a class="text-action" href="#" style="color: var(--canvas-fg);">Delete account</a>
+        <span style="font-size: 12px; color: rgba(234,228,226,0.55);">Tertiary form · the copy earns the weight · never red</span>
+      </div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>One primary</strong> per surface. Modals, sheets, and inline forms each count as their own surface.</li>
+      <li><strong>Secondary</strong> is the alternative path that's still expected — <em>"Save draft"</em>, <em>"Cancel"</em>, <em>"Back"</em>.</li>
+      <li><strong>Tertiary</strong> is text-only and lives inline within prose or as a row action. Never use a tertiary as the only action on a surface.</li>
+      <li><strong>Destructive</strong> uses the tertiary form at the wireframe stage. The copy carries the weight (<em>"Delete account"</em>, <em>"Cancel subscription"</em>). Don't introduce red here. <em>(Studio convention — most product systems give destructive its own treatment. In the brand layer (§Brand layer), a project may add a destructive token if the brand calls for it. The wireframe never does.)</em></li>
+      <li><strong>CTA placement.</strong> Web: bottom-right of the form / top-right of the surface. Mobile: pinned to the bottom edge inside a 16px-padded sticky bar.</li>
+    </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>[Save draft]   [Continue]
+                     ↑ data-primary</code>
+        <p class="note">One primary, one secondary, primary on the right.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>[Save draft]   [Continue]
+data-primary    data-primary</code>
+        <p class="note">Two primaries. The user can't tell which one Aither expects.</p>
+      </div>
     </div>
   </section>
 
@@ -1540,7 +1947,7 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
       <div class="cell do">
         <span class="verb">Do</span>
         <code>&lt;Icons.Plus size={18} /&gt;
-&lt;span&gt;Add event&lt;/span&gt;</code>
+&lt;span&gt;Add item&lt;/span&gt;</code>
         <p class="note">Reuse the kit. Inherits color from parent.</p>
       </div>
       <div class="cell never">
@@ -1551,6 +1958,8 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
       </div>
     </div>
   </section>
+
+  <div class="ds-part" data-part="Part IV — Composition"></div>
 
   <!-- ===== Frames & pairing ===== -->
   <section class="ds-section" id="frames" data-title="Frames &amp; pairing">
@@ -1578,9 +1987,9 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
 
     <h3>The pairing rule</h3>
     <div class="rule">
-      <span class="v">Rule (frames)</span>
+      <span class="v">Studio convention · pairing</span>
       <p class="r">Every surface ships four frames: web × dark, web × light, mobile × dark, mobile × light.</p>
-      <p><strong>Why.</strong> Dark is the product default. Light is the annotated review context. Web and mobile are paired so we never design one in isolation. Missing a quadrant means the surface isn't done.</p>
+      <p><strong>Why.</strong> Light is the default mode; dark is the companion mode, fully tokenized so every atom has values in both. Web and mobile are paired so we never design one in isolation. Missing a quadrant means the surface isn't done.</p>
       <p><strong>How.</strong> When adding a new surface to the canvas, register the four frames together as a row labelled by the surface name. The canvas displays them side-by-side in the order: web-dark · web-light · mobile-dark · mobile-light.</p>
     </div>
 
@@ -1620,13 +2029,13 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
       <div class="recipe-anatomy">
         <div class="recipe-render">
           <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--canvas-label); margin-bottom: 14px;">Foundations · 04</div>
-          <div style="font-size: 40px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 16px;">Color.</div>
+          <div style="font-size: 40px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 16px;">Color.</div>
           <div style="font-size: 18px; line-height: 1.55; color: rgba(234,228,226,0.78); margin-bottom: 12px;">Bone and dark are the anchor neutrals — every interface state is built from them.</div>
           <div style="font-size: 14px; line-height: 1.6; color: rgba(234,228,226,0.62);">Warm and cool tones support specific moments. They are never branding.</div>
         </div>
         <pre><code>kicker (10/uc)
   ↓
-H1 (48 / 600)  or  H2 (28 / 600)
+H1 (48 / 700)  or  H2 (28 / 550)
   ↓
 .lede (18 / 0.78 fg)
   ↓
@@ -1685,7 +2094,7 @@ leading icon and trailing action:
       <div class="recipe-anatomy">
         <div class="recipe-render wf" data-mode="dark" style="background: var(--wf-dark-bg); padding: 48px 32px; border: 1px solid var(--canvas-hair); border-radius: var(--r-2); text-align: center;">
           <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(234,228,226,0.45); margin-bottom: 12px;">Empty</div>
-          <div style="font-size: 18px; font-weight: 500; color: var(--canvas-fg); margin-bottom: 8px;">Nothing to show yet.</div>
+          <div style="font-size: 18px; font-weight: 550; color: var(--canvas-fg); margin-bottom: 8px;">Nothing to show yet.</div>
           <div style="font-size: 13px; line-height: 1.5; color: rgba(234,228,226,0.55); max-width: 32ch; margin: 0 auto 18px;">Add an item from the toolbar above and it will land here.</div>
           <button class="wf-btn">Add item</button>
         </div>
@@ -1709,25 +2118,27 @@ never:
   <section class="ds-section" id="patterns" data-title="Pattern templates">
     <span class="kicker">Patterns</span>
     <h2>Pattern templates.</h2>
-    <p class="lede">Three pattern templates ship with the system. They are the answer to "what kind of screen is this?" Every event-domain surface so far maps to one of them. Source under <code>templates/</code>; baked into <code>apps/wireframe-library.html</code>.</p>
+    <p class="lede">Three pattern templates ship with the system. They are the answer to "what kind of screen is this?" — domain-agnostic shells that work for any product the studio is composing. Source under <code>templates/</code>; baked into <code>apps/wireframe-library.html</code>.</p>
 
-    <p>If your surface needs a fourth pattern, surface the gap before inventing one. Most "new" patterns are an existing pattern with a different content density.</p>
+    <p>If your surface needs a fourth pattern, surface the gap before inventing one. Most "new" patterns are an existing pattern at a different content density.</p>
+
+    <p style="font-size: 12px; color: var(--canvas-label);"><strong>Note on examples.</strong> The renders in <code>templates/</code> use event-domain placeholder content because the test batch was composed against that domain — it is not a real client surface. The pattern itself is product-agnostic; read the example as a placeholder, not the canon.</p>
 
     <div class="recipe">
       <div class="recipe-title">Pattern · Dense list</div>
       <div class="recipe-anatomy">
         <div class="recipe-render">
-          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Listing pages — <em>events near you</em>, <em>my hosted events</em>, <em>past attendees</em>. Anywhere the user is scanning many items of the same kind.</p>
-          <p style="margin: 0 0 12px;"><strong>Reference.</strong> YT Music tracklist rhythm — number/poster-leading, second-line meta, trailing duration/action.</p>
-          <p style="margin: 0;"><strong>Web</strong> uses the full canvas as the list. <strong>Mobile</strong> compacts the row into two lines (title + meta) with a leading 40–48px poster.</p>
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Any listing page where the user scans many items of the same kind — products in a catalog, threads in an inbox, projects in a workspace, transactions in a ledger, events in a feed.</p>
+          <p style="margin: 0 0 12px;"><strong>Reference.</strong> Tracklist rhythm — index/mark-leading, second-line meta, trailing status or action.</p>
+          <p style="margin: 0;"><strong>Web</strong> uses the full canvas as the list. <strong>Mobile</strong> compacts the row into two lines (title + meta) with a leading 40–48px mark.</p>
         </div>
         <pre><code>row anatomy
-  [idx?] [POSTER 40] [title]
-                    [host · date · venue]
-                    [duration / status]
-                    [actions]
+  [idx?] [MARK 40] [title]
+                  [meta · meta · meta]
+                  [status / duration]
+                  [actions]
 
-  flex-shrink: 0 on POSTER and trailing
+  flex-shrink: 0 on MARK and trailing
   --s-4 / 16px between rows
   .wf-hair between groups, not rows</code></pre>
       </div>
@@ -1737,22 +2148,22 @@ never:
       <div class="recipe-title">Pattern · Editorial detail</div>
       <div class="recipe-anatomy">
         <div class="recipe-render">
-          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Detail pages — a single event, a single host, a single venue. The hero carries the identity; the body explains.</p>
-          <p style="margin: 0 0 12px;"><strong>Reference.</strong> YT Music artist + Aither event detail. Full-bleed hero, overlaid meta, sections beneath.</p>
-          <p style="margin: 0;"><strong>Web</strong> is hero-led with a content stack below (about · lineup · location · attendees). <strong>Mobile</strong> ships the scrolled state — sticky compact header with title + RSVP CTA.</p>
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Detail pages where a single object carries identity — a product, a profile, an article, a project, an event. The hero carries the subject; the body explains.</p>
+          <p style="margin: 0 0 12px;"><strong>Reference.</strong> Editorial layouts — full-bleed hero, overlaid meta, content stack beneath.</p>
+          <p style="margin: 0;"><strong>Web</strong> is hero-led with a sectioned content stack. <strong>Mobile</strong> ships the scrolled state — sticky compact header with title + primary CTA.</p>
         </div>
         <pre><code>web layout
   [hero full-bleed, 480–560h]
-    └ overlaid: kicker / title / meta / RSVP
+    └ overlaid: kicker / title / meta / CTA
 
-  [section] About
-  [section] Lineup
-  [section] Location (.ki-map)
-  [section] Attendees
+  [section] About / overview
+  [section] Detail
+  [section] Location / context (optional .ki-map)
+  [section] Related / participants
 
 mobile layout
-  [hero POSTER, square]
-  [sticky compact: title + RSVP]
+  [hero MARK, square]
+  [sticky compact: title + CTA]
   [section stack…]</code></pre>
       </div>
     </div>
@@ -1761,8 +2172,8 @@ mobile layout
       <div class="recipe-title">Pattern · Multi-step form</div>
       <div class="recipe-anatomy">
         <div class="recipe-render">
-          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Creation flows — <em>create event</em>, <em>set up venue</em>, <em>onboarding</em>. Anywhere a user produces something across more than one screen.</p>
-          <p style="margin: 0 0 12px;"><strong>Web</strong> uses a left progress rail with stacked sections on the right. Steps for event creation: <em>Cover &amp; headline · Host &amp; venue · When it happens · Capacity &amp; RSVP</em>.</p>
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Creation flows where a user produces something across more than one screen — onboarding, account setup, listing creation, configuration wizards, application forms.</p>
+          <p style="margin: 0 0 12px;"><strong>Web</strong> uses a left progress rail with stacked sections on the right. Steps are named after the user's intent, not the form's structure (e.g. <em>"When it happens"</em>, not <em>"Step 3"</em>).</p>
           <p style="margin: 0;"><strong>Mobile</strong> shows step-of-N at the top, stacked inputs below, and a sticky bottom bar with <em>Skip</em> + primary CTA.</p>
         </div>
         <pre><code>web layout
@@ -1772,9 +2183,98 @@ mobile layout
   [section]: .wf-label + .wf-input rows
 
 mobile layout
-  [progress 2/3 at top]
+  [progress N/M at top]
   [stacked .wf-label + .wf-input]
   [pinned bottom: Skip · Continue]</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Data display ===== -->
+  <section class="ds-section" id="data" data-title="Data display">
+    <span class="kicker">Patterns</span>
+    <h2>Data display.</h2>
+    <p class="lede">Tables, KPIs, and status rows. These aren't atoms — they're patterns built from <code>.wf-*</code> primitives. Half of the studio's projects are data-heavy (analytics, ops, finance), and they all live inside this scaffold without bespoke components.</p>
+
+    <h3>KPI row</h3>
+    <p>Top-of-dashboard summaries. 3 or 4 across on web, stacked on mobile. The number leads; the label sits above it; a delta sits below.</p>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-label">Active users</span><span class="kpi-value">12,481</span><span class="kpi-delta">+ 4.2% vs. last week</span></div>
+      <div class="kpi"><span class="kpi-label">Throughput</span><span class="kpi-value">94.6%</span><span class="kpi-delta">+ 0.3 pt</span></div>
+      <div class="kpi"><span class="kpi-label">Errors</span><span class="kpi-value">218</span><span class="kpi-delta">– 12 from last week</span></div>
+      <div class="kpi"><span class="kpi-label">P95 latency</span><span class="kpi-value">214 ms</span><span class="kpi-delta">flat</span></div>
+    </div>
+    <ul>
+      <li>Numbers use <code>font-variant-numeric: tabular-nums</code>. Columns of figures align by digit, not by glyph width.</li>
+      <li>Deltas are mono, dim. No coloured arrows. Sign carried by <code>+</code>, <code>–</code>, or <code>flat</code>.</li>
+      <li>Card padding 22 / 24. Hairline grid between cells.</li>
+    </ul>
+
+    <h3>Table</h3>
+    <p>Dense rows of records. Numeric columns are right-aligned and tabular. Headers in mono caps at <code>--canvas-label</code>. Rows separated by hairlines, not borders.</p>
+    <div class="data-table">
+      <div class="data-table-row head">
+        <span class="num">#</span>
+        <span>Account</span>
+        <span>Owner</span>
+        <span class="right">Status</span>
+        <span class="right">MRR</span>
+      </div>
+      <div class="data-table-row">
+        <span class="num">01</span>
+        <span>Halcyon Logistics<div class="meta">San Francisco · enterprise</div></span>
+        <span>Bea Yoon</span>
+        <span class="right"><span class="wf-dot" style="background: var(--canvas-fg);"></span> &nbsp; Active</span>
+        <span class="right">$ 38,400</span>
+      </div>
+      <div class="data-table-row">
+        <span class="num">02</span>
+        <span>Lattice Bio<div class="meta">Boston · mid-market</div></span>
+        <span>Nadia Park</span>
+        <span class="right"><span class="wf-dot" style="background: var(--canvas-fg); opacity: 0.5;"></span> &nbsp; Trialing</span>
+        <span class="right">$ 0</span>
+      </div>
+      <div class="data-table-row">
+        <span class="num">03</span>
+        <span>Northwind Defense<div class="meta">Arlington · government</div></span>
+        <span>Sam Reyes</span>
+        <span class="right"><span class="wf-dot" style="border: 1px solid var(--canvas-label); background: transparent;"></span> &nbsp; Pending</span>
+        <span class="right">$ 12,000</span>
+      </div>
+      <div class="data-table-row">
+        <span class="num">04</span>
+        <span>Cardinal Press<div class="meta">NYC · SMB</div></span>
+        <span>Iona Bell</span>
+        <span class="right"><span class="wf-dot" style="background: var(--canvas-fg);"></span> &nbsp; Active</span>
+        <span class="right">$ 4,200</span>
+      </div>
+    </div>
+    <ul>
+      <li>Status indicated by <code>.wf-dot</code> weight: filled = on, half-opacity = transitioning, hollow = pending. Never by color.</li>
+      <li>Row leading: optional 2-digit index in mono. Helps when referencing rows in conversation.</li>
+      <li>Two-line cells: title on line 1, mono meta on line 2. Title 13/var(--fg); meta 12/var(--fg-mute).</li>
+      <li>No vertical column rules. Hairlines run only horizontally.</li>
+    </ul>
+
+    <h3>Charts &amp; sparklines</h3>
+    <p>Charts are not part of this manual yet — they're project-layer (§Brand layer) because chart language tends to be brand-specific. As an interim convention: render charts in <code>--fg</code> on <code>--panel</code>, 1.5px stroke, no fills, no gridlines. Axis labels in mono at <code>--fg-mute</code>. If a project needs richer chart language, capture it in the project tokens, not here.</p>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>status: .wf-dot
+  · filled  →  on
+  · 0.5     →  transitioning
+  · hollow  →  pending</code>
+        <p class="note">Status by dot weight. Reads at every zoom; works in print.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>status: pill with color
+  · green   →  active
+  · yellow  →  warn
+  · red     →  error</code>
+        <p class="note">Color-coded statuses. Brand-loud, accessibility-poor, off-system.</p>
       </div>
     </div>
   </section>
@@ -1809,33 +2309,9 @@ mobile layout
 05 — Dashboard · with-data</code></pre>
   </section>
 
-  <!-- ===== 13 · Grid ===== -->
-  <section class="ds-section" id="grid" data-title="Grid">
-    <span class="kicker">Foundations</span>
-    <h2>Grid.</h2>
-    <p class="lede">Two grids, one per surface family. The numbers below are locked from the canvas IntroCard (<code>system/app.jsx</code>).</p>
+  <div class="ds-part" data-part="Part V — Language"></div>
 
-    <div class="taxonomy">
-      <div class="tax-row">
-        <span class="layer">Web</span>
-        <div>
-          <div class="desc">12 columns. 24px gutter. 24px side margin.</div>
-          <div class="examples">12-col · 24px gutter · 24px side margin</div>
-        </div>
-      </div>
-      <div class="tax-row">
-        <span class="layer">Mobile</span>
-        <div>
-          <div class="desc">4 columns. 24px gutter. 24px side margin.</div>
-          <div class="examples">4-col · 24px gutter · 24px side margin</div>
-        </div>
-      </div>
-    </div>
-
-    <p>The gutter and side margin are the same on both surface families. Don't widen the side margin to "breathe" a frame; widen the inset of the content instead.</p>
-  </section>
-
-  <!-- ===== 14 · Voice & microcopy ===== -->
+  <!-- ===== Voice & microcopy ===== -->
   <section class="ds-section" id="voice" data-title="Voice &amp; microcopy">
     <span class="kicker">Manual</span>
     <h2>Voice &amp; microcopy.</h2>
@@ -1869,9 +2345,109 @@ mobile layout
       <li>One action button. Secondary by default — primary only if there's a single right move.</li>
       <li>Never apologetic, never cute.</li>
     </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>Couldn't reach the server.
+Try again in a moment.
+[ Retry ]</code>
+        <p class="note">Five-word headline. One next step. One action.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>Oops! Something went wrong 😞
+We're so sorry, please try again
+or contact support@…
+[ Try Again! ] [ Contact Support ]</code>
+        <p class="note">Apology, emoji, exclamation, two CTAs. Off-voice on every count.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- ===== 15 · File map ===== -->
+  <div class="ds-part" data-part="Part VI — Appendix"></div>
+
+  <!-- ===== Naming conventions ===== -->
+  <section class="ds-section" id="naming" data-title="Naming conventions">
+    <span class="kicker">Manual</span>
+    <h2>Naming conventions.</h2>
+    <p class="lede">Every element in this system has exactly one name and one prefix. If something doesn't match a prefix below, it doesn't belong in the system.</p>
+
+    <h3>Class prefixes</h3>
+    <pre><code>.wf            Wireframe wrapper. Holds the palette via data-mode.
+.wf-*          System atoms. Defined in system/tokens.css.
+               Examples: .wf-pill · .wf-btn · .wf-input · .wf-label
+                         .wf-hair · .wf-dot · .wf-placeholder
+                         .wf-kicker · .wf-meta
+
+.ki-*          Kit chrome. Defined in system/chrome.css. Frozen.
+               Examples: .ki-hnav · .ki-mnav · .ki-footer · .ki-bnav
+                         .ki-statusbar
+
+.ds-*          Agent Design Guide (this page only). Internal styling.
+               Never appears in product wireframes.</code></pre>
+
+    <h3>Data attributes (state &amp; variant)</h3>
+    <pre><code>data-mode="dark|light"      On .wf wrapper. Sets palette inheritance.
+data-active="true"          On toggleable atoms (.wf-pill).
+data-primary="true"         On the single primary action per surface.
+data-status="open|signed"   On PRD slides; controls the sign-off dot.
+data-title="Short label"    On slides / sections; overrides the H1 in the
+                            auto-built nav.</code></pre>
+
+    <h3>Tokens</h3>
+    <pre><code>--bone-*      Bone neutrals + opacity stack.
+--dark-*      Dark neutrals + opacity stack.
+--warm-*      Warm system colors. Project layer only.
+--cool-*      Cool system colors. Project layer only.
+--font-ui     TWK Lausanne Pan — only face inside wireframes.
+              Three weights: 300 / 550 / 700.
+--font-mono   Space Mono.
+--font-note   Caveat (canvas annotation only — never UI).
+--w-body      300 · body, lede                 (Lausanne 300)
+--w-meta      300 · meta, captions             (Lausanne 300)
+--w-ui        550 · UI, labels                 (Lausanne 550)
+--w-medium    550 · medium · alias of --w-ui   (Lausanne 550)
+--w-title     550 · H2 / H3 titles             (Lausanne 550)
+--w-bold      700 · Display, H1, strong        (Lausanne 700)
+--s-1 … --s-24    Spacing scale (4 → 96 px).
+--r-0 … --r-2 · --r-full    Radii.
+--ease · --dur    Single curve, single duration.</code></pre>
+
+    <h3>Project token extensions</h3>
+    <p>Project-layer tokens (§Brand layer) follow the same prefix discipline. Each project gets its own namespace.</p>
+    <pre><code>--&lt;project&gt;-accent           Single accent color, brand-driven.
+--&lt;project&gt;-display          Brand display typeface (H1 / Display only).
+--&lt;project&gt;-photo-overlay    Optional photography tint.</code></pre>
+
+    <h3>File &amp; section IDs</h3>
+    <ul>
+      <li><strong>Files</strong> are kebab-case (<code>agent-design-guide.html</code>, <code>auth-gate.js</code>).</li>
+      <li><strong>Section IDs</strong> on this page are single words (<code>color</code>, <code>typography</code>) so anchors are short and stable.</li>
+      <li><strong>Slide IDs</strong> in PRD decks are auto-generated (<code>s1</code>, <code>s2</code>, …) — never hand-written.</li>
+    </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>&lt;div class="wf" data-mode="dark"&gt;
+  &lt;button class="wf-btn" data-primary="true"&gt;
+    Continue
+  &lt;/button&gt;
+&lt;/div&gt;</code>
+        <p class="note">Standard prefixes. State and variant via attributes.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>&lt;div class="dark-mode"&gt;
+  &lt;button class="primary-cta"&gt;Continue&lt;/button&gt;
+&lt;/div&gt;</code>
+        <p class="note">Off-system class names; agents and humans both lose the system thread.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== File map ===== -->
   <section class="ds-section" id="files" data-title="File map">
     <span class="kicker">Manual</span>
     <h2>File map.</h2>
@@ -1886,7 +2462,7 @@ mobile layout
       <div class="file-row"><span class="path">apps/wireframe-library.html</span><span class="badge" data-state="baked">Baked</span><span class="what">Canonical canvas. Inlines tokens, chrome, canvas, app. Regenerate from system/.</span></div>
       <div class="file-row"><span class="path">apps/prd-template.html</span><span class="badge" data-state="frozen">Frozen</span><span class="what">PRD foundation. Clone — never edit. Add slides only inside clones.</span></div>
       <div class="file-row"><span class="path">apps/sunspell-prd-template.html</span><span class="badge" data-state="edit">Edit</span><span class="what">Live PRD cloned from the template. Add/edit slides freely under scoped classes.</span></div>
-      <div class="file-row"><span class="path">apps/design-reference.html</span><span class="badge" data-state="edit">Edit</span><span class="what">This file. Regenerate when tokens.css or CLAUDE.md changes.</span></div>
+      <div class="file-row"><span class="path">apps/agent-design-guide.html</span><span class="badge" data-state="edit">Edit</span><span class="what">This file. Regenerate when tokens.css or CLAUDE.md changes.</span></div>
       <div class="file-row"><span class="path">templates/*.{css,jsx}</span><span class="badge" data-state="edit">Edit</span><span class="what">UI pattern source. Get inlined into wireframe-library.html.</span></div>
       <div class="file-row"><span class="path">shared/auth-gate.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Auth enforcement. Don't modify.</span></div>
       <div class="file-row"><span class="path">shared/firebase-config.js</span><span class="badge" data-state="edit">Edit</span><span class="what">Firebase keys. Edit only when auth project changes.</span></div>
@@ -1896,116 +2472,51 @@ mobile layout
     </div>
   </section>
 
-  <!-- ===== 16 · Anti-patterns ===== -->
+  <!-- ===== Shipping checklist ===== -->
+  <section class="ds-section" id="checklist" data-title="Shipping checklist">
+    <span class="kicker">Manual</span>
+    <h2>Shipping checklist.</h2>
+    <p class="lede">A frame is not done until every item below is true. Run through this list before declaring a surface shipped, and run it again whenever a frame is touched. Done is a state, not a verb.</p>
+
+    <div class="checklist">
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Paired.</strong> The surface ships as four frames: web-dark · web-light · mobile-dark · mobile-light. Missing a quadrant means the surface isn't done. (§Frames &amp; pairing)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Token-bound.</strong> No raw hex, no raw px, no font names — every value goes through <code>var(--token)</code>. Search the file for <code>#</code>, <code>px</code> outside tokens, and font literals. (§Color · §Typography · §Spacing)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Atomic.</strong> Built from <code>.wf-*</code> atoms and <code>.ki-*</code> chrome only. No bespoke component CSS introduced for this frame. (§Atoms · §Naming conventions)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Mode-clean.</strong> Atoms inherit palette from the <code>.wf[data-mode]</code> wrapper. No hardcoded fg / bg / border colours inside an atom. (§Modes)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>One primary.</strong> Each surface has exactly one <code>data-primary</code> action. Two means one of them isn't primary. (§Action hierarchy)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>States covered.</strong> The frame renders the right state for its moment. If it's an interactive surface, default + hover + focus are accounted for in the prototype. (§States)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Auth + error.</strong> If this is part of a flow, the flow includes auth path(s) and at least one error / failure state. (§Flows · Rule 05)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Labelled.</strong> The frame has a kicker + title + subtitle above it on the canvas (<code>NN — Surface · State</code>).</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Voice on.</strong> Headlines end in periods. No <em>just</em>, <em>simply</em>, <em>oops</em>, exclamation marks. Domain content is plausible, not placeholder. (§Voice &amp; microcopy · §About Aither)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Brand-layer separated.</strong> No project-specific color, photography, or display typeface inside the wireframe. Those live in the brand layer once the wireframe is approved. (§Brand layer)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Anti-patterns scanned.</strong> Run through §Anti-patterns. If any are present, fix or flag.</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Responsive at every breakpoint.</strong> Web frame works at 1440 / 1280 / 1024. Mobile frame works at 390 / 360. No content clipped, no chrome overlapping content.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== Anti-patterns ===== -->
   <section class="ds-section" id="never" data-title="Anti-patterns">
     <span class="kicker">Manual</span>
     <h2>Anti-patterns.</h2>
     <p class="lede">A consolidated list of moves that are wrong inside this system. If you find yourself reaching for one of these, stop and reach for the recipe instead.</p>
 
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hardcoded hex codes in component styles.</p><p>Always <code>var(--token)</code>. The hex below is the same color but unsubscribed from the system.</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro inside a wireframe.</p><p>Apercu is display-only. Wireframes use <code>--font-ui</code> (Lausanne / Inter) and <code>--font-mono</code>.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro or Inter inside a wireframe.</p><p>Apercu is display-only and lives on the home tile. Inter is not in the system at all. Wireframes use <code>--font-ui</code> (Lausanne 300 / 550 / 700) and <code>--font-mono</code> (Space Mono) — nothing else.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Color used to indicate state, severity, or selection in a wireframe.</p><p>Use weight, size, position, or filled-fg inversion. Color in a wireframe reads as branding intent (Rule 04).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">A new H1/H2 size, a new spacing value, a new radius.</p><p>The scale is sparse on purpose. Pick the closest existing token (§Typography, §Spacing, §Radii).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, <code>shared/comments.js</code>, or pan/zoom logic in <code>system/app.jsx</code>.</p><p>Frozen infrastructure (Rule 02). Add new content under scoped classes; don't edit the frame.</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-edit <code>&lt;nav id="index-nav"&gt;</code> inside a deck, or write slide numbers into <code>.tag</code> / <code>.page</code>.</p><p>The deck script rebuilds those on load — your edits are discarded.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-edit <code>&lt;nav id="ds-menu-nav"&gt;</code> inside a deck, or write slide numbers into <code>.tag</code> / <code>.page</code>.</p><p>The shared menu rebuilds the nav and the deck runtime stamps the numbers on load — your edits are discarded.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Animate <code>all</code>, animate layout properties, or invent a duration.</p><p>One <code>--dur</code>, one <code>--ease</code>, on color/border/background/transform only (§Motion).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Ship a flow without auth and at least one error state.</p><p>Rule 05. If they're missing from the source, write them or flag the gap.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apologetic, cute, or exclamatory copy.</p><p>Wireframes communicate in short declarative sentences. No <em>"oops"</em>, no exclamation marks.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§Atomic taxonomy).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Render OS or device chrome inside a wireframe.</p><p>No iOS / Android status bar (carrier · time · battery), no notch or Dynamic Island, no home indicator, no Mac menu bar / Touch Bar, no browser address bar, no scroll bars drawn into the frame. Wireframes show only the product surface. The mobile frame starts at the app's first pixel — the surrounding device is implied by the 390 × 844 ratio, not drawn.</p></div>
   </section>
 
 </main>
 
 <script>
-  /* Build the index from sections (auto-numbered) + mobile sheet behavior. */
-  (function () {
-    var nav      = document.getElementById('ds-nav');
-    var sheet    = document.getElementById('ds-index');
-    var backdrop = document.getElementById('ds-backdrop');
-    var toggle   = document.getElementById('ds-mobile-toggle');
-    var curNum   = document.getElementById('ds-cur-num');
-    var curLabel = document.getElementById('ds-cur-label');
-
-    var sections = Array.prototype.slice.call(document.querySelectorAll('.ds-section'));
-    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-
-    function closeSheet() {
-      sheet.classList.remove('open');
-      backdrop.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('ds-locked');
-    }
-    function openSheet() {
-      sheet.classList.add('open');
-      backdrop.classList.add('open');
-      toggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('ds-locked');
-    }
-
-    sections.forEach(function (s, i) {
-      var num = i + 1;
-      var label = s.getAttribute('data-title') || ('Section ' + num);
-      var a = document.createElement('a');
-      a.href = '#' + s.id;
-      a.dataset.num = pad(num);
-      a.dataset.label = label;
-      var n = document.createElement('span');
-      n.className = 'n';
-      n.textContent = pad(num);
-      var l = document.createElement('span');
-      l.className = 'label';
-      l.textContent = label;
-      a.appendChild(n);
-      a.appendChild(l);
-      // Tapping a link in the mobile sheet should close it.
-      a.addEventListener('click', function () {
-        if (sheet.classList.contains('open')) closeSheet();
-      });
-      nav.appendChild(a);
-    });
-
-    var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
-    var byId = {};
-    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
-
-    function setActive(a) {
-      links.forEach(function (l) { l.classList.remove('is-active'); });
-      a.classList.add('is-active');
-      if (curNum)   curNum.textContent   = a.dataset.num   || '';
-      if (curLabel) curLabel.textContent = a.dataset.label || '';
-    }
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var a = byId[e.target.id];
-        if (a) setActive(a);
-      });
-    }, { root: null, rootMargin: '-30% 0px -60% 0px', threshold: 0 });
-    sections.forEach(function (s) { io.observe(s); });
-
-    // Initialize current label from first section.
-    if (links.length) setActive(links[0]);
-
-    // Mobile bar interactions.
-    if (toggle) {
-      toggle.addEventListener('click', function () {
-        if (sheet.classList.contains('open')) closeSheet();
-        else openSheet();
-      });
-    }
-    if (backdrop) {
-      backdrop.addEventListener('click', closeSheet);
-    }
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
-    });
-    // Close the sheet automatically if the viewport grows past the breakpoint.
-    var mq = window.matchMedia('(min-width: 901px)');
-    var onMq = function (m) { if (m.matches) closeSheet(); };
-    if (mq.addEventListener) mq.addEventListener('change', onMq);
-    else if (mq.addListener) mq.addListener(onMq);
-  })();
+  /* Index nav + scroll-spy + mobile sheet → shared/ds-menu.js. */
 
   /* Motion demo — replays the canonical ease/dur. */
   (function () {

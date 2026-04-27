@@ -1,9 +1,10 @@
 /* =========================================================
    Aither Wireframe Library — tokens
    Subset of the full Aither DS — wireframes use bone/dark
-   + TWK Lausanne Pan (300 licensed locally) as the primary
-   body font, with Inter as fallback for heavier weights.
-   No Apercu (display-only).
+   + TWK Lausanne Pan (300 / 550 / 700 licensed locally) as
+   the only body and heading face inside wireframes.
+   Apercu Pro is display-only and lives on the home tile.
+   No Inter, no system-default sans inside the wireframe.
    ========================================================= */
 
 @font-face {
@@ -13,9 +14,22 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "TWK Lausanne Pan";
+  src: url("../fonts/TWKLausannePan-550.ttf") format("truetype");
+  font-weight: 550;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TWK Lausanne Pan";
+  src: url("../fonts/TWKLausannePan-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;500;600&display=swap');
 
 :root {
   /* Neutrals */
@@ -41,7 +55,7 @@
   --cool-primary:    #796958;
   --stone:           #777777;
 
-  /* Canvas used BY the wireframes (dark = product default, light = annotated review) */
+  /* Canvas used BY the wireframes — full token values for both modes; light is the default. */
   --wf-dark-bg:      #120D0B;
   --wf-dark-fg:      #EAE4E2;
   --wf-dark-panel:   #1E1816;         /* raised surface on dark */
@@ -63,17 +77,21 @@
   --canvas-label:    rgba(234,228,226,0.45);
   --canvas-panel:    #15100E;
 
-  /* Type — TWK Lausanne Pan is the primary body font (300 licensed locally).
-     Inter carries the heavier weights until more Lausanne weights are licensed. */
-  --font-ui:         "TWK Lausanne Pan", "Inter", "Helvetica Neue", system-ui, sans-serif;
+  /* Type — TWK Lausanne Pan is the only face inside wireframes.
+     Three licensed weights: 300 (body), 550 (medium), 700 (bold).
+     Apercu lives on the home tile only; never used in --font-ui. */
+  --font-ui:         "TWK Lausanne Pan", system-ui, -apple-system, sans-serif;
   --font-mono:       "Space Mono", ui-monospace, monospace;
   --font-note:       "Caveat", "Bradley Hand", cursive;  /* for canvas labels only */
 
-  /* Weights — body renders in Lausanne 300; UI 500 / title 600 / bold 700 fall to Inter */
-  --w-ui:            500;
-  --w-title:         600;
-  --w-meta:          400;
-  --w-bold:          700;
+  /* Weights — three real Lausanne weights. The token names cover the
+     historical roles, but each one resolves to one of 300 / 550 / 700. */
+  --w-body:          300;   /* Lausanne 300 — body, lede */
+  --w-meta:          300;   /* Lausanne 300 — meta, captions */
+  --w-ui:            550;   /* Lausanne 550 — UI, labels */
+  --w-medium:        550;   /* Lausanne 550 — alias of --w-ui */
+  --w-title:         550;   /* Lausanne 550 — H2 / H3 titles */
+  --w-bold:          700;   /* Lausanne 700 — Display / H1 / strong */
 
   /* Spacing (4px base) */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px;
