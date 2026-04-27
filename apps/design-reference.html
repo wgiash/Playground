@@ -1,0 +1,1825 @@
+<!doctype html>
+<!--
+  Design Reference — the operational manual for the Aither design system.
+  Audience: humans reviewing the system, and AI agents composing inside it.
+  Source of truth: system/tokens.css + CLAUDE.md + the canvas IntroCard in
+  system/app.jsx. If those change, this file must be regenerated to match.
+
+  Voice: imperative. Every rule states the rule, then WHY (the reason behind
+  it), then HOW (when it kicks in). If a value isn't here, it isn't legal.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aither · Design Reference</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<script src="../shared/firebase-config.js"></script>
+<script src="../shared/auth-gate.js"></script>
+<style>
+  html, body {
+    background: var(--canvas-bg);
+    color: var(--canvas-fg);
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--font-ui);
+    letter-spacing: -0.01em;
+    font-weight: 300;
+  }
+  html { scroll-behavior: smooth; }
+
+  /* ========== Left index (fixed) ========== */
+  .ds-index {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    border-right: 1px solid var(--canvas-hair);
+    padding: 20px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--canvas-bg);
+    z-index: 10;
+  }
+  .ds-index .deck-title {
+    font-size: 20px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--canvas-fg);
+    margin: 32px 0 0;
+  }
+  .ds-index .deck-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 6px 0 0;
+  }
+  .ds-index h2 {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+  .ds-index nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .ds-index nav a {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--canvas-hair);
+    color: var(--canvas-fg);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: -0.005em;
+    transition: color var(--dur) var(--ease);
+    position: relative;
+  }
+  .ds-index nav a .n {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--canvas-label);
+    padding-top: 2px;
+  }
+  .ds-index nav a:hover .n,
+  .ds-index nav a.is-active .n { color: var(--canvas-fg); }
+  .ds-index nav a.is-active::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 13px;
+    width: 2px;
+    height: 14px;
+    background: var(--canvas-fg);
+  }
+  .ds-index nav::-webkit-scrollbar { width: 8px; }
+  .ds-index nav::-webkit-scrollbar-thumb {
+    background: rgba(234,228,226,0.12);
+    border-radius: 4px;
+  }
+
+  /* ========== Document (right) ========== */
+  .ds-doc {
+    margin-left: 280px;
+    padding: 96px 96px 200px;
+    max-width: 1100px;
+  }
+  .ds-section {
+    padding-block: 64px;
+    border-bottom: 1px solid var(--canvas-hair);
+    scroll-margin-top: 32px;
+  }
+  .ds-section:first-of-type { padding-top: 0; }
+  .ds-section:last-of-type { border-bottom: 0; }
+  .ds-section .kicker {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin-bottom: 18px;
+  }
+
+  /* Heading roles — these are the SAME styles documented in §Typography. */
+  .ds-section h1 {
+    font-size: 64px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    color: var(--canvas-fg);
+    margin: 0 0 24px;
+  }
+  .ds-section h2 {
+    font-size: 40px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--canvas-fg);
+    margin: 0 0 20px;
+  }
+  .ds-section h3 {
+    font-size: 14px;
+    font-weight: var(--w-ui);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--canvas-fg);
+    margin: 56px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+  .ds-section h3:first-of-type { margin-top: 36px; }
+  .ds-section h4 {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 32px 0 12px;
+  }
+  .ds-section .lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.78);
+    max-width: 64ch;
+    margin: 0 0 12px;
+    font-weight: 300;
+  }
+  .ds-section p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(234,228,226,0.62);
+    max-width: 64ch;
+    margin: 0 0 14px;
+  }
+  .ds-section p strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+  }
+  .ds-section a {
+    color: var(--canvas-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--canvas-hair);
+    text-underline-offset: 3px;
+  }
+  .ds-section a:hover { text-decoration-color: var(--canvas-fg); }
+
+  .ds-section code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--canvas-fg);
+    background: rgba(234,228,226,0.06);
+    padding: 1px 6px;
+    border-radius: var(--r-1);
+  }
+  .ds-section pre {
+    margin: 0 0 16px;
+    padding: 18px 20px;
+    background: rgba(234,228,226,0.03);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--canvas-fg);
+  }
+  .ds-section pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .ds-section ul {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(234,228,226,0.62);
+    max-width: 64ch;
+    margin: 0 0 14px;
+    padding-left: 20px;
+  }
+  .ds-section li { margin-bottom: 4px; }
+  .ds-section li::marker { color: var(--canvas-label); }
+
+  /* ========== Rule pull-out ========== */
+  .rule {
+    border-left: 2px solid var(--canvas-fg);
+    padding: 18px 22px;
+    margin: 24px 0;
+    background: rgba(234,228,226,0.025);
+    max-width: 76ch;
+  }
+  .rule .v {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .rule .r {
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--canvas-fg);
+    margin: 0 0 10px;
+    font-weight: var(--w-ui);
+    max-width: none;
+  }
+  .rule p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.62);
+    margin: 0 0 6px;
+    max-width: none;
+  }
+  .rule p:last-child { margin-bottom: 0; }
+  .rule p strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+    margin-right: 6px;
+  }
+  .rule[data-tone="warn"] { border-left-color: rgba(234,228,226,0.4); background: transparent; }
+
+  /* ========== Do / Never pair ========== */
+  .dodont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--canvas-hair);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    margin: 18px 0 24px;
+  }
+  .dodont .cell {
+    background: var(--canvas-panel);
+    padding: 18px 20px 20px;
+  }
+  .dodont .verb {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .dodont .cell.do .verb { color: var(--canvas-fg); }
+  .dodont .cell.never .verb { color: rgba(234,228,226,0.42); }
+  .dodont code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--canvas-fg);
+    background: transparent;
+    padding: 0;
+    white-space: pre-wrap;
+  }
+  .dodont .note {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(234,228,226,0.55);
+    margin-top: 8px;
+  }
+  .dodont .cell.never code { color: rgba(234,228,226,0.55); text-decoration: line-through; text-decoration-color: rgba(234,228,226,0.3); }
+
+  /* ========== Color swatches ========== */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--canvas-hair);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .swatch {
+    background: var(--canvas-panel);
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .swatch .chip {
+    width: 100%;
+    height: 64px;
+    border-radius: var(--r-1);
+    border: 1px solid rgba(234,228,226,0.06);
+    background-color: var(--c, transparent);
+    background-image:
+      linear-gradient(45deg, rgba(234,228,226,0.04) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(234,228,226,0.04) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(234,228,226,0.04) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(234,228,226,0.04) 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  }
+  .swatch[data-solid="true"] .chip { background-image: none; }
+  .swatch .meta { display: flex; flex-direction: column; gap: 4px; }
+  .swatch .name { font-family: var(--font-mono); font-size: 11px; color: var(--canvas-fg); }
+  .swatch .value { font-family: var(--font-mono); font-size: 10px; color: var(--canvas-label); }
+  .swatch .use { font-size: 11px; line-height: 1.4; color: rgba(234,228,226,0.55); margin-top: 2px; }
+
+  /* ========== Type ladder ========== */
+  .type-ladder {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .type-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+    padding: 28px 24px;
+    border-bottom: 1px solid var(--canvas-hair);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .tmeta { display: flex; flex-direction: column; gap: 6px; }
+  .type-row .tmeta .key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-fg);
+    letter-spacing: 0.04em;
+  }
+  .type-row .tmeta .px,
+  .type-row .tmeta .use {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--canvas-label);
+    line-height: 1.4;
+  }
+  .type-row .sample {
+    color: var(--canvas-fg);
+    overflow: hidden;
+  }
+
+  /* ========== Spacing ladder ========== */
+  .spacing-ladder {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .space-row {
+    display: grid;
+    grid-template-columns: 100px 80px 1fr;
+    gap: 24px;
+    padding: 14px 24px;
+    align-items: center;
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+  .space-row:last-child { border-bottom: 0; }
+  .space-row .key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-fg);
+  }
+  .space-row .px {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-label);
+  }
+  .space-row .bar {
+    height: 4px;
+    background: var(--canvas-fg);
+    border-radius: var(--r-1);
+  }
+
+  /* ========== Radius gallery ========== */
+  .radii {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .radius {
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .radius .shape {
+    width: 72px;
+    height: 72px;
+    background: var(--canvas-fg);
+  }
+  .radius .meta { text-align: center; display: flex; flex-direction: column; gap: 2px; }
+  .radius .name { font-family: var(--font-mono); font-size: 11px; color: var(--canvas-fg); }
+  .radius .value { font-family: var(--font-mono); font-size: 10px; color: var(--canvas-label); }
+  .radius .use { font-size: 11px; color: rgba(234,228,226,0.55); margin-top: 4px; line-height: 1.35; }
+
+  /* ========== Motion demo ========== */
+  .motion-demo {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 32px;
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+  }
+  .motion-track {
+    flex: 1;
+    height: 4px;
+    background: var(--canvas-hair);
+    border-radius: var(--r-1);
+    position: relative;
+  }
+  .motion-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    background: var(--canvas-fg);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: left var(--dur) var(--ease);
+  }
+  .motion-demo.run .motion-dot { left: 100%; }
+  .motion-button {
+    appearance: none;
+    background: var(--canvas-fg);
+    color: var(--canvas-bg);
+    border: 0;
+    border-radius: var(--r-full);
+    padding: 10px 18px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: var(--w-ui);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  /* ========== Atom showcase ========== */
+  .atom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--canvas-hair);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .atom {
+    background: var(--canvas-panel);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .atom .label { display: flex; flex-direction: column; gap: 4px; }
+  .atom .label .name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-fg);
+  }
+  .atom .label .desc {
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(234,228,226,0.55);
+  }
+  .atom .stage {
+    background: var(--wf-dark-bg);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    padding: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    min-height: 92px;
+  }
+  .atom .anatomy {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--canvas-label);
+    margin: 0;
+  }
+  .atom .anatomy .k { color: var(--canvas-fg); }
+
+  /* ========== Taxonomy table ========== */
+  .taxonomy {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .tax-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--canvas-hair);
+  }
+  .tax-row:last-child { border-bottom: 0; }
+  .tax-row .layer {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--canvas-fg);
+  }
+  .tax-row .desc { font-size: 13px; line-height: 1.55; color: rgba(234,228,226,0.62); }
+  .tax-row .examples {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--canvas-label);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ========== File map ========== */
+  .filemap {
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .file-row {
+    display: grid;
+    grid-template-columns: 280px 96px 1fr;
+    gap: 20px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--canvas-hair);
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .file-row:last-child { border-bottom: 0; }
+  .file-row .path {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-fg);
+  }
+  .file-row .badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--r-full);
+    border: 1px solid var(--canvas-hair);
+    color: var(--canvas-label);
+    text-align: center;
+    width: fit-content;
+  }
+  .file-row .badge[data-state="edit"] { color: var(--canvas-fg); border-color: var(--canvas-fg); }
+  .file-row .badge[data-state="frozen"] { color: rgba(234,228,226,0.42); }
+  .file-row .badge[data-state="baked"] { color: rgba(234,228,226,0.65); }
+  .file-row .what {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(234,228,226,0.62);
+  }
+
+  /* ========== Token chip (inline) ========== */
+  .token {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-full);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-fg);
+    background: rgba(234,228,226,0.03);
+  }
+  .token .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c, var(--canvas-fg));
+    border: 1px solid rgba(234,228,226,0.1);
+  }
+
+  /* ========== Recipe block ========== */
+  .recipe {
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    padding: 28px 32px;
+    margin-bottom: 16px;
+  }
+  .recipe .recipe-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin-bottom: 18px;
+  }
+  .recipe-anatomy {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 32px;
+  }
+  .recipe-render { padding: 8px 0; }
+  .recipe pre { margin: 0; }
+  @media (max-width: 800px) { .recipe-anatomy { grid-template-columns: 1fr; } }
+
+  /* ========== Home link (desktop) ========== */
+  .home-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(234,228,226,0.75);
+    background: rgba(18,13,11,0.55);
+    border: 1px solid rgba(234,228,226,0.18);
+    border-radius: var(--r-2);
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .home-link:hover { color: rgba(234,228,226,1); border-color: rgba(234,228,226,0.4); }
+
+  /* ========== Mobile bar (hidden on desktop) ========== */
+  .ds-mobile-bar { display: none; }
+  .ds-mobile-bar .ds-mobile-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    color: rgba(234,228,226,0.85);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .ds-mobile-bar .ds-mobile-toggle {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    padding: 8px 14px;
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-full);
+    background: rgba(234,228,226,0.04);
+    color: var(--canvas-fg);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .ds-mobile-bar .ds-mobile-toggle:hover { border-color: var(--canvas-label); }
+  .ds-mobile-bar .ds-mobile-toggle .cur-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--canvas-label);
+    flex-shrink: 0;
+  }
+  .ds-mobile-bar .ds-mobile-toggle .cur-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--canvas-fg);
+  }
+  .ds-mobile-bar .ds-mobile-toggle .caret {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--canvas-label);
+    transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
+    flex-shrink: 0;
+  }
+  .ds-mobile-bar .ds-mobile-toggle[aria-expanded="true"] .caret {
+    transform: rotate(180deg);
+    color: var(--canvas-fg);
+  }
+
+  /* Backdrop while the index sheet is open on mobile */
+  .ds-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11,8,7,0.6);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+  }
+  .ds-backdrop.open { display: block; }
+
+  /* ========== Tablet / mobile (≤900px): index becomes a drop-down sheet ========== */
+  @media (max-width: 900px) {
+    body { overflow-x: hidden; }
+    body.ds-locked { overflow: hidden; }
+
+    .home-link { display: none; }
+
+    .ds-mobile-bar {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: rgba(11,8,7,0.92);
+      border-bottom: 1px solid var(--canvas-hair);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 60;
+    }
+
+    .ds-index {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      width: auto;
+      max-height: calc(100vh - 56px);
+      border-right: 0;
+      border-bottom: 1px solid var(--canvas-hair);
+      padding: 20px 18px 24px;
+      gap: 14px;
+      background: rgba(11,8,7,0.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transform: translateY(-105%);
+      transition: transform var(--dur) var(--ease);
+      z-index: 50;
+      will-change: transform;
+    }
+    .ds-index.open { transform: translateY(0); }
+    .ds-index .deck-title { margin: 0; font-size: 18px; }
+    .ds-index .deck-sub { margin: 4px 0 0; }
+    .ds-index nav a { padding: 12px 0; font-size: 14px; }
+    .ds-index nav a.is-active::before { display: none; }
+    .ds-index nav a.is-active { color: var(--canvas-fg); }
+
+    .ds-doc {
+      margin-left: 0;
+      padding: 80px 32px 96px;
+      max-width: 100%;
+    }
+    .ds-section { padding-block: 56px; }
+    .ds-section h1 { font-size: 40px; }
+    .ds-section h2 { font-size: 30px; }
+
+    .type-row { grid-template-columns: 1fr; gap: 12px; }
+    .dodont { grid-template-columns: 1fr; }
+    .file-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 18px; }
+    .file-row .badge { width: fit-content; }
+    .recipe-anatomy { grid-template-columns: 1fr; gap: 24px; }
+    .swatches { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .atom-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ========== Small phone (≤640px) ========== */
+  @media (max-width: 640px) {
+    .ds-mobile-bar { padding: 8px 12px; gap: 8px; height: 52px; }
+    .ds-mobile-bar .ds-mobile-home { padding: 6px 10px; font-size: 9px; }
+    .ds-mobile-bar .ds-mobile-toggle { padding: 6px 12px; font-size: 11px; gap: 8px; }
+
+    .ds-index {
+      top: 52px;
+      max-height: calc(100vh - 52px);
+      padding: 16px 16px 20px;
+    }
+
+    .ds-doc { padding: 72px 20px 80px; }
+    .ds-section { padding-block: 44px; }
+    .ds-section h1 { font-size: 34px; letter-spacing: -0.025em; }
+    .ds-section h2 { font-size: 24px; letter-spacing: -0.02em; }
+    .ds-section h3 { font-size: 13px; margin-top: 36px; }
+    .ds-section .lede { font-size: 16px; }
+    .ds-section .kicker { margin-bottom: 14px; }
+
+    .swatches { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .swatch { padding: 12px 12px 14px; }
+    .swatch .chip { height: 48px; }
+    .swatch .name { font-size: 10px; }
+    .swatch .value { font-size: 10px; }
+    .swatch .use { font-size: 10px; }
+
+    .type-row { padding: 20px 16px; }
+    .type-row .tmeta .key { font-size: 10px; }
+    .type-row .tmeta .px,
+    .type-row .tmeta .use { font-size: 9px; }
+    /* Display sample shrinks on tiny screens — preserve readability */
+    .type-row .sample[style*="font-size: 64px"] { font-size: 36px !important; }
+    .type-row .sample[style*="font-size: 48px"] { font-size: 30px !important; }
+    .type-row .sample[style*="font-size: 28px"] { font-size: 22px !important; }
+
+    .space-row { grid-template-columns: 80px 56px 1fr; gap: 16px; padding: 12px 16px; }
+    .space-row .key, .space-row .px { font-size: 10px; }
+
+    .radii { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .radius { padding: 18px 14px 16px; }
+    .radius .shape { width: 56px; height: 56px; }
+
+    .motion-demo { padding: 20px; gap: 16px; }
+    .motion-button { padding: 8px 14px; font-size: 10px; }
+
+    .atom { padding: 20px; gap: 14px; }
+    .atom .stage { padding: 18px; min-height: 80px; }
+
+    .taxonomy .tax-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 18px; }
+    .tax-row .desc { font-size: 12px; }
+    .tax-row .examples { font-size: 9px; }
+
+    .file-row { padding: 12px 16px; }
+    .file-row .path { font-size: 10px; word-break: break-all; }
+    .file-row .what { font-size: 11px; }
+
+    .recipe { padding: 20px; }
+    .recipe-render { padding: 0; }
+    .recipe pre { font-size: 10px; padding: 14px 16px; }
+
+    .ds-section pre { padding: 14px 16px; font-size: 11px; }
+    .ds-section ul { font-size: 13px; padding-left: 18px; }
+
+    .dodont .cell { padding: 14px 16px 16px; }
+    .dodont code { font-size: 11px; }
+
+    .rule { padding: 14px 16px; margin: 18px 0; }
+    .rule .r { font-size: 14px; }
+
+    .token { padding: 3px 8px; font-size: 10px; }
+  }
+
+  /* ========== Tiny phone (≤420px) ========== */
+  @media (max-width: 420px) {
+    .ds-doc { padding: 68px 16px 64px; }
+    .ds-section { padding-block: 36px; }
+    .ds-section h1 { font-size: 28px; }
+    .ds-section h2 { font-size: 20px; }
+    .ds-section .lede { font-size: 15px; }
+    .swatches { grid-template-columns: 1fr 1fr; }
+    .radii { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="../index.html" title="Back to home">&larr; Home</a>
+
+<header class="ds-mobile-bar" id="ds-mobile-bar">
+  <a class="ds-mobile-home" href="../index.html" aria-label="Back to home">&larr; Home</a>
+  <button type="button" class="ds-mobile-toggle" id="ds-mobile-toggle" aria-controls="ds-index" aria-expanded="false">
+    <span class="cur-num" id="ds-cur-num">01</span>
+    <span class="cur-label" id="ds-cur-label">Overview</span>
+    <span class="caret" aria-hidden="true">&#9662;</span>
+  </button>
+</header>
+
+<div class="ds-backdrop" id="ds-backdrop" aria-hidden="true"></div>
+
+<aside class="ds-index" id="ds-index">
+  <div>
+    <h1 class="deck-title">Design Reference</h1>
+    <p class="deck-sub">Aither · system manual · v0.1</p>
+  </div>
+  <h2>Sections</h2>
+  <nav id="ds-nav"><!-- auto-built --></nav>
+</aside>
+
+<main class="ds-doc">
+
+  <!-- ===== 01 · Overview ===== -->
+  <section class="ds-section" id="overview" data-title="Overview">
+    <span class="kicker">Manual · 01</span>
+    <h1>The system, as rules.</h1>
+    <p class="lede">A linear, operational reference for the Aither design system. Read it before you ship anything inside this repo. Every token, scale, and atom has exactly one canonical use; this page documents what that use is, why it exists, and what's forbidden.</p>
+
+    <p>The audience is two-headed. Humans read this to review the system. Agents read this to compose inside it without re-deriving conventions every prompt. Both should be able to find a single answer to "what does <code>--canvas-hair</code> do" or "which heading do I use here" without parsing source files.</p>
+
+    <p><strong>Source of truth.</strong> If something on this page disagrees with <code>system/tokens.css</code>, tokens.css wins and this page is wrong — regenerate it. If something here disagrees with <code>CLAUDE.md</code>, CLAUDE.md wins. This document is downstream of both.</p>
+
+    <h3>How to read</h3>
+    <ul>
+      <li><strong>Rule blocks</strong> (left-bar pull-outs) are non-negotiable.</li>
+      <li><strong>Do / Never</strong> pairs show the legal form next to the most common wrong form.</li>
+      <li><strong>Mono labels</strong> (Space Mono) name tokens, files, and class selectors. If it's mono, it's a literal that exists in the codebase.</li>
+      <li><strong>Sections are numbered</strong> in the left index. Cross-references in the body use those numbers.</li>
+    </ul>
+  </section>
+
+  <!-- ===== 02 · Standing rules ===== -->
+  <section class="ds-section" id="rules" data-title="Standing rules">
+    <span class="kicker">Manual · 02</span>
+    <h2>Standing rules.</h2>
+    <p class="lede">Five rules that override everything else. They are the operational form of <code>CLAUDE.md</code>. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
+
+    <div class="rule">
+      <span class="v">Rule 01</span>
+      <p class="r">Tokens only. Never introduce a new color, font, or styling token.</p>
+      <p><strong>Why.</strong> Token sprawl is the fastest way to break consistency in a system this small. Every accidental hex code is a future inconsistency.</p>
+      <p><strong>How.</strong> If a value needs to live somewhere, pull it back to the closest existing token in <code>system/tokens.css</code>. If no token fits, raise the gap rather than inventing one.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 02</span>
+      <p class="r">Don't touch infrastructure.</p>
+      <p><strong>Why.</strong> The pan/zoom logic, canvas chrome, comment system, and base slide CSS are tuned. Edits ripple silently.</p>
+      <p><strong>How.</strong> Never modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, the pan/zoom in <code>system/app.jsx</code> beyond registering new sections, the comment system in <code>shared/comments.js</code>, or the base <code>.slide</code> / <code>.deck</code> CSS in PRD templates. Add new content under scoped classes; never override the frame.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 03</span>
+      <p class="r">Respect the atomic taxonomy.</p>
+      <p><strong>Why.</strong> The canvas is organized Foundations → Atoms → Molecules → Organisms → Patterns. Forcing a new item into the wrong layer rots the whole structure.</p>
+      <p><strong>How.</strong> When adding to the canvas, decide which layer the item belongs to (see §03), and place it under the correct labelled header. If it doesn't fit a layer, flag it instead of forcing it.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 04</span>
+      <p class="r">Color: none. Emphasis by weight and size only.</p>
+      <p><strong>Why.</strong> Wireframes communicate hierarchy through type and spacing — not hue. Color in a wireframe reads as branding intent, which is wrong at this stage.</p>
+      <p><strong>How.</strong> Use bone, dark, and the canvas neutrals. Warm and cool tones (§04) exist as system colors but are not used to indicate state, severity, or selection in wireframes. Selection = filled background; severity = position; state = label.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 05</span>
+      <p class="r">Flows always include auth and error states.</p>
+      <p><strong>Why.</strong> Happy-path flows hide every interesting design decision.</p>
+      <p><strong>How.</strong> Any flow added to the Flows zone must show its auth path(s) and at least one error/failure state in addition to the happy path. If a source template is missing them, surface the gap rather than shipping the flow without them.</p>
+    </div>
+  </section>
+
+  <!-- ===== 03 · Atomic taxonomy ===== -->
+  <section class="ds-section" id="taxonomy" data-title="Atomic taxonomy">
+    <span class="kicker">Manual · 03</span>
+    <h2>Atomic taxonomy.</h2>
+    <p class="lede">The canvas grows along five layers, left-to-right and top-to-bottom: Foundations → Atoms → Molecules → Organisms → Patterns → Flows. Every new item goes into exactly one of them, under the labelled header for that layer.</p>
+
+    <div class="taxonomy">
+      <div class="tax-row">
+        <span class="layer">Foundations</span>
+        <div>
+          <div class="desc">The non-rendered system layer: color, type, spacing, radii, motion, grid. Documented here in §04–§09. New tokens are forbidden (Rule 01).</div>
+          <div class="examples">color · type · spacing · radii · motion · grid · modes</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Atoms</span>
+        <div>
+          <div class="desc">Single-purpose primitives that take one prop and render one thing. Live in <code>system/tokens.css</code> as <code>.wf-*</code>.</div>
+          <div class="examples">.wf-kicker · .wf-meta · .wf-label · .wf-pill · .wf-btn · .wf-input · .wf-hair · .wf-dot · .wf-placeholder</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Molecules</span>
+        <div>
+          <div class="desc">Atoms composed into a labelled unit. They have a name, an anatomy, and one or two states.</div>
+          <div class="examples">labelled input · pill row · row item · empty state · search bar · meta line</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Organisms</span>
+        <div>
+          <div class="desc">Self-contained surfaces, several molecules deep. They occupy a frame and have their own header/scroll/footer.</div>
+          <div class="examples">nav · table · modal · onboarding step · settings panel · dense list</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Patterns</span>
+        <div>
+          <div class="desc">Reusable composition templates that span several frames. Currently three: dense-list, editorial-detail, multistep-form. Source under <code>templates/</code>.</div>
+          <div class="examples">dense-list · editorial-detail · multistep-form</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Flows</span>
+        <div>
+          <div class="desc">End-to-end user journeys that thread through patterns and surfaces. Each flow must include auth + error states (Rule 05). Stack vertically on the right of the canvas.</div>
+          <div class="examples">first-time user · return user · recovery · sign-out</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 04 · Color ===== -->
+  <section class="ds-section" id="color" data-title="Color">
+    <span class="kicker">Foundations · 04</span>
+    <h2>Color.</h2>
+    <p class="lede">Bone (#EAE4E2) and dark (#120D0B) are the two anchor neutrals — every interface state is built from them plus a hairline opacity stack. Warm and cool tones support specific moments. They are never branding, and never used to indicate selection or severity in wireframes (Rule 04).</p>
+
+    <h3>Neutrals · Bone</h3>
+    <div class="swatches">
+      <div class="swatch" data-solid="true" style="--c:#EAE4E2;"><div class="chip"></div><div class="meta"><span class="name">--bone</span><span class="value">#EAE4E2</span><span class="use">Foreground on dark surfaces. Primary text.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.70);"><div class="chip"></div><div class="meta"><span class="name">--bone-soft</span><span class="value">rgba 0.70</span><span class="use">Body copy on dark.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.40);"><div class="chip"></div><div class="meta"><span class="name">--bone-muted</span><span class="value">rgba 0.40</span><span class="use">Placeholder text. Disabled.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.20);"><div class="chip"></div><div class="meta"><span class="name">--bone-dim</span><span class="value">rgba 0.20</span><span class="use">Tertiary borders.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.10);"><div class="chip"></div><div class="meta"><span class="name">--bone-hairline</span><span class="value">rgba 0.10</span><span class="use">Default separator on dark.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.06);"><div class="chip"></div><div class="meta"><span class="name">--bone-raised</span><span class="value">rgba 0.06</span><span class="use">Subtle raised surface tint.</span></div></div>
+    </div>
+
+    <h3>Neutrals · Dark</h3>
+    <div class="swatches">
+      <div class="swatch" data-solid="true" style="--c:#120D0B;"><div class="chip"></div><div class="meta"><span class="name">--dark</span><span class="value">#120D0B</span><span class="use">Default product background.</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#1E1816;"><div class="chip"></div><div class="meta"><span class="name">--dark-2</span><span class="value">#1E1816</span><span class="use">Raised surface on dark.</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#271E1E;"><div class="chip"></div><div class="meta"><span class="name">--dark-3</span><span class="value">#271E1E</span><span class="use">Doubly-raised (modal over panel).</span></div></div>
+      <div class="swatch" style="--c:rgba(0,0,0,0.4);"><div class="chip"></div><div class="meta"><span class="name">--dark-raised</span><span class="value">rgba 0.40</span><span class="use">Drop-shadow tint.</span></div></div>
+      <div class="swatch" style="--c:rgba(18,13,11,0.70);"><div class="chip"></div><div class="meta"><span class="name">--dark-soft</span><span class="value">rgba 0.70</span><span class="use">Body on bone surfaces.</span></div></div>
+      <div class="swatch" style="--c:rgba(18,13,11,0.40);"><div class="chip"></div><div class="meta"><span class="name">--dark-muted</span><span class="value">rgba 0.40</span><span class="use">Placeholder on bone.</span></div></div>
+      <div class="swatch" style="--c:rgba(18,13,11,0.10);"><div class="chip"></div><div class="meta"><span class="name">--dark-hairline</span><span class="value">rgba 0.10</span><span class="use">Separator on bone.</span></div></div>
+    </div>
+
+    <h3>Warm &amp; cool</h3>
+    <p>System colors. Permitted in production surfaces, never in wireframes (Rule 04).</p>
+    <div class="swatches">
+      <div class="swatch" data-solid="true" style="--c:#F8E5D9;"><div class="chip"></div><div class="meta"><span class="name">--warm-100</span><span class="value">#F8E5D9</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#E0D5CE;"><div class="chip"></div><div class="meta"><span class="name">--warm-200</span><span class="value">#E0D5CE</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#AEA08F;"><div class="chip"></div><div class="meta"><span class="name">--warm-primary</span><span class="value">#AEA08F</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#6E615B;"><div class="chip"></div><div class="meta"><span class="name">--warm-secondary</span><span class="value">#6E615B</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#796958;"><div class="chip"></div><div class="meta"><span class="name">--cool-primary</span><span class="value">#796958</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#777777;"><div class="chip"></div><div class="meta"><span class="name">--stone</span><span class="value">#777777</span></div></div>
+    </div>
+
+    <h3>Canvas</h3>
+    <p>The gallery behind the wireframes — warmer and darker than the dark surface, intentionally subdued so it never competes with the frames in front of it.</p>
+    <div class="swatches">
+      <div class="swatch" data-solid="true" style="--c:#0B0807;"><div class="chip"></div><div class="meta"><span class="name">--canvas-bg</span><span class="value">#0B0807</span><span class="use">Page/canvas background.</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#15100E;"><div class="chip"></div><div class="meta"><span class="name">--canvas-panel</span><span class="value">#15100E</span><span class="use">Cards, slides, atom stages.</span></div></div>
+      <div class="swatch" data-solid="true" style="--c:#EAE4E2;"><div class="chip"></div><div class="meta"><span class="name">--canvas-fg</span><span class="value">#EAE4E2</span><span class="use">All foreground.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.45);"><div class="chip"></div><div class="meta"><span class="name">--canvas-label</span><span class="value">rgba 0.45</span><span class="use">Mono labels, kickers, meta.</span></div></div>
+      <div class="swatch" style="--c:rgba(234,228,226,0.08);"><div class="chip"></div><div class="meta"><span class="name">--canvas-hair</span><span class="value">rgba 0.08</span><span class="use">Default separator on canvas.</span></div></div>
+    </div>
+
+    <h3>Do / Never</h3>
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>color: var(--canvas-fg);
+border: 1px solid var(--canvas-hair);</code>
+        <p class="note">Tokens via custom properties. Hairlines via the canvas hair.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>color: #EAE4E2;
+border: 1px solid rgba(234,228,226,0.08);</code>
+        <p class="note">Bypasses the system; impossible to retheme; rots silently.</p>
+      </div>
+    </div>
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>/* selection state */
+background: var(--canvas-fg);
+color: var(--canvas-bg);</code>
+        <p class="note">Selection by inversion. Reads at every zoom.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>/* selection state */
+background: var(--warm-primary);
+color: white;</code>
+        <p class="note">Color used to indicate state (Rule 04 violation).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 05 · Typography ===== -->
+  <section class="ds-section" id="typography" data-title="Typography">
+    <span class="kicker">Foundations · 05</span>
+    <h2>Typography.</h2>
+    <p class="lede">TWK Lausanne Pan 300 carries the body. Inter steps in for the heavier weights until more Lausanne weights are licensed. Space Mono labels the system. <strong>No Apercu in wireframes</strong> — it is display-only and lives on the home tile.</p>
+
+    <h3>Families</h3>
+    <div class="atom-grid">
+      <div class="atom">
+        <div class="label">
+          <span class="name">--font-ui</span>
+          <span class="desc">Body, headings, UI. Lausanne 300 → Inter 500/600/700 fallback.</span>
+        </div>
+        <div class="stage" style="display:block; padding: 28px 32px;">
+          <div style="font-family: var(--font-ui); font-size: 28px; font-weight: 300; line-height: 1.2; letter-spacing: -0.02em;">The brief is the vibe.</div>
+          <div style="font-family: var(--font-ui); font-size: 14px; font-weight: 300; line-height: 1.55; color: rgba(234,228,226,0.7); margin-top: 8px;">A paragraph in body weight (300). Calm hierarchy, soft contrast.</div>
+        </div>
+      </div>
+      <div class="atom">
+        <div class="label">
+          <span class="name">--font-mono</span>
+          <span class="desc">Labels, kickers, system meta, code. Space Mono 400/700.</span>
+        </div>
+        <div class="stage" style="display:block; padding: 28px 32px;">
+          <div style="font-family: var(--font-mono); font-size: 22px; color: var(--canvas-fg);">FOUNDATIONS · 05</div>
+          <div style="font-family: var(--font-mono); font-size: 11px; color: rgba(234,228,226,0.7); margin-top: 12px; letter-spacing: 0.04em;">v0.1 · 2026-04-24 · designs@aither.co</div>
+        </div>
+      </div>
+      <div class="atom">
+        <div class="label">
+          <span class="name">--font-note</span>
+          <span class="desc">Canvas annotations only. Caveat (handwriting). Never UI copy.</span>
+        </div>
+        <div class="stage" style="display:block; padding: 28px 32px;">
+          <div style="font-family: var(--font-note); font-size: 28px; color: var(--canvas-fg); transform: rotate(-1.5deg);">flag this for review →</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Type scale by role</h3>
+    <p>Each role has exactly one set of values. Pick the role first, then write the markup. Never invent a size.</p>
+    <div class="type-ladder">
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Display</span><span class="px">64 / 1.02 / 600 / -0.030em</span><span class="use">Page-cover hero. Once per artifact.</span></div>
+        <div class="sample" style="font-size: 64px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.02;">Composing the system.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">H1</span><span class="px">48 / 1.04 / 600 / -0.025em</span><span class="use">Section opener within a page.</span></div>
+        <div class="sample" style="font-size: 48px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.04;">A new section.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">H2</span><span class="px">28 / 1.15 / 600 / -0.020em</span><span class="use">Subsection within a section.</span></div>
+        <div class="sample" style="font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15;">A meaningful heading.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">H3</span><span class="px">14 / 1.0 / 500 / 0.08em uc</span><span class="use">Group label within a subsection. Caps + tracked.</span></div>
+        <div class="sample" style="font-size: 14px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.0;">Group heading</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">H4</span><span class="px">11 / 1.0 / 400 / 0.14em mono uc</span><span class="use">Inline-row heading. Mono.</span></div>
+        <div class="sample" style="font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Sub-group label</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Lede</span><span class="px">18 / 1.55 / 300</span><span class="use">First paragraph after H1/H2. One only.</span></div>
+        <div class="sample" style="font-size: 18px; font-weight: 300; line-height: 1.55; color: rgba(234,228,226,0.78);">A supporting subhead under a title — it sets the room before the body fills it.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Body</span><span class="px">14 / 1.6 / 300</span><span class="use">Default paragraph.</span></div>
+        <div class="sample" style="font-size: 14px; font-weight: 300; line-height: 1.6; color: rgba(234,228,226,0.62);">Default body — TWK Lausanne Pan at 300, set warm. Read length is ~64ch.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Body Small</span><span class="px">12 / 1.5 / 300</span><span class="use">Dense lists, captions inside cards.</span></div>
+        <div class="sample" style="font-size: 12px; font-weight: 300; line-height: 1.5; color: rgba(234,228,226,0.62);">Dense body for table rows, card captions, and second-line meta.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Meta</span><span class="px">12 / 1.5 / 400</span><span class="use">Metadata pinned to a row.</span></div>
+        <div class="sample" style="font-size: 12px; font-weight: 400; line-height: 1.5; color: rgba(234,228,226,0.55);">Updated · 2026-04-24 · v0.1</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Kicker</span><span class="px">10 / 1.0 / 500 / 0.12em uc</span><span class="use">Section pre-label. Above an H1/H2.</span></div>
+        <div class="sample" style="font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.0; color: var(--canvas-label);">Foundations · 05</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Caption</span><span class="px">10 / 1.4 / 400</span><span class="use">Image / placeholder caption.</span></div>
+        <div class="sample" style="font-size: 10px; font-weight: 400; line-height: 1.4; color: rgba(234,228,226,0.55);">Fig. 01 — atom grid, dark mode.</div>
+      </div>
+      <div class="type-row">
+        <div class="tmeta"><span class="key">Mono</span><span class="px">11 / 1.6 / 400 mono</span><span class="use">Token names, code, paths.</span></div>
+        <div class="sample" style="font-family: var(--font-mono); font-size: 11px; line-height: 1.6; color: var(--canvas-fg);">var(--canvas-fg) · system/tokens.css · .wf-pill[data-active]</div>
+      </div>
+    </div>
+
+    <h3>Weights</h3>
+    <p>Four weights are defined. Use the variable, not the integer.</p>
+    <div class="swatches" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 400; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-meta</span><span class="value">400 · meta</span></div></div>
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 500; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-ui</span><span class="value">500 · UI</span></div></div>
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 600; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-title</span><span class="value">600 · title</span></div></div>
+      <div class="swatch" style="background: var(--canvas-panel); padding: 20px;"><div style="font-size: 32px; font-weight: 700; line-height: 1;">Aa</div><div class="meta"><span class="name">--w-bold</span><span class="value">700 · bold</span></div></div>
+    </div>
+
+    <h3>Do / Never</h3>
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>&lt;span class="kicker"&gt;Foundations · 04&lt;/span&gt;
+&lt;h1&gt;A new section.&lt;/h1&gt;
+&lt;p class="lede"&gt;…&lt;/p&gt;
+&lt;p&gt;Body…&lt;/p&gt;</code>
+        <p class="note">Kicker → H1 → Lede → Body. The canonical opening composition.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>&lt;h1 style="font-size: 32px"&gt;Title&lt;/h1&gt;
+&lt;h1&gt;Subtitle&lt;/h1&gt;</code>
+        <p class="note">Inline overrides invent a new size. Two H1s in one section invent a hierarchy.</p>
+      </div>
+    </div>
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>font-family: var(--font-ui);
+font-weight: var(--w-title);</code>
+        <p class="note">Always via the variable, never via the underlying name.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>font-family: "Apercu Pro";
+font-weight: 600;</code>
+        <p class="note">Apercu is display-only — never inside a wireframe.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 06 · Spacing ===== -->
+  <section class="ds-section" id="spacing" data-title="Spacing">
+    <span class="kicker">Foundations · 06</span>
+    <h2>Spacing.</h2>
+    <p class="lede">A 4px base scale. Use the named tokens — never a raw px value in production styles. The scale is intentionally sparse: one token per role, not one per pixel. If you find yourself reaching for <code>10px</code>, use <code>--s-2</code> or <code>--s-3</code>.</p>
+
+    <div class="spacing-ladder">
+      <div class="space-row"><span class="key">--s-1</span><span class="px">4 px</span><div class="bar" style="width: 4px;"></div></div>
+      <div class="space-row"><span class="key">--s-2</span><span class="px">8 px</span><div class="bar" style="width: 8px;"></div></div>
+      <div class="space-row"><span class="key">--s-3</span><span class="px">12 px</span><div class="bar" style="width: 12px;"></div></div>
+      <div class="space-row"><span class="key">--s-4</span><span class="px">16 px</span><div class="bar" style="width: 16px;"></div></div>
+      <div class="space-row"><span class="key">--s-5</span><span class="px">20 px</span><div class="bar" style="width: 20px;"></div></div>
+      <div class="space-row"><span class="key">--s-6</span><span class="px">24 px</span><div class="bar" style="width: 24px;"></div></div>
+      <div class="space-row"><span class="key">--s-8</span><span class="px">32 px</span><div class="bar" style="width: 32px;"></div></div>
+      <div class="space-row"><span class="key">--s-10</span><span class="px">40 px</span><div class="bar" style="width: 40px;"></div></div>
+      <div class="space-row"><span class="key">--s-12</span><span class="px">48 px</span><div class="bar" style="width: 48px;"></div></div>
+      <div class="space-row"><span class="key">--s-16</span><span class="px">64 px</span><div class="bar" style="width: 64px;"></div></div>
+      <div class="space-row"><span class="key">--s-20</span><span class="px">80 px</span><div class="bar" style="width: 80px;"></div></div>
+      <div class="space-row"><span class="key">--s-24</span><span class="px">96 px</span><div class="bar" style="width: 96px;"></div></div>
+    </div>
+
+    <h3>Composition rules</h3>
+    <ul>
+      <li><strong>Inside an atom</strong> (button, pill, input): <code>--s-2</code> to <code>--s-4</code> for padding; <code>--s-2</code> for icon-text gap.</li>
+      <li><strong>Between atoms in a molecule</strong> (label + input, kicker + heading): <code>--s-2</code> to <code>--s-3</code>.</li>
+      <li><strong>Between molecules in an organism</strong> (form rows, list rows): <code>--s-4</code> to <code>--s-6</code>.</li>
+      <li><strong>Between organism sections</strong> on a page: <code>--s-12</code> to <code>--s-16</code>.</li>
+      <li><strong>Between top-level sections</strong> (between H1 sections of a doc): <code>--s-20</code> to <code>--s-24</code>.</li>
+      <li><strong>Frame side margin</strong> on the canvas: 24px (locked, see §13 Grid).</li>
+    </ul>
+  </section>
+
+  <!-- ===== 07 · Radii ===== -->
+  <section class="ds-section" id="radii" data-title="Radii">
+    <span class="kicker">Foundations · 07</span>
+    <h2>Radii.</h2>
+    <p class="lede">Four radii. Two are structural (sharp + slightly rounded). One is for inputs. The pill is reserved.</p>
+
+    <div class="radii">
+      <div class="radius"><div class="shape" style="border-radius: 0;"></div><div class="meta"><span class="name">--r-0</span><span class="value">0</span><span class="use">Hairlines, full-bleed dividers.</span></div></div>
+      <div class="radius"><div class="shape" style="border-radius: 2px;"></div><div class="meta"><span class="name">--r-1</span><span class="value">2 px</span><span class="use">Inputs, chips, placeholders.</span></div></div>
+      <div class="radius"><div class="shape" style="border-radius: 4px;"></div><div class="meta"><span class="name">--r-2</span><span class="value">4 px</span><span class="use">Cards, panels, slides, atom stages.</span></div></div>
+      <div class="radius"><div class="shape" style="border-radius: 9999px;"></div><div class="meta"><span class="name">--r-full</span><span class="value">pill</span><span class="use">Buttons, pills, avatars only.</span></div></div>
+    </div>
+
+    <div class="rule" data-tone="warn">
+      <span class="v">Reserved</span>
+      <p class="r"><code>--r-full</code> is for chips, buttons, and avatars only.</p>
+      <p>If a card or container looks like it wants to be a pill, the type system is wrong, not the radius.</p>
+    </div>
+  </section>
+
+  <!-- ===== 08 · Motion ===== -->
+  <section class="ds-section" id="motion" data-title="Motion">
+    <span class="kicker">Foundations · 08</span>
+    <h2>Motion.</h2>
+    <p class="lede">One duration, one easing curve. Everything that moves uses these. The curve favors a fast start and a long tail — feels like a heavy object settling, not a tween.</p>
+
+    <p><span class="token">--dur</span> &nbsp; <span class="token">280 ms</span> &nbsp;&nbsp; <span class="token">--ease</span> &nbsp; <span class="token">cubic-bezier(0.32, 0.72, 0, 1)</span></p>
+
+    <div class="motion-demo" id="motion-demo">
+      <button class="motion-button" type="button" id="motion-trigger">Play</button>
+      <div class="motion-track"><div class="motion-dot"></div></div>
+    </div>
+
+    <h3>When to animate</h3>
+    <ul>
+      <li><strong>Hover/focus</strong> on interactive atoms — <code>color</code>, <code>border-color</code>, <code>background</code> only.</li>
+      <li><strong>Mode change</strong> (dark/light) — fade panel + foreground, never animate type sizes.</li>
+      <li><strong>Sheet / modal entry</strong> — slide + fade together with one <code>--dur</code>.</li>
+    </ul>
+
+    <h3>When not to</h3>
+    <ul>
+      <li>Layout transitions inside a list (rows reordering, items adding) — feels noisy, doesn't earn its frame budget.</li>
+      <li>Zoom-in animations on the pan/zoom canvas — the user controls the camera; we never do.</li>
+      <li>Decorative loops (pulses, breathing, rotating). The system does not pulse.</li>
+    </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>transition: color var(--dur) var(--ease),
+            border-color var(--dur) var(--ease);</code>
+        <p class="note">Both tokens. One duration, one curve.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>transition: all 0.2s ease-out;</code>
+        <p class="note">Bypasses tokens; <code>all</code> animates layout properties you didn't intend.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 09 · Modes ===== -->
+  <section class="ds-section" id="modes" data-title="Modes">
+    <span class="kicker">Foundations · 09</span>
+    <h2>Modes.</h2>
+    <p class="lede">Two modes, paired everywhere. <strong>Dark</strong> is the product default — what users see. <strong>Light</strong> is the annotated review context — what the team marks up. Every wireframe ships in both, and the canvas displays them side-by-side.</p>
+
+    <p>The mode lives on the outer <code>.wf</code> wrapper as <code>data-mode="dark"</code> or <code>data-mode="light"</code>. Atoms inside the wrapper inherit <code>--bg</code>, <code>--fg</code>, <code>--fg-soft</code>, <code>--fg-mute</code>, <code>--panel</code>, <code>--input</code>, <code>--hair</code>, <code>--hair-2</code>, and <code>--placeholder</code> from it. <strong>Atoms never hardcode a palette.</strong></p>
+
+    <pre><code>&lt;div class="wf" data-mode="dark"&gt;
+  &lt;span class="wf-kicker"&gt;Section&lt;/span&gt;
+  &lt;button class="wf-btn" data-primary="true"&gt;Continue&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="wf" data-mode="light"&gt;
+  &lt;span class="wf-kicker"&gt;Section&lt;/span&gt;
+  &lt;button class="wf-btn" data-primary="true"&gt;Continue&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <p>Both blocks render the same atoms; the wrapper supplies the palette. To restyle, retheme, or pair a frame in both modes, change the wrapper, never the atom.</p>
+  </section>
+
+  <!-- ===== 10 · Atoms ===== -->
+  <section class="ds-section" id="atoms" data-title="Atoms">
+    <span class="kicker">Components · 10</span>
+    <h2>Atoms.</h2>
+    <p class="lede">The shared primitives every wireframe is built from. Each lives under <code>.wf-*</code> in <code>system/tokens.css</code> and inherits its palette from the parent <code>.wf[data-mode]</code> wrapper (§09).</p>
+
+    <div class="atom-grid">
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-kicker</span><span class="desc">Section pre-label. Always sits above an H1 or H2. 10/0.08em uc.</span></div>
+        <div class="stage wf" data-mode="dark"><span class="wf-kicker">Foundations · Color</span></div>
+        <pre class="anatomy"><span class="k">font-size</span>: 10px
+<span class="k">letter-spacing</span>: 0.08em
+<span class="k">text-transform</span>: uppercase
+<span class="k">color</span>: var(--fg-mute)</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-meta</span><span class="desc">Inline metadata in body weight. 12px / soft fg.</span></div>
+        <div class="stage wf" data-mode="dark"><span class="wf-meta">Updated · 2026-04-24 · v0.1</span></div>
+        <pre class="anatomy"><span class="k">font-size</span>: 12px
+<span class="k">color</span>: var(--fg-soft)
+<span class="k">font-weight</span>: var(--w-meta)</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-label</span><span class="desc">Sits above an input. 10/0.1em uc. Margin-bottom built-in.</span></div>
+        <div class="stage wf" data-mode="dark" style="display:block;"><label class="wf-label">Email</label><div class="wf-input"><input type="text" placeholder="you@aither.co"></div></div>
+        <pre class="anatomy"><span class="k">font-size</span>: 10px
+<span class="k">letter-spacing</span>: 0.1em
+<span class="k">color</span>: var(--fg-soft)
+<span class="k">margin-bottom</span>: 6px</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-pill</span><span class="desc">Toggleable chip. Use <code>data-active="true"</code> for the selected state.</span></div>
+        <div class="stage wf" data-mode="dark"><span class="wf-pill">Default</span><span class="wf-pill" data-active="true">Active</span><span class="wf-pill">Trailing</span></div>
+        <pre class="anatomy"><span class="k">padding</span>: 6px 14px
+<span class="k">border</span>: 1px solid var(--hair-2)
+<span class="k">border-radius</span>: var(--r-full)
+<span class="k">[active]</span> bg: var(--fg)</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-btn</span><span class="desc">Pill button. <code>data-primary="true"</code> for filled, default for outlined.</span></div>
+        <div class="stage wf" data-mode="dark"><button class="wf-btn">Secondary</button><button class="wf-btn" data-primary="true">Primary</button></div>
+        <pre class="anatomy"><span class="k">padding</span>: 10px 18px
+<span class="k">border-radius</span>: var(--r-full)
+<span class="k">font-size</span>: 12px / uc / 0.04em
+<span class="k">[primary]</span> bg + fg invert</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-input</span><span class="desc">Standard input well. 14/1.2 with mute placeholder. Wrap a native input.</span></div>
+        <div class="stage wf" data-mode="dark" style="display:block;"><div class="wf-input"><input type="text" placeholder="Search the system…"></div></div>
+        <pre class="anatomy"><span class="k">padding</span>: 12px 14px
+<span class="k">background</span>: var(--input)
+<span class="k">border</span>: 1px solid var(--hair)
+<span class="k">border-radius</span>: var(--r-1)</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-hair</span><span class="desc">1px hairline divider. Inherits parent <code>--hair</code>.</span></div>
+        <div class="stage wf" data-mode="dark" style="display:block;"><div style="font-size:12px;color:rgba(234,228,226,0.65);margin-bottom:12px;">Above</div><div class="wf-hair"></div><div style="font-size:12px;color:rgba(234,228,226,0.65);margin-top:12px;">Below</div></div>
+        <pre class="anatomy"><span class="k">height</span>: 1px
+<span class="k">background</span>: var(--hair)
+<span class="k">width</span>: 100%</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-dot</span><span class="desc">4px filled dot. Inherits color via <code>currentColor</code>.</span></div>
+        <div class="stage wf" data-mode="dark"><span style="color:rgba(234,228,226,0.65);font-size:12px;">More <span class="wf-dot"></span> <span class="wf-dot"></span> <span class="wf-dot"></span></span></div>
+        <pre class="anatomy"><span class="k">width</span>: 4px
+<span class="k">height</span>: 4px
+<span class="k">border-radius</span>: 50%
+<span class="k">background</span>: currentColor</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf-placeholder</span><span class="desc">Image / media block. Inherits panel tone. Set explicit height.</span></div>
+        <div class="stage wf" data-mode="dark" style="display:block;"><div class="wf-placeholder" style="height:96px;">image · 16:9</div></div>
+        <pre class="anatomy"><span class="k">background</span>: var(--placeholder)
+<span class="k">border-radius</span>: var(--r-1)
+<span class="k">font-size</span>: 10px / 0.14em uc</pre>
+      </div>
+
+      <div class="atom">
+        <div class="label"><span class="name">.wf[data-mode="light"]</span><span class="desc">Same atoms, swapped palette. Used for annotated review.</span></div>
+        <div class="stage wf" data-mode="light" style="background:var(--wf-light-bg);"><span class="wf-pill">Default</span><span class="wf-pill" data-active="true">Active</span><button class="wf-btn" data-primary="true">Primary</button></div>
+        <pre class="anatomy"><span class="k">--bg</span>: #EAE4E2
+<span class="k">--fg</span>: #120D0B
+<span class="k">--panel</span>: #E0D5CE
+<span class="k">--input</span>: #F3EEEC</pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 11 · Composition recipes ===== -->
+  <section class="ds-section" id="recipes" data-title="Composition recipes">
+    <span class="kicker">Patterns · 11</span>
+    <h2>Composition recipes.</h2>
+    <p class="lede">The canonical compositions you should reach for first. Each one is the answer to "how do I open a section / build a form / lay out a row in this system." If your need maps to a recipe, use it. If it doesn't, ask before inventing.</p>
+
+    <div class="recipe">
+      <div class="recipe-title">Recipe · Section opener</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--canvas-label); margin-bottom: 14px;">Foundations · 04</div>
+          <div style="font-size: 40px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 16px;">Color.</div>
+          <div style="font-size: 18px; line-height: 1.55; color: rgba(234,228,226,0.78); margin-bottom: 12px;">Bone and dark are the anchor neutrals — every interface state is built from them.</div>
+          <div style="font-size: 14px; line-height: 1.6; color: rgba(234,228,226,0.62);">Warm and cool tones support specific moments. They are never branding.</div>
+        </div>
+        <pre><code>kicker (10/uc)
+  ↓
+H1 (48 / 600)  or  H2 (28 / 600)
+  ↓
+.lede (18 / 0.78 fg)
+  ↓
+body (14 / 0.62 fg)</code></pre>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-title">Recipe · Form anatomy</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render wf" data-mode="dark" style="background: var(--wf-dark-bg); padding: 24px; border: 1px solid var(--canvas-hair); border-radius: var(--r-2);">
+          <label class="wf-label">Email</label>
+          <div class="wf-input" style="margin-bottom: 16px;"><input type="text" placeholder="you@aither.co"></div>
+          <label class="wf-label">Workspace</label>
+          <div class="wf-input" style="margin-bottom: 24px;"><input type="text" placeholder="aither.co"></div>
+          <button class="wf-btn" data-primary="true">Continue</button>
+        </div>
+        <pre><code>.wf-label
+  ↓ (--s-2 / 6px)
+.wf-input
+  ↓ (--s-4 / 16px between fields)
+.wf-label
+  ↓ (--s-2)
+.wf-input
+  ↓ (--s-6 / 24px before action)
+.wf-btn[data-primary]</code></pre>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-title">Recipe · List row</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render wf" data-mode="dark" style="background: var(--wf-dark-bg); padding: 16px 0; border-top: 1px solid var(--canvas-hair); border-bottom: 1px solid var(--canvas-hair);">
+          <div style="display: grid; grid-template-columns: 32px 1fr auto; gap: 16px; align-items: center; padding: 12px 16px;">
+            <div class="wf-placeholder" style="width: 32px; height: 32px;"></div>
+            <div>
+              <div style="font-size: 14px; color: var(--canvas-fg);">Item title</div>
+              <div style="font-size: 12px; color: rgba(234,228,226,0.55);">Meta · sub-meta</div>
+            </div>
+            <span class="wf-pill">Action</span>
+          </div>
+        </div>
+        <pre><code>grid:
+  [icon 32]   [body 1fr]   [action auto]
+  gap: --s-4
+  padding: --s-3 --s-4
+  divider: .wf-hair top + bottom
+
+leading icon and trailing action:
+  flex-shrink: 0  (never collapse)</code></pre>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-title">Recipe · Empty state</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render wf" data-mode="dark" style="background: var(--wf-dark-bg); padding: 48px 32px; border: 1px solid var(--canvas-hair); border-radius: var(--r-2); text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(234,228,226,0.45); margin-bottom: 12px;">Empty</div>
+          <div style="font-size: 18px; font-weight: 500; color: var(--canvas-fg); margin-bottom: 8px;">Nothing to show yet.</div>
+          <div style="font-size: 13px; line-height: 1.5; color: rgba(234,228,226,0.55); max-width: 32ch; margin: 0 auto 18px;">Add an item from the toolbar above and it will land here.</div>
+          <button class="wf-btn">Add item</button>
+        </div>
+        <pre><code>kicker (uc)
+  ↓
+title (18/500)
+  ↓
+helper body (13/0.55 fg, 32ch)
+  ↓
+.wf-btn (secondary)
+
+never:
+- exclamation marks
+- "Oops"
+- decorative illustration</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 12 · Flows ===== -->
+  <section class="ds-section" id="flows" data-title="Flows">
+    <span class="kicker">Patterns · 12</span>
+    <h2>Flows.</h2>
+    <p class="lede">A flow is a labelled sequence of frames stacked vertically on the right of the canvas. Every flow represents one user journey from a starting state to a steady state. Every flow ships with auth and error states (Rule 05).</p>
+
+    <h3>What every flow must contain</h3>
+    <ul>
+      <li><strong>Entry frame</strong> — where the user starts (signed-out, signed-in cold, or returning).</li>
+      <li><strong>Auth path(s)</strong> — sign-in, sign-up, or session-recovery, whichever the journey actually crosses.</li>
+      <li><strong>Happy path</strong> — the steady-state sequence.</li>
+      <li><strong>At least one error / failure state</strong> — invalid input, network failure, expired session, denied permission. Pick the one most likely on this journey.</li>
+      <li><strong>Exit / steady state</strong> — what the screen looks like after success.</li>
+    </ul>
+
+    <div class="rule">
+      <span class="v">Rule 05 (restated)</span>
+      <p class="r">If a flow's source template is missing auth or error states, surface the gap rather than shipping the flow without them.</p>
+      <p>The right move is to write the missing frames yourself if you have what you need, or to flag them as TODO with a one-line note about what they should contain.</p>
+    </div>
+
+    <h3>Frame labelling</h3>
+    <p>Every frame in a flow has a label above it: <code>NN — Surface · State</code>. Numbers are sequential within the flow. Surface is a noun (Sign in, Dashboard, Settings). State is a state (cold, with-data, error, success).</p>
+    <pre><code>01 — Sign in · cold
+02 — Sign in · validating
+03 — Sign in · error · invalid email
+04 — Dashboard · cold
+05 — Dashboard · with-data</code></pre>
+  </section>
+
+  <!-- ===== 13 · Grid ===== -->
+  <section class="ds-section" id="grid" data-title="Grid">
+    <span class="kicker">Foundations · 13</span>
+    <h2>Grid.</h2>
+    <p class="lede">Two grids, one per surface family. The numbers below are locked from the canvas IntroCard (<code>system/app.jsx</code>).</p>
+
+    <div class="taxonomy">
+      <div class="tax-row">
+        <span class="layer">Web</span>
+        <div>
+          <div class="desc">12 columns. 24px gutter. 24px side margin.</div>
+          <div class="examples">12-col · 24px gutter · 24px side margin</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Mobile</span>
+        <div>
+          <div class="desc">4 columns. 24px gutter. 24px side margin.</div>
+          <div class="examples">4-col · 24px gutter · 24px side margin</div>
+        </div>
+      </div>
+    </div>
+
+    <p>The gutter and side margin are the same on both surface families. Don't widen the side margin to "breathe" a frame; widen the inset of the content instead.</p>
+  </section>
+
+  <!-- ===== 14 · Voice & microcopy ===== -->
+  <section class="ds-section" id="voice" data-title="Voice &amp; microcopy">
+    <span class="kicker">Manual · 14</span>
+    <h2>Voice &amp; microcopy.</h2>
+    <p class="lede">The system speaks in short, declarative sentences. Headlines end in periods. Kickers are categorical, not editorial. Errors are dignified, not apologetic.</p>
+
+    <h3>Kickers</h3>
+    <ul>
+      <li>Format: <code>Group · Number</code> or <code>Group · Subgroup</code>. Period-separated, never commas.</li>
+      <li>Examples: <code>Foundations · 04</code> · <code>Patterns · 11</code> · <code>Sign in · cold</code> · <code>Updated · 2026-04-24</code></li>
+      <li>Never use a kicker as a sentence. Never punctuate with a period at the end.</li>
+    </ul>
+
+    <h3>Headlines</h3>
+    <ul>
+      <li>Always end with a period. <em>"Color."</em> not <em>"Color"</em>.</li>
+      <li>Keep to ~20 characters. Two short sentences beat one long one.</li>
+      <li>Lowercase nouns ("color", "spacing") when the kicker has already named the category.</li>
+    </ul>
+
+    <h3>Body</h3>
+    <ul>
+      <li>Lead with the rule, then the reason.</li>
+      <li>~64ch line length. Two short paragraphs beat one long one.</li>
+      <li>Forbidden words in product copy: <em>just</em>, <em>simply</em>, <em>oops</em>, <em>woops</em>, <em>uh-oh</em>, exclamation marks.</li>
+    </ul>
+
+    <h3>Empty &amp; error states</h3>
+    <ul>
+      <li>State the situation in five words. <em>"Nothing to show yet."</em> · <em>"Couldn't reach the server."</em></li>
+      <li>One next-step sentence. ~32ch.</li>
+      <li>One action button. Secondary by default — primary only if there's a single right move.</li>
+      <li>Never apologetic, never cute.</li>
+    </ul>
+  </section>
+
+  <!-- ===== 15 · File map ===== -->
+  <section class="ds-section" id="files" data-title="File map">
+    <span class="kicker">Manual · 15</span>
+    <h2>File map.</h2>
+    <p class="lede">Where things live, and what you're allowed to do to them. <code>EDIT</code> = open for changes. <code>BAKED</code> = generated output, regenerate from source. <code>FROZEN</code> = infrastructure, never modify (Rule 02).</p>
+
+    <div class="filemap">
+      <div class="file-row"><span class="path">system/tokens.css</span><span class="badge" data-state="edit">Edit</span><span class="what">All design tokens. Source of truth for color, type, spacing, radii, motion, atoms.</span></div>
+      <div class="file-row"><span class="path">system/canvas.css</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Canvas chrome (top bar, scale controls). Don't restyle.</span></div>
+      <div class="file-row"><span class="path">system/chrome.css</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Frame chrome shared across wireframes. Don't modify.</span></div>
+      <div class="file-row"><span class="path">system/app.jsx</span><span class="badge" data-state="edit">Edit*</span><span class="what">Canvas app. Add new frame registrations only. Never modify pan/zoom logic.</span></div>
+      <div class="file-row"><span class="path">system/app.combined.jsx</span><span class="badge" data-state="baked">Baked</span><span class="what">Combined source for canvas. Regenerated from app.jsx + atoms + templates.</span></div>
+      <div class="file-row"><span class="path">apps/wireframe-library.html</span><span class="badge" data-state="baked">Baked</span><span class="what">Canonical canvas. Inlines tokens, chrome, canvas, app. Regenerate from system/.</span></div>
+      <div class="file-row"><span class="path">apps/prd-template.html</span><span class="badge" data-state="frozen">Frozen</span><span class="what">PRD foundation. Clone — never edit. Add slides only inside clones.</span></div>
+      <div class="file-row"><span class="path">apps/sunspell-prd-template.html</span><span class="badge" data-state="edit">Edit</span><span class="what">Live PRD cloned from the template. Add/edit slides freely under scoped classes.</span></div>
+      <div class="file-row"><span class="path">apps/design-reference.html</span><span class="badge" data-state="edit">Edit</span><span class="what">This file. Regenerate when tokens.css or CLAUDE.md changes.</span></div>
+      <div class="file-row"><span class="path">templates/*.{css,jsx}</span><span class="badge" data-state="edit">Edit</span><span class="what">UI pattern source. Get inlined into wireframe-library.html.</span></div>
+      <div class="file-row"><span class="path">shared/auth-gate.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Auth enforcement. Don't modify.</span></div>
+      <div class="file-row"><span class="path">shared/firebase-config.js</span><span class="badge" data-state="edit">Edit</span><span class="what">Firebase keys. Edit only when auth project changes.</span></div>
+      <div class="file-row"><span class="path">shared/comments.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">In-page comment system. Don't modify.</span></div>
+      <div class="file-row"><span class="path">shared/comments-brand.css</span><span class="badge" data-state="edit">Edit</span><span class="what">Comment system styling. Token-bound.</span></div>
+      <div class="file-row"><span class="path">CLAUDE.md</span><span class="badge" data-state="edit">Edit</span><span class="what">Project rules read by every agent. Source of truth for §02.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== 16 · Anti-patterns ===== -->
+  <section class="ds-section" id="never" data-title="Anti-patterns">
+    <span class="kicker">Manual · 16</span>
+    <h2>Anti-patterns.</h2>
+    <p class="lede">A consolidated list of moves that are wrong inside this system. If you find yourself reaching for one of these, stop and reach for the recipe instead.</p>
+
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hardcoded hex codes in component styles.</p><p>Always <code>var(--token)</code>. The hex below is the same color but unsubscribed from the system.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro inside a wireframe.</p><p>Apercu is display-only. Wireframes use <code>--font-ui</code> (Lausanne / Inter) and <code>--font-mono</code>.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Color used to indicate state, severity, or selection in a wireframe.</p><p>Use weight, size, position, or filled-fg inversion. Color in a wireframe reads as branding intent (Rule 04).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">A new H1/H2 size, a new spacing value, a new radius.</p><p>The scale is sparse on purpose. Pick the closest existing token (§05, §06, §07).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, <code>shared/comments.js</code>, or pan/zoom logic in <code>system/app.jsx</code>.</p><p>Frozen infrastructure (Rule 02). Add new content under scoped classes; don't edit the frame.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-edit <code>&lt;nav id="index-nav"&gt;</code> inside a deck, or write slide numbers into <code>.tag</code> / <code>.page</code>.</p><p>The deck script rebuilds those on load — your edits are discarded.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Animate <code>all</code>, animate layout properties, or invent a duration.</p><p>One <code>--dur</code>, one <code>--ease</code>, on color/border/background/transform only (§08).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Ship a flow without auth and at least one error state.</p><p>Rule 05. If they're missing from the source, write them or flag the gap.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apologetic, cute, or exclamatory copy.</p><p>Wireframes communicate in short declarative sentences. No <em>"oops"</em>, no exclamation marks.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§03).</p></div>
+  </section>
+
+</main>
+
+<script>
+  /* Build the index from sections (auto-numbered) + mobile sheet behavior. */
+  (function () {
+    var nav      = document.getElementById('ds-nav');
+    var sheet    = document.getElementById('ds-index');
+    var backdrop = document.getElementById('ds-backdrop');
+    var toggle   = document.getElementById('ds-mobile-toggle');
+    var curNum   = document.getElementById('ds-cur-num');
+    var curLabel = document.getElementById('ds-cur-label');
+
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.ds-section'));
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+    function closeSheet() {
+      sheet.classList.remove('open');
+      backdrop.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('ds-locked');
+    }
+    function openSheet() {
+      sheet.classList.add('open');
+      backdrop.classList.add('open');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('ds-locked');
+    }
+
+    sections.forEach(function (s, i) {
+      var num = i + 1;
+      var label = s.getAttribute('data-title') || ('Section ' + num);
+      var a = document.createElement('a');
+      a.href = '#' + s.id;
+      a.dataset.num = pad(num);
+      a.dataset.label = label;
+      var n = document.createElement('span');
+      n.className = 'n';
+      n.textContent = pad(num);
+      var l = document.createElement('span');
+      l.className = 'label';
+      l.textContent = label;
+      a.appendChild(n);
+      a.appendChild(l);
+      // Tapping a link in the mobile sheet should close it.
+      a.addEventListener('click', function () {
+        if (sheet.classList.contains('open')) closeSheet();
+      });
+      nav.appendChild(a);
+    });
+
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+
+    function setActive(a) {
+      links.forEach(function (l) { l.classList.remove('is-active'); });
+      a.classList.add('is-active');
+      if (curNum)   curNum.textContent   = a.dataset.num   || '';
+      if (curLabel) curLabel.textContent = a.dataset.label || '';
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var a = byId[e.target.id];
+        if (a) setActive(a);
+      });
+    }, { root: null, rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+    sections.forEach(function (s) { io.observe(s); });
+
+    // Initialize current label from first section.
+    if (links.length) setActive(links[0]);
+
+    // Mobile bar interactions.
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        if (sheet.classList.contains('open')) closeSheet();
+        else openSheet();
+      });
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', closeSheet);
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
+    });
+    // Close the sheet automatically if the viewport grows past the breakpoint.
+    var mq = window.matchMedia('(min-width: 901px)');
+    var onMq = function (m) { if (m.matches) closeSheet(); };
+    if (mq.addEventListener) mq.addEventListener('change', onMq);
+    else if (mq.addListener) mq.addListener(onMq);
+  })();
+
+  /* Motion demo — replays the canonical ease/dur. */
+  (function () {
+    var demo = document.getElementById('motion-demo');
+    var btn  = document.getElementById('motion-trigger');
+    if (!demo || !btn) return;
+    btn.addEventListener('click', function () {
+      demo.classList.remove('run');
+      void demo.offsetWidth;
+      demo.classList.add('run');
+    });
+  })();
+</script>
+
+<script src="../shared/firebase-config.js"></script>
+<script src="../shared/comments.js" defer></script>
+<link rel="stylesheet" href="../shared/comments-brand.css">
+</body>
+</html>

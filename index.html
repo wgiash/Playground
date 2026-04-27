@@ -181,6 +181,105 @@
 
   .tile[hidden] { display: none; }
 
+  /* ---------- Folder tile (iOS-style) ---------- */
+  .tile.is-folder {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tile.is-folder .icon {
+    padding: 12px;
+    background: var(--canvas-bg);
+  }
+  .tile.is-folder:hover .icon {
+    background: var(--dark-2);
+  }
+  .folder-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+  .folder-grid .mini {
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .folder-grid .mini-mark {
+    font-family: "Apercu Pro", var(--font-ui);
+    font-size: 22px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--canvas-fg);
+  }
+
+  /* Folder children are hidden in the desktop view by default;
+     they only show inside the folder overlay or when searching. */
+  .tile[data-in-folder] { display: none; }
+  .os[data-mode="search"] .tile.is-folder { display: none; }
+  .os[data-mode="search"] .tile[data-in-folder] { display: flex; }
+
+  /* ---------- Folder overlay ---------- */
+  .folder-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    padding: 64px 32px;
+    background: var(--dark-soft);
+    backdrop-filter: blur(24px) saturate(120%);
+    -webkit-backdrop-filter: blur(24px) saturate(120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .folder-overlay[data-open="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .folder-panel {
+    width: min(640px, 100%);
+    transform: scale(0.94);
+    opacity: 0;
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  .folder-overlay[data-open="true"] .folder-panel {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .folder-panel-title {
+    font-family: "Apercu Pro", var(--font-ui);
+    font-size: 32px;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--canvas-fg);
+    text-align: center;
+    margin: 0 0 36px;
+  }
+  .folder-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    column-gap: 24px;
+    row-gap: 36px;
+  }
+  /* Inside the overlay, folder children behave like normal tiles again. */
+  .folder-panel-grid .tile { display: flex; }
+
   .empty {
     grid-column: 1 / -1;
     color: var(--canvas-label);
@@ -282,6 +381,16 @@
     .bar .search { min-width: 0; flex: 1; padding: 6px 12px; }
     .bar .sys { display: none; }
     .tile .mark { font-size: 38px; }
+    .tile.is-folder .icon { padding: 8px; }
+    .folder-grid { gap: 5px; }
+    .folder-grid .mini-mark { font-size: 16px; }
+    .folder-overlay { padding: 32px 16px; }
+    .folder-panel-title { font-size: 24px; margin-bottom: 24px; }
+    .folder-panel-grid {
+      grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+      column-gap: 16px;
+      row-gap: 24px;
+    }
   }
 </style>
 </head>
@@ -310,39 +419,74 @@
   </header>
 
   <main class="desktop">
-    <a class="tile" href="./apps/wireframe-library.html">
-      <span class="icon"><span class="mark">D</span></span>
-      <span class="name">Design System &amp; UX Templates</span>
+    <a class="tile" href="./apps/sunspell-prd-template.html">
+      <span class="icon"><span class="mark">A</span></span>
+      <span class="name">Aither MVP PRD Template</span>
     </a>
+
+    <button class="tile is-folder" type="button" data-folder="sunpull" aria-haspopup="dialog">
+      <span class="icon">
+        <span class="folder-grid">
+          <span class="mini"><span class="mini-mark">S</span></span>
+          <span class="mini"><span class="mini-mark">S</span></span>
+          <span class="mini"><span class="mini-mark">S</span></span>
+          <span class="mini" aria-hidden="true"></span>
+        </span>
+      </span>
+      <span class="name">Sunpull</span>
+    </button>
+
+    <button class="tile is-folder" type="button" data-folder="design" aria-haspopup="dialog">
+      <span class="icon">
+        <span class="folder-grid">
+          <span class="mini"><span class="mini-mark">D</span></span>
+          <span class="mini"><span class="mini-mark">R</span></span>
+          <span class="mini" aria-hidden="true"></span>
+          <span class="mini" aria-hidden="true"></span>
+        </span>
+      </span>
+      <span class="name">Agent Handbooks</span>
+    </button>
 
     <a class="tile" hidden href="./apps/prd-template.html">
       <span class="icon"><span class="mark">P</span></span>
       <span class="name">Prd Template</span>
     </a>
 
-    <a class="tile" href="./apps/sunspell-prd-template.html">
-      <span class="icon"><span class="mark">A</span></span>
-      <span class="name">Aither MVP PRD Template</span>
-    </a>
-
-    <a class="tile" href="./apps/sunpull-prd.html">
+    <a class="tile" data-in-folder="sunpull" href="./apps/sunpull-prd.html">
       <span class="icon"><span class="mark">S</span></span>
       <span class="name">Sunpull PRD</span>
     </a>
 
-    <a class="tile" href="./apps/sunpull-flows.html">
+    <a class="tile" data-in-folder="sunpull" href="./apps/sunpull-flows.html">
       <span class="icon"><span class="mark">S</span></span>
       <span class="name">Sunpull flows</span>
     </a>
 
-    <a class="tile" href="./apps/sunpull-prototype.html">
+    <a class="tile" data-in-folder="sunpull" href="./apps/sunpull-prototype.html">
       <span class="icon"><span class="mark">S</span></span>
       <span class="name">Sunpull prototype</span>
     </a>
 
+    <a class="tile" data-in-folder="design" href="./apps/wireframe-library.html">
+      <span class="icon"><span class="mark">D</span></span>
+      <span class="name">Design System &amp; UX Templates</span>
+    </a>
+
+    <a class="tile" data-in-folder="design" href="./apps/design-reference.html">
+      <span class="icon"><span class="mark">R</span></span>
+      <span class="name">Design Reference</span>
+    </a>
 
     <p class="empty" id="empty" hidden>No matches</p>
   </main>
+
+  <div class="folder-overlay" id="folderOverlay" data-open="false" aria-hidden="true">
+    <div class="folder-panel" role="dialog" aria-modal="true" aria-labelledby="folderPanelTitle">
+      <h2 class="folder-panel-title" id="folderPanelTitle"></h2>
+      <div class="folder-panel-grid" id="folderPanelGrid"></div>
+    </div>
+  </div>
 
 </div>
 
@@ -363,31 +507,108 @@
   })();
 
   (function(){
+    var os = document.querySelector('.os');
     var input = document.getElementById('search');
     var empty = document.getElementById('empty');
     var tiles = Array.prototype.slice.call(document.querySelectorAll('.tile'));
 
-    function visibleTiles() {
-      return tiles.filter(function(t){ return !t.hidden; });
+    function isFolder(t) { return t.classList.contains('is-folder'); }
+    function inFolder(t) { return t.hasAttribute('data-in-folder'); }
+
+    function activeMatchTiles() {
+      // Tiles eligible for Enter-to-navigate: not hidden, not a folder, has href.
+      return tiles.filter(function(t){
+        return !t.hidden && !isFolder(t) && t.href;
+      });
     }
 
     function apply(){
       var q = input.value.trim().toLowerCase();
+      var searching = q !== '';
+      if (searching) os.setAttribute('data-mode', 'search');
+      else os.removeAttribute('data-mode');
+
+      if (!searching) {
+        tiles.forEach(function(t){ t.hidden = false; });
+        // Re-hide PRD Template (the only tile with a hardcoded `hidden` attribute).
+        var prd = document.querySelector('a.tile[href="./apps/prd-template.html"]');
+        if (prd) prd.hidden = true;
+        empty.hidden = true;
+        return;
+      }
+
+      var anyMatch = false;
       tiles.forEach(function(t){
+        if (isFolder(t)) { t.hidden = false; return; }
         var name = t.querySelector('.name').textContent.toLowerCase();
-        t.hidden = q !== '' && name.indexOf(q) === -1;
+        var match = name.indexOf(q) !== -1;
+        t.hidden = !match;
+        if (match) anyMatch = true;
       });
-      empty.hidden = visibleTiles().length !== 0;
+      empty.hidden = anyMatch;
     }
 
     input.addEventListener('input', apply);
     input.addEventListener('keydown', function(e){
       if (e.key === 'Enter') {
-        var v = visibleTiles();
+        var v = activeMatchTiles();
         if (v.length === 1) { window.location.href = v[0].href; }
       } else if (e.key === 'Escape') {
         input.value = '';
         apply();
+      }
+    });
+  })();
+
+  (function(){
+    var overlay = document.getElementById('folderOverlay');
+    var titleEl = document.getElementById('folderPanelTitle');
+    var grid = document.getElementById('folderPanelGrid');
+    var lastTrigger = null;
+
+    function openFolder(folderId, trigger) {
+      var folderTile = document.querySelector('.tile.is-folder[data-folder="' + folderId + '"]');
+      if (!folderTile) return;
+      titleEl.textContent = folderTile.querySelector('.name').textContent;
+
+      grid.innerHTML = '';
+      var children = document.querySelectorAll('.tile[data-in-folder="' + folderId + '"]');
+      children.forEach(function(t){
+        var clone = t.cloneNode(true);
+        clone.removeAttribute('data-in-folder');
+        clone.removeAttribute('hidden');
+        grid.appendChild(clone);
+      });
+
+      lastTrigger = trigger || folderTile;
+      overlay.setAttribute('data-open', 'true');
+      overlay.removeAttribute('aria-hidden');
+      // Move focus to the first item for keyboard users.
+      var first = grid.querySelector('.tile');
+      if (first) first.focus();
+    }
+
+    function closeFolder() {
+      if (overlay.getAttribute('data-open') !== 'true') return;
+      overlay.setAttribute('data-open', 'false');
+      overlay.setAttribute('aria-hidden', 'true');
+      if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+    }
+
+    document.querySelectorAll('.tile.is-folder').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openFolder(btn.getAttribute('data-folder'), btn);
+      });
+    });
+
+    overlay.addEventListener('click', function(e){
+      // Click on the backdrop (overlay itself), not on the panel, closes.
+      if (e.target === overlay) closeFolder();
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && overlay.getAttribute('data-open') === 'true') {
+        closeFolder();
       }
     });
   })();
