@@ -51,21 +51,21 @@ If you find a PRD, read its slides; if you find a references folder, look at the
 
 Two checks have to clear before the first stroke. Both are blocking.
 
-1. **Fonts (Paper).** Call `get_font_family_info` as your first typographic move. Look for **TWK Lausanne Pan** at 300 / 550 / 700 and **Space Mono**. If either is missing, **stop**: report it to the PM. The PM will surface it to the human. Do not substitute system-ui, Inter, or any other fallback — substituting silently is the failure mode this rule exists to prevent (Rule 09).
-2. **Icons.** Icons must come from a real icon library, never hand-drawn. In Playground, use `Icons.*` from `system/icons.jsx` (sourced from Lucide). In Paper, drop in icons from Lucide (matches the kit), or Phosphor / Heroicons if Lucide can't express the metaphor. Never compose an icon from rectangles, lines, or freehand shapes. If the icon you need isn't available, raise the gap to the PM rather than improvising one (Rule 08).
+1. **Fonts (Paper).** Call `get_font_family_info` as your first typographic move. Look for **TWK Lausanne Pan** at 300 / 550 / 700. That's the only face in the system. If it's missing, **stop**: report it to the PM. The PM will surface it to the human. Do not substitute system-ui, Inter, Space Mono, or any other fallback — substituting silently is the failure mode this rule exists to prevent (Rule 09). Do not introduce Space Mono; it has been removed.
+2. **Icons.** Icons must come from a real icon library, never hand-drawn. In Playground, use `Icons.*` from `system/icons.jsx` (sourced from Lucide). In Paper, drop in icons from Lucide (matches the kit), or Phosphor / Heroicons if Lucide can't express the metaphor. Never compose an icon from rectangles, lines, or freehand shapes. If the icon you need isn't available, raise the gap to the PM rather than improvising one (Rule 08). **Icons inherit color from `currentColor` — set the icon's container `color` to the foreground that contrasts with the surface it sits on.** A black icon on a black button is the failure mode: if the button background is dark, the icon `color` must be the light foreground (e.g. `--bone` / `--wf-light-fg`'s opposite); if the surface is light, it must be dark. After placing any icon, check it visually against its background before signalling done. Black-on-black or bone-on-bone icons are P0.
 
 ## What "complete" means
 
 Before you signal done to the PM, every one of these must be true:
 
-1. **Tokens only.** No raw hex, no raw px outside the spacing/radius/font scales, no font names other than `--font-ui` and `--font-mono`. If you reached for a value that isn't tokenized, stop and report it as a system gap to the PM — do not add a token yourself.
+1. **Tokens only.** No raw hex, no raw px outside the spacing/radius/font scales, no font names other than `--font-ui` (and `--font-note` for canvas labels). If you reached for a value that isn't tokenized, stop and report it as a system gap to the PM — do not add a token yourself.
 2. **Atomic taxonomy respected.** Every new thing lives under exactly one of Foundations / Atoms / Molecules / Organisms / Patterns / Flows, in the labelled row. If it doesn't fit, raise it to the PM rather than forcing it.
 3. **Frames in the agreed mode set, per surface.** Light is the default. The PM's brief names the mode set: light only (web + mobile = 2 frames), dark only (web + mobile = 2 frames), or both (web-light + web-dark + mobile-light + mobile-dark = 4 frames). Don't infer — read the brief. Producing extra modes the PM didn't ask for is a violation, not a generosity. Missing a frame within the agreed mode set means the surface isn't done.
 4. **States covered.** Default, hover, active, disabled, empty, loading, error — whichever apply. Action hierarchy: exactly one `data-primary` per surface.
 5. **Flows include auth + error.** If your slice contains a flow, it ships with the auth path(s) and at least one error/failure state.
 6. **Voice clean.** Short declarative sentences. No exclamation marks. No apologetic or cute copy. Wireframe content uses plausible domain text, not lorem ipsum.
 7. **Icons from a real library only.** Every icon on the surface came from `Icons.*` (Playground) or a real icon library (Paper — Lucide / Phosphor / Heroicons). No hand-drawn glyphs, no one-off SVGs.
-8. **Fonts confirmed.** In Paper, you ran the font preflight before composing typography and the system fonts were present (or you stopped and surfaced the gap). In Playground, every face used resolves through `var(--font-ui)` / `var(--font-mono)` / `var(--font-note)`.
+8. **Fonts confirmed.** In Paper, you ran the font preflight before composing typography and TWK Lausanne Pan was present (or you stopped and surfaced the gap). In Playground, every face used resolves through `var(--font-ui)` (or `var(--font-note)` for canvas labels). No Space Mono anywhere.
 9. **Self-screenshot reviewed.** In Paper, call `get_screenshot` after meaningful changes and look at it. If it clips, has a large empty gap, or feels off, fix it before reporting done.
 10. **`finish_working_on_nodes` called** when working in Paper, on every node group you touched.
 

@@ -937,7 +937,7 @@
     <ul>
       <li><strong>Rule blocks</strong> (left-bar pull-outs) are non-negotiable.</li>
       <li><strong>Do / Never</strong> pairs show the legal form next to the most common wrong form.</li>
-      <li><strong>Mono labels</strong> (Space Mono) name tokens, files, and class selectors. If it's mono, it's a literal that exists in the codebase.</li>
+      <li><strong>Caps + tracked labels</strong> (Lausanne 550, uppercase, letter-spacing) name tokens, files, and class selectors. If it's set in caps with tracking, it's a literal that exists in the codebase. (Space Mono is no longer in the system; the visual role is now carried by tracking and caps on Lausanne.)</li>
       <li><strong>Cross-references</strong> in body copy use named sections (e.g. §Color, §Atoms), so they survive renumbering.</li>
     </ul>
   </section>
@@ -1092,14 +1092,15 @@
       <span class="v">Rule 08</span>
       <p class="r">Icons come from a real icon library. Never hand-draw glyphs.</p>
       <p><strong>Why.</strong> Hand-drawn SVGs drift in stroke, viewBox, terminals, and metaphor — the kit looks consistent at 24px and falls apart at 14px. A real library is the only way to keep the visual grammar tight as the system grows.</p>
-      <p><strong>How.</strong> In Playground, use <code>Icons.*</code> from <code>system/icons.jsx</code> (the kit is sourced from <strong>Lucide</strong>: 1.5px stroke, 24px viewBox, currentColor). In Paper, drop in icons from a real library — Lucide first (matches the kit), Phosphor or Heroicons if Lucide can't express the metaphor — never compose icons from rectangles, lines, or freehand shapes. If the icon you need isn't in the system or the chosen library, raise the gap to the PM rather than inlining a one-off SVG.</p>
+      <p><strong>How.</strong> In Playground, use <code>Icons.*</code> from <code>system/icons.jsx</code> (the kit is sourced from <strong>Lucide</strong>: 1.5px stroke, 24px viewBox, <strong>currentColor</strong> — the icon inherits the parent's <code>color</code>). In Paper, drop in icons from a real library — Lucide first (matches the kit), Phosphor or Heroicons if Lucide can't express the metaphor — never compose icons from rectangles, lines, or freehand shapes. If the icon you need isn't in the system or the chosen library, raise the gap to the PM rather than inlining a one-off SVG.</p>
+      <p><strong>Contrast.</strong> Because every icon is rendered in <code>currentColor</code>, the icon's container <code>color</code> must contrast with the surface it sits on. A black icon on a black button — or a bone icon on a bone surface — is the failure mode this rule exists to prevent. Set the parent's <code>color</code> to the opposite-side foreground (a <code>--bone</code> family on dark surfaces, a <code>--dark</code> family on light surfaces). After placing every icon, look at it against its background; black-on-black or bone-on-bone is <strong>P0</strong>.</p>
     </div>
 
     <div class="rule">
       <span class="v">Rule 09</span>
       <p class="r">Design-system fonts only. In Paper, preflight the font set before composing.</p>
-      <p><strong>Why.</strong> The system is calibrated to TWK Lausanne Pan (300 / 550 / 700) plus Space Mono. Any other face — Inter, system-ui fallback, Apercu in body copy — silently rewrites the hierarchy. In Paper, the file inherits whatever the user has loaded; if Lausanne Pan or Space Mono is missing, every weight, leading, and tracking value in the system is wrong by default.</p>
-      <p><strong>How.</strong> Before any typographic styling in Paper, call <code>get_font_family_info</code>. If TWK Lausanne Pan (300 / 550 / 700) and Space Mono are not in the file's font list, <strong>stop</strong> — surface that to the PM (and the human, via the PM) before drawing anything. Do not substitute system-ui, Inter, or any other fallback. In Playground, use only <code>var(--font-ui)</code> / <code>var(--font-mono)</code> / <code>var(--font-note)</code> — never name a face directly.</p>
+      <p><strong>Why.</strong> The system is calibrated to TWK Lausanne Pan (300 / 550 / 700). That is the only face. Any other face — Space Mono (removed from the system), Inter, system-ui fallback, Apercu in body copy — silently rewrites the hierarchy. In Paper, the file inherits whatever the user has loaded; if Lausanne Pan is missing, every weight, leading, and tracking value in the system is wrong by default.</p>
+      <p><strong>How.</strong> Before any typographic styling in Paper, call <code>get_font_family_info</code>. If TWK Lausanne Pan (300 / 550 / 700) is not in the file's font list, <strong>stop</strong> — surface that to the PM (and the human, via the PM) before drawing anything. Do not substitute system-ui, Inter, Space Mono, or any other fallback. In Playground, use only <code>var(--font-ui)</code> / <code>var(--font-note)</code> — never name a face directly. The legacy <code>--font-mono</code> token is kept as an alias of <code>--font-ui</code> so existing callers keep resolving to Lausanne; do not introduce a new monospace and do not reintroduce Space Mono.</p>
     </div>
   </section>
 
@@ -1300,13 +1301,13 @@ color: white;</code>
   <section class="ds-section" id="typography" data-title="Typography">
     <span class="kicker">Foundations</span>
     <h2>Typography.</h2>
-    <p class="lede">TWK Lausanne Pan is the only face inside wireframes, licensed locally at <strong>300, 550, and 700</strong>. Space Mono labels the system. Caveat is for canvas annotations only. <strong>No Apercu, no Inter</strong> — Apercu is display-only on the home tile, Inter is not in the system at all.</p>
+    <p class="lede">TWK Lausanne Pan is the only face inside wireframes, licensed locally at <strong>300, 550, and 700</strong>. It does every job in the system — body, headings, UI, labels, kickers, meta. Caveat is for canvas annotations only. <strong>No Space Mono, no Apercu, no Inter</strong> — Space Mono was removed from the system; Apercu is display-only on the home tile; Inter is not in the system at all.</p>
 
     <div class="rule">
       <span class="v">Paper preflight</span>
-      <p class="r">Before any typographic styling in Paper, confirm Lausanne Pan and Space Mono are loaded in the file.</p>
-      <p><strong>Why.</strong> Paper inherits whatever the user has loaded. If the system fonts are missing, every weight, leading, and tracking value in this manual is wrong by default — a "550" looks like a different size, line-heights collapse, the hierarchy that the system depends on disappears.</p>
-      <p><strong>How.</strong> Call <code>get_font_family_info</code> before drawing. Look for <em>TWK Lausanne Pan</em> at 300 / 550 / 700 and <em>Space Mono</em>. If either is missing, <strong>stop</strong>: tell the PM (who tells the human) that the file needs the system fonts loaded before composition can start. Do not substitute system-ui, Inter, or any other fallback — substituting silently is the failure mode this rule exists to prevent. (See <a href="#rules">Rule 09</a>.)</p>
+      <p class="r">Before any typographic styling in Paper, confirm Lausanne Pan is loaded in the file.</p>
+      <p><strong>Why.</strong> Paper inherits whatever the user has loaded. If Lausanne Pan is missing, every weight, leading, and tracking value in this manual is wrong by default — a "550" looks like a different size, line-heights collapse, the hierarchy that the system depends on disappears.</p>
+      <p><strong>How.</strong> Call <code>get_font_family_info</code> before drawing. Look for <em>TWK Lausanne Pan</em> at 300 / 550 / 700. That is the only face. If it's missing, <strong>stop</strong>: tell the PM (who tells the human) that the file needs Lausanne loaded before composition can start. Do not substitute system-ui, Inter, Space Mono, or any other fallback — substituting silently is the failure mode this rule exists to prevent. (See <a href="#rules">Rule 09</a>.)</p>
     </div>
 
     <div class="rule">
@@ -1332,12 +1333,12 @@ color: white;</code>
       </div>
       <div class="atom">
         <div class="label">
-          <span class="name">--font-mono</span>
-          <span class="desc">Labels, kickers, system meta, code. Space Mono 400/700.</span>
+          <span class="name">--font-mono <em style="font-style:normal; opacity:0.6;">(legacy alias)</em></span>
+          <span class="desc">Kept as an alias of <code>--font-ui</code> so legacy callers keep resolving to Lausanne. Do not introduce Space Mono or any other monospace; the system has one face.</span>
         </div>
         <div class="stage" style="display:block; padding: 28px 32px;">
-          <div style="font-family: var(--font-mono); font-size: 22px; color: var(--canvas-fg);">FOUNDATIONS · 05</div>
-          <div style="font-family: var(--font-mono); font-size: 11px; color: rgba(234,228,226,0.7); margin-top: 12px; letter-spacing: 0.04em;">v0.1 · 2026-04-24 · designs@aither.co</div>
+          <div style="font-family: var(--font-ui); font-weight: 550; font-size: 22px; color: var(--canvas-fg); letter-spacing: 0.04em;">FOUNDATIONS · 05</div>
+          <div style="font-family: var(--font-ui); font-weight: 300; font-size: 11px; color: rgba(234,228,226,0.7); margin-top: 12px; letter-spacing: 0.08em; text-transform: uppercase;">v0.1 · 2026-04-24 · designs@aither.co</div>
         </div>
       </div>
       <div class="atom">
@@ -1962,6 +1963,7 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
       <li><strong>Size.</strong> Default 18px. Tap targets at 20–24px. Status bar icons at 14px. Never below 12px.</li>
       <li><strong>Stroke.</strong> 1.5px on all line icons. Status-bar icons (Signal/Wifi/Battery) are filled, not stroked.</li>
       <li><strong>Color.</strong> Always <code>currentColor</code>. To dim an icon, dim the parent. Never <code>fill="#…"</code>.</li>
+      <li><strong>Contrast (P0).</strong> Because the icon takes the parent's <code>color</code>, the parent's <code>color</code> must contrast with the surface it sits on. The classic failure: a black icon on a black button (or a bone icon on a bone surface) — the icon disappears. On dark surfaces, set <code>color</code> to a <code>--bone</code>-family value; on light surfaces, set it to a <code>--dark</code>-family value. After placing every icon, look at it against its background. Black-on-black and bone-on-bone are P0 audit failures.</li>
       <li><strong>Alignment.</strong> Pair an icon with text using <code>display: inline-flex; gap: var(--s-2)</code>. Vertically centre on the cap height of adjacent text, not the line height.</li>
       <li><strong>Decoration.</strong> Don't decorate (no badges, no gradients, no drop shadows). The line is the icon.</li>
     </ul>

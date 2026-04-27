@@ -1,0 +1,1380 @@
+<!doctype html>
+<!--
+  =====================================================================
+  NOTE TO AGENTS — READ BEFORE EDITING THIS FILE
+  =====================================================================
+  Same DOM contract as prd-template.html:
+    1. Only add <section class="slide"> blocks inside <main class="deck">.
+    2. Do not hand-edit <nav id="ds-menu-nav"> — the shared menu component
+       (../shared/ds-menu.css + ../shared/ds-menu.js) rebuilds it.
+    3. Do not write slide numbers into .tag or .page by hand.
+    4. Keep <main class="deck" id="deck">, <aside class="ds-menu" id="ds-menu">
+       with <nav id="ds-menu-nav">, the mobile bar + backdrop, and the
+       .tag / <h1> / .page structure per slide.
+    5. Scoped additions go inside the <section> with a new class — never
+       modify .slide / .deck base CSS or the shared menu styles.
+  =====================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aither · SunOS PRD</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../shared/ds-menu.css">
+<script src="../shared/firebase-config.js"></script>
+<script src="../shared/auth-gate.js"></script>
+<script src="../shared/ds-menu.js" defer></script>
+<style>
+  html, body {
+    background: var(--canvas-bg);
+    color: var(--canvas-fg);
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--font-ui);
+    letter-spacing: -0.01em;
+  }
+  html { scroll-behavior: smooth; }
+
+  .app { display: block; }
+
+  /* ---------- Deck (right) ---------- */
+  .deck {
+    margin-left: 280px;
+    padding: 48px 64px 96px;
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 48px;
+    /* 16:9 is the baseline shape; content may push a slide taller when it
+       genuinely needs the room. Authors: use judgement — don't go overboard. */
+    aspect-ratio: 16 / 9;
+    background: var(--canvas-panel);
+    border: 1px solid var(--canvas-hair);
+    border-radius: var(--r-2);
+    display: flex;
+    flex-direction: column;
+    padding: 48px;
+    padding-bottom: 72px; /* leaves room for the bottom-right page stamp */
+    position: relative;
+    scroll-margin-top: 32px;
+  }
+  .slide .tag {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .slide h1 {
+    font-size: 44px;
+    font-weight: var(--w-title);
+    letter-spacing: -0.025em;
+    line-height: 1.04;
+    color: var(--canvas-fg);
+    margin: 12px 0 16px;
+    max-width: 22ch;
+  }
+  .slide p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.7);
+    max-width: 66ch;
+    margin: 0;
+  }
+  .slide .page {
+    position: absolute;
+    right: 48px;
+    bottom: 32px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+  }
+
+  /* Brief block */
+  .slide .brief {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(234,228,226,0.58);
+    max-width: 70ch;
+    margin: 0 0 16px;
+    padding: 14px 18px;
+    border-left: 2px solid var(--canvas-hair);
+  }
+  .slide .brief strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+  }
+
+  /* Meta row — DRI, read time, prereqs */
+  .slide .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    margin: 0 0 20px;
+    padding: 12px 0;
+    border-top: 1px solid var(--canvas-hair);
+    border-bottom: 1px solid var(--canvas-hair);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--canvas-label);
+    text-transform: uppercase;
+  }
+  .slide .meta span strong {
+    color: var(--canvas-fg);
+    font-weight: var(--w-ui);
+    margin-left: 6px;
+  }
+
+  /* Body — plain written-out slide content (lists, tables, blanks). */
+  .slide .body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(234,228,226,0.78);
+    max-width: 78ch;
+    margin: 0;
+  }
+  .slide .body h3 {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 18px 0 8px;
+  }
+  .slide .body h3:first-child { margin-top: 0; }
+  .slide .body p { font-size: 14px; max-width: none; color: rgba(234,228,226,0.78); }
+  .slide .body ul, .slide .body ol {
+    padding-left: 20px;
+    margin: 6px 0;
+  }
+  .slide .body li { margin: 3px 0; }
+  .slide .body code, .slide .body pre {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(234,228,226,0.88);
+    background: rgba(234,228,226,0.04);
+    border-radius: var(--r-1);
+  }
+  .slide .body code { padding: 1px 5px; }
+  .slide .body pre {
+    padding: 12px 14px;
+    margin: 8px 0;
+    white-space: pre;
+    overflow-x: auto;
+    border: 1px solid var(--canvas-hair);
+    background: rgba(0,0,0,0.18);
+  }
+  .slide .body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 13px;
+  }
+  .slide .body th, .slide .body td {
+    border-bottom: 1px solid var(--canvas-hair);
+    padding: 6px 10px 6px 0;
+    text-align: left;
+    vertical-align: top;
+  }
+  .slide .body th {
+    color: var(--canvas-label);
+    font-weight: var(--w-ui);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Two-column layout for slides that need parallel reading */
+  .slide .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .slide .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* Person/task block */
+  .slide .person {
+    border-top: 1px solid var(--canvas-hair);
+    padding-top: 12px;
+    margin-top: 8px;
+  }
+  .slide .person h3 {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--canvas-label);
+    margin: 0 0 8px;
+  }
+
+  /* Scrollbars */
+  .slide .body::-webkit-scrollbar { width: 8px; height: 8px; }
+  .slide .body::-webkit-scrollbar-thumb {
+    background: rgba(234,228,226,0.12);
+    border-radius: 4px;
+  }
+  .slide .body::-webkit-scrollbar-thumb:hover { background: rgba(234,228,226,0.25); }
+
+  @media (max-width: 900px) {
+    .deck { margin-left: 0; padding: 80px 32px 64px; }
+    .slide { padding: 28px; aspect-ratio: auto; min-height: 80vh; }
+    .slide h1 { font-size: 30px; }
+    .slide .two-col, .slide .three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="../index.html" title="Back to home" aria-label="Back to home">&larr; Home</a>
+
+<header class="ds-menu-bar" id="ds-menu-bar">
+  <a class="ds-menu-home" href="../index.html" aria-label="Back to home">&larr; Home</a>
+  <button type="button" class="ds-menu-toggle" id="ds-menu-toggle" aria-controls="ds-menu" aria-expanded="false">
+    <span class="cur-num"></span>
+    <span class="cur-label"></span>
+    <span class="caret" aria-hidden="true">&#9662;</span>
+  </button>
+</header>
+
+<div class="ds-menu-backdrop" id="ds-menu-backdrop" aria-hidden="true"></div>
+
+<aside class="ds-menu" id="ds-menu">
+  <div>
+    <h1 class="deck-title">SunOS</h1>
+    <p class="deck-sub">Project operating system · PRD v0.1 · 2026-04-27</p>
+  </div>
+  <h2>Index</h2>
+  <nav id="ds-menu-nav"><!-- auto-built by shared/ds-menu.js --></nav>
+</aside>
+
+<main class="deck" id="deck">
+
+  <!-- ============================================================
+       FRAMING
+       ============================================================ -->
+
+  <section class="slide" data-title="Cover" data-group="Framing" data-status="open">
+    <span class="tag">Cover</span>
+    <h1>SunOS.</h1>
+    <p class="brief">The project operating system for Sunspell. Centralizes project folders, requirements, references, roadmaps, feeds, and workflows into a single source of truth. Internal-first; later evaluated as licensable infrastructure or a fundraising narrative.</p>
+    <div class="meta">
+      <span>Version<strong>v0.1 — Source of truth</strong></span>
+      <span>Date<strong>2026-04-27</strong></span>
+      <span>DRI<strong>Jasmine</strong></span>
+      <span>Built by<strong>Michael &amp; Wayeez</strong></span>
+      <span>Status<strong>Draft — meeting alignment captured</strong></span>
+    </div>
+    <div class="body">
+      <p>This deck is the canonical record of the SunOS architecture meeting on 2026-04-27 between Jasmine, Michael, and Wayeez. It is intended to be read by everyone on the team and to drive the immediate sprint.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Meeting context" data-status="open">
+    <span class="tag">Source</span>
+    <h1>Meeting context.</h1>
+    <p class="brief">Where this PRD comes from, who was in the room, and how the transcript was produced.</p>
+    <div class="body">
+      <h3>Attendees</h3>
+      <ul>
+        <li><strong>Jasmine</strong> — product / design direction. Walked the team through the proposed SunOS architecture.</li>
+        <li><strong>Michael</strong> — engineering / data. Owns Sunpool database and source-of-truth infrastructure.</li>
+        <li><strong>Wayeez</strong> — design / automation. Owns Paper-based design generation and agent setup.</li>
+      </ul>
+      <h3>Tooling used to produce the summary</h3>
+      <ul>
+        <li>GPT 5.5 Thinking</li>
+        <li>Assembly AI Transcription</li>
+      </ul>
+      <h3>Purpose</h3>
+      <p>To align on what SunOS is, which surfaces ship first, who owns what, and how requirements stay the source of truth across design, engineering, and automation.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="What is SunOS" data-status="open">
+    <span class="tag">Definition</span>
+    <h1>What is SunOS.</h1>
+    <p class="brief">SunOS is a project operating system. It centralizes project folders, requirements, references, roadmaps, feeds, and workflows so that every product Sunspell launches can be specified, designed, and shipped from a single source of truth.</p>
+    <div class="body">
+      <h3>The core idea</h3>
+      <p>Each project — for example Sunspoke — lives inside a folder with structured source-of-truth files: <code>design.md</code>, <code>tech.md</code>, <code>brand.md</code>, <code>product.md</code>, <code>launch.md</code>, <code>roadmap.md</code>, and potentially website, deck, or prototype-related files. These files act as the core requirements layer for building products.</p>
+      <h3>What SunOS is not</h3>
+      <ul>
+        <li>Not a customer-facing product (yet).</li>
+        <li>Not a replacement for Slack Canvas or Notion as a chat tool — it replaces them as the requirements substrate.</li>
+        <li>Not Figma. Figma stays for conceptual direction; production design moves to Paper.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Why this exists" data-status="open">
+    <span class="tag">Problem</span>
+    <h1>Why this exists.</h1>
+    <p class="brief">The team is launching multiple products quickly and the requirements that drive each one are scattered across tools, transcripts, screenshots, and personal local files. Without a centralized source of truth, design, engineering, and automation cannot stay in sync.</p>
+    <div class="body">
+      <ul>
+        <li><strong>No single requirements substrate.</strong> PRDs live in Slack Canvas, Notion, Figma, and local files; nothing is canonical.</li>
+        <li><strong>Meetings produce signal that gets lost.</strong> Transcripts capture decisions but do not propagate into the requirement files that designers and agents read.</li>
+        <li><strong>Saves and references are scattered.</strong> Instagram saves, links, competitor references, brand references, tools, and APIs live across personal accounts; they cannot inform a project's requirements.</li>
+        <li><strong>Roadmaps and tasks are disconnected from requirements.</strong> Weekly tasks are generated by hand instead of read out of the project's source of truth.</li>
+        <li><strong>Automation cannot be trusted yet.</strong> Without strong requirements, Paper / Claude / agents produce work that has to be re-explained and re-corrected every cycle.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="North star" data-status="open">
+    <span class="tag">Vision</span>
+    <h1>North star.</h1>
+    <p class="brief">SunOS becomes the engine the team uses to launch every Sunspell product. Requirements live in MD files; design, prototypes, roadmaps, weekly tasks, and missions are derived from those files. Eventually the same engine can be licensed externally or used as proof of proprietary infrastructure when fundraising.</p>
+    <div class="body">
+      <ol>
+        <li><strong>Internal first.</strong> SunOS is the team's internal operating system. Its first job is to ship Sunspoke faster and more coherently.</li>
+        <li><strong>Source-of-truth driven.</strong> Every artifact downstream — wireframes, prototypes, roadmaps, tasks, missions — traces back to MD files in a project folder.</li>
+        <li><strong>Optional external paths later.</strong> Once internal value is proven, SunOS may support consulting engagements, license to agencies, or anchor a fundraising story for Sunspell / Sunspoke.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="The ecosystem" data-status="open">
+    <span class="tag">Ecosystem</span>
+    <h1>Where SunOS sits.</h1>
+    <p class="brief">SunOS is the engine. Sunspoke is the first project that lives inside it. Sunpool, Sunline, Sunrun, Feed, and Home are the major surfaces inside the OS. Aither remains the studio brand around all of it.</p>
+    <div class="body">
+      <table>
+        <tr><th>Layer</th><th>What it is</th><th>Today's status</th></tr>
+        <tr><td>Aither</td><td>Studio brand and outer container.</td><td>Existing.</td></tr>
+        <tr><td>Sunspell</td><td>Product portfolio / incubator brand. Will get its own GitHub.</td><td>Splitting from Aither GitHub.</td></tr>
+        <tr><td>SunOS</td><td>Project operating system that powers every Sunspell product.</td><td>This document.</td></tr>
+        <tr><td>Sunspoke</td><td>First project to live inside SunOS. Used as the test case for the OS.</td><td>Next sprint focus.</td></tr>
+        <tr><td>Sunpool</td><td>Memory / reference layer inside SunOS.</td><td>Database in progress (Michael).</td></tr>
+        <tr><td>Sunline</td><td>Project / task management layer inside SunOS.</td><td>Specced; pending Sunpool.</td></tr>
+        <tr><td>Sunrun / Missions</td><td>Workflow automation embedded inside projects, Sunpool, and Sunline.</td><td>Deferred.</td></tr>
+        <tr><td>Feed</td><td>Activity + approval layer across SunOS.</td><td>Specced; pending source-of-truth host.</td></tr>
+      </table>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Phases &amp; priority" data-status="open">
+    <span class="tag">Phases</span>
+    <h1>Now, next, later.</h1>
+    <p class="brief">Three columns. v1 must-ship, v1.5 near-term, v2+ deferred. Trade-offs are explicit.</p>
+    <div class="body three-col">
+      <div>
+        <h3>Now (v1 — internal)</h3>
+        <ul>
+          <li>Hi-fi SunOS / Sunspoke homepage in Paper.</li>
+          <li>Centralized MD source-of-truth for Sunspoke.</li>
+          <li>Sunpool database working enough to text into.</li>
+          <li>Sunspell GitHub created; playground moved over.</li>
+          <li>Sunspoke project folder UI (next-level after homepage).</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Next (v1.5)</h3>
+        <ul>
+          <li>Feed approval flows (bulk + granular diff review).</li>
+          <li>Transcript ingestion → proposed requirement updates.</li>
+          <li>Sunline roadmap / task extraction from <code>roadmap.md</code>.</li>
+          <li>Weekly task recommendations from MD files.</li>
+          <li>Sunpool saves associate to projects and propose updates.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Later (v2+)</h3>
+        <ul>
+          <li>Sunrun / Missions workflows embedded in projects.</li>
+          <li>Engineering automation (JDs, vendor outreach, partnerships).</li>
+          <li>Decision: external, licensed, or stays internal.</li>
+          <li>Multi-project sprawl beyond Sunspoke.</li>
+        </ul>
+      </div>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       FOUNDATIONS
+       ============================================================ -->
+
+  <section class="slide" data-title="Personas" data-group="Foundations" data-status="open">
+    <span class="tag">Personas</span>
+    <h1>Who SunOS is for.</h1>
+    <p class="brief">v1 personas are the three people in the room. v2+ personas are external — agencies and consulting clients — but only if the internal version proves itself first.</p>
+    <div class="body">
+      <h3>Phase 1 — internal team</h3>
+      <ul>
+        <li><strong>Jasmine — product / design direction.</strong> Wants requirements legible enough that designers, agents, and engineers can ship from them without re-briefing. Needs feed approvals and roadmap visibility.</li>
+        <li><strong>Michael — engineering / data.</strong> Wants the source of truth to live in a system the team owns, not Slack/Notion. Needs the MD files to be reachable by Claude / MCP clients.</li>
+        <li><strong>Wayeez — design / automation.</strong> Wants strong requirements so Paper agents can produce wireframes, prototypes, and eventually polished design end-to-end.</li>
+      </ul>
+      <h3>Phase 2+ — external</h3>
+      <ul>
+        <li>Agencies running multiple client products who want a project OS to license.</li>
+        <li>Consulting clients who hire Sunspell to launch products inside SunOS.</li>
+        <li>Investors evaluating Sunspell — SunOS is evidence of proprietary infrastructure for shipping fast.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Mental model" data-status="open">
+    <span class="tag">Mental model</span>
+    <h1>What this feels like.</h1>
+    <p class="brief">A desktop of project folders, with a Pinterest-style memory library, an approval feed, and a roadmap-driven task tracker — all driven by structured MD files the team owns.</p>
+    <div class="body">
+      <ul>
+        <li><strong>Desktop folders</strong> for the Home view — every project is a tile with a cover image and a last-updated timestamp.</li>
+        <li><strong>Pinterest</strong> for Sunpool — masonry of saves the team can pull from.</li>
+        <li><strong>GitHub PRs / Notion comments</strong> for Feed — every change is proposed, diffed, and approved before it commits.</li>
+        <li><strong>Linear / Asana</strong> for Sunline — but tasks are read out of <code>roadmap.md</code> rather than typed by hand.</li>
+        <li><strong>MCP servers</strong> for the connection layer — Claude and other clients read and write to the source of truth.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Vocabulary" data-status="open">
+    <span class="tag">Vocabulary</span>
+    <h1>The words we use.</h1>
+    <p class="brief">The nouns SunOS introduces. Used consistently across design, engineering, and automation.</p>
+    <div class="body">
+      <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td>SunOS</td><td>The project operating system. The engine. Internal-first.</td></tr>
+        <tr><td>Project folder</td><td>A folder per product (e.g. Sunspoke) holding structured MD source-of-truth files.</td></tr>
+        <tr><td>Source of truth</td><td>The MD files inside a project folder. Drives every downstream artifact.</td></tr>
+        <tr><td>Home</td><td>The desktop-style dashboard of project folders.</td></tr>
+        <tr><td>Feed</td><td>The activity + approval layer. Where transcripts, saves, and Claude commits surface as proposed changes.</td></tr>
+        <tr><td>Sunpool</td><td>The memory / reference library. Pinterest-style. Source of saves.</td></tr>
+        <tr><td>Sunline</td><td>The project / task management layer. Reads <code>roadmap.md</code>; recommends weekly tasks.</td></tr>
+        <tr><td>Sunrun</td><td>Workflow automation engine. Lives inside projects, Sunpool, Sunline — no main interface of its own.</td></tr>
+        <tr><td>Mission</td><td>An executable workflow inside Sunrun (e.g. find partnerships, generate JDs).</td></tr>
+        <tr><td>Save</td><td>An item captured into Sunpool — Instagram, link, brand ref, tool, API, idea.</td></tr>
+      </table>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Design principles" data-status="open">
+    <span class="tag">Principles</span>
+    <h1>Rules SunOS designs against.</h1>
+    <p class="brief">Non-negotiables that come out of the meeting and the standing rules in CLAUDE.md.</p>
+    <div class="body">
+      <ul>
+        <li><strong>Internal first.</strong> Build for the three-person team before anyone outside. Do not simplify for hypothetical customers.</li>
+        <li><strong>Requirements are the source of truth.</strong> MD files drive design, prototypes, roadmap generation, and automation. If a downstream artifact disagrees with the MD, the MD wins.</li>
+        <li><strong>Approval before write.</strong> Every change to a requirement file is proposed in Feed and approved before it commits. Bulk-approve is fine; granular diff review is required for advanced cases.</li>
+        <li><strong>One project at a time.</strong> Only Sunspoke until the OS proves itself. No multi-project sprawl.</li>
+        <li><strong>Own the system.</strong> The MD files live in something the team owns — not Slack Canvas, not Notion. Build the centralized substrate, even if it means an internal repo / editor / MCP server.</li>
+        <li><strong>Paper is production.</strong> Figma stays light, for conceptual direction. Paper is where wireframes, prototypes, and (eventually) polished design get made.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       PROJECT FOLDER & SOURCE OF TRUTH
+       ============================================================ -->
+
+  <section class="slide" data-title="Project folder structure" data-group="Project folder &amp; source of truth" data-status="open">
+    <span class="tag">Structure</span>
+    <h1>Inside a project folder.</h1>
+    <p class="brief">Each project is a folder of structured MD files. Sunspoke is the first one. The MD files are the requirements layer; everything downstream reads from them.</p>
+    <div class="body">
+      <table>
+        <tr><th>File</th><th>What it holds</th></tr>
+        <tr><td><code>product.md</code></td><td>Product definition, personas, vision, scope, phases.</td></tr>
+        <tr><td><code>design.md</code></td><td>Design direction, surfaces, principles, mental model.</td></tr>
+        <tr><td><code>brand.md</code></td><td>Brand voice, references, mood, anti-references.</td></tr>
+        <tr><td><code>tech.md</code></td><td>Technical architecture, services, data model, dependencies.</td></tr>
+        <tr><td><code>launch.md</code></td><td>Launch plan, sequencing, owners, dates.</td></tr>
+        <tr><td><code>roadmap.md</code></td><td>Phased roadmap. Read by Sunline to generate weekly tasks.</td></tr>
+        <tr><td>website / deck / prototype files</td><td>Optional artifacts produced from the MD files (e.g. PRD decks, Paper prototypes, marketing site).</td></tr>
+      </table>
+      <p>Jasmine will write the SunOS tech spec and define exactly what belongs inside each MD file.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Source-of-truth model" data-status="open">
+    <span class="tag">Model</span>
+    <h1>MD files drive everything.</h1>
+    <p class="brief">The MD files are not documentation. They are the substrate. Design, prototypes, roadmap generation, weekly tasks, and missions all read from them.</p>
+    <div class="body">
+      <h3>Downstream artifacts derived from the MD files</h3>
+      <ul>
+        <li>Wireframes in Paper (driven by <code>design.md</code> + <code>product.md</code>).</li>
+        <li>Prototypes (greenlit wireframes promoted to clickable prototypes).</li>
+        <li>PRD decks (this file pattern).</li>
+        <li>Roadmap and weekly tasks in Sunline (driven by <code>roadmap.md</code>).</li>
+        <li>Missions in Sunrun (driven by <code>launch.md</code>, <code>tech.md</code>, etc.).</li>
+        <li>Marketing site / cover imagery (driven by <code>brand.md</code>).</li>
+      </ul>
+      <h3>Why this matters</h3>
+      <p>Strong requirements are essential because Paper can produce strong wireframes, prototypes, and possibly polished designs if the source of truth is clear enough. Weak requirements force re-briefing every cycle.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Three update paths" data-status="open">
+    <span class="tag">Updates</span>
+    <h1>How requirements change.</h1>
+    <p class="brief">Requirement updates can come from three places. All three route through Feed and require approval before they commit.</p>
+    <div class="body three-col">
+      <div>
+        <h3>1 · Manual Claude commits</h3>
+        <p>A team member edits the MD files directly through Claude or another client. Changes appear in Feed as a proposed commit.</p>
+      </div>
+      <div>
+        <h3>2 · Meeting transcripts</h3>
+        <p>Transcripts (e.g. this meeting, captured via GPT 5.5 Thinking + Assembly AI) are ingested. The system proposes requirement updates derived from the transcript.</p>
+      </div>
+      <div>
+        <h3>3 · Sunpool saves / references</h3>
+        <p>A save associated with a project (e.g. a Sunspoke competitor reference) can trigger a proposed update to that project's MD files.</p>
+      </div>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       SURFACES — THE MAJOR PARTS
+       ============================================================ -->
+
+  <section class="slide" data-title="Home" data-group="Surfaces" data-status="open">
+    <span class="tag">Surface · Home</span>
+    <h1>Home — desktop of projects.</h1>
+    <p class="brief">A desktop-style project dashboard. Folders, cover images, last-updated timestamps. The first thing the team sees when they open SunOS.</p>
+    <div class="body">
+      <h3>Components</h3>
+      <ul>
+        <li>Project tile / folder for each project (Sunspoke is the only one for now).</li>
+        <li>Cover image per project.</li>
+        <li>Last-updated timestamp per project.</li>
+        <li>Background color customization.</li>
+        <li>Tabs visible on the surface (per Wayeez's UI states list).</li>
+        <li>Search interaction.</li>
+        <li>Click-through into the project folder (Sunspoke).</li>
+        <li>Placeholder / fake data where the backend isn't ready.</li>
+      </ul>
+      <h3>Owner</h3>
+      <p>Wayeez builds this end-to-end in Paper at the highest fidelity possible, using the existing Sumani / SunOS home direction as a starting point and the AD/design direction Jasmine provides.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Project folder view" data-status="open">
+    <span class="tag">Surface · Project folder</span>
+    <h1>Inside Sunspoke.</h1>
+    <p class="brief">The next-level surface after Home. Tabs for the project's MD files and downstream artifacts.</p>
+    <div class="body">
+      <h3>Tabs / sections</h3>
+      <ul>
+        <li><strong>Requirements</strong> — the MD files (<code>product.md</code>, <code>design.md</code>, <code>brand.md</code>, <code>tech.md</code>, <code>launch.md</code>).</li>
+        <li><strong>Roadmap</strong> — derived from <code>roadmap.md</code>; surfaces into Sunline.</li>
+        <li><strong>Prototype</strong> — Paper wireframes / prototypes for Sunspoke.</li>
+        <li><strong>Saves</strong> — Sunpool entries associated with this project.</li>
+        <li><strong>Missions</strong> — Sunrun workflows scoped to this project.</li>
+        <li><strong>Team</strong> — who is on the project.</li>
+      </ul>
+      <h3>Owner</h3>
+      <p>Jasmine defines the structure; Wayeez designs it in Paper. Temporary / fake MD content is acceptable while the backend is not ready.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Feed" data-status="open">
+    <span class="tag">Surface · Feed</span>
+    <h1>Feed — activity &amp; approval.</h1>
+    <p class="brief">Feed is where transcripts, saves, Claude commits, and other changes appear. It proposes requirement updates and lets the team approve all changes or review granular diffs before committing.</p>
+    <div class="body">
+      <h3>What flows into Feed</h3>
+      <ul>
+        <li>Manual Claude commits to MD files.</li>
+        <li>Meeting transcripts ready for ingestion.</li>
+        <li>Proposed requirement changes derived from transcripts or saves.</li>
+        <li>Sunpool save events associated with a project.</li>
+      </ul>
+      <h3>Approval controls (Jasmine to spec)</h3>
+      <ul>
+        <li><strong>Bulk approve</strong> — accept a whole batch of changes at once.</li>
+        <li><strong>Advanced granular approval</strong> — review individual changes one at a time.</li>
+        <li><strong>Diff review</strong> — see the before / after of any proposed change.</li>
+        <li><strong>Revert / version history</strong> — roll back any approved change.</li>
+        <li><strong>Transcript-ready notifications</strong> — let the team know when a transcript is parseable into proposals.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Sunpool" data-status="open">
+    <span class="tag">Surface · Sunpool</span>
+    <h1>Sunpool — memory &amp; references.</h1>
+    <p class="brief">The memory / reference layer, similar to a Pinterest-style library. Saves from Instagram, links, competitors, brand references, tools, APIs, or ideas can be added to Sunpool and associated with projects. These saves can trigger suggested updates to requirement files.</p>
+    <div class="body">
+      <h3>Save types</h3>
+      <ul>
+        <li>Instagram saves.</li>
+        <li>Links.</li>
+        <li>Competitor references.</li>
+        <li>Brand references.</li>
+        <li>Tools.</li>
+        <li>APIs.</li>
+        <li>Ideas.</li>
+      </ul>
+      <h3>Behaviors</h3>
+      <ul>
+        <li>Saves can be associated with a project (e.g. Sunspoke).</li>
+        <li>An associated save can trigger a Feed proposal to update that project's MD files.</li>
+        <li>The team should be able to text into the Sunpool database (via Michael's infrastructure).</li>
+      </ul>
+      <h3>Owner</h3>
+      <p>Michael — Sunpool is the highest immediate technical priority.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Sunline" data-status="open">
+    <span class="tag">Surface · Sunline</span>
+    <h1>Sunline — projects &amp; tasks.</h1>
+    <p class="brief">The project / task management layer. Reads roadmaps and requirements, generates weekly recommended tasks, and lets the team accept or reject them. Eventually functions like a smarter task tracker connected to the project source of truth.</p>
+    <div class="body">
+      <h3>Behaviors</h3>
+      <ul>
+        <li>Reads <code>roadmap.md</code> (and other MD files) to understand the project's plan.</li>
+        <li>Generates weekly recommended tasks.</li>
+        <li>Lets the team accept or reject each recommendation.</li>
+        <li>Functions like a task tracker — but the source of truth is the MD files, not the task list.</li>
+      </ul>
+      <h3>Dependencies</h3>
+      <p>Sunline depends on the source-of-truth substrate (MD files) being centralized and readable. It is lower priority than Sunpool because Sunpool is unblocking other work.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Sunrun / Missions" data-status="open">
+    <span class="tag">Surface · Sunrun</span>
+    <h1>Sunrun — workflow automation.</h1>
+    <p class="brief">Sunrun does not need its own main interface. It lives inside projects, Sunpool, and Sunline as executable missions or workflows.</p>
+    <div class="body">
+      <h3>Mission examples</h3>
+      <ul>
+        <li>Finding partnerships.</li>
+        <li>Generating marketing activation ideas.</li>
+        <li>Contacting vendors.</li>
+        <li>Creating JDs (job descriptions).</li>
+        <li>Eventually automating engineering tasks.</li>
+      </ul>
+      <h3>Sequencing</h3>
+      <p>Sunrun comes later. Sunpool and Sunline are higher priority because Sunrun depends on them — missions need a memory layer to read from and a task layer to schedule into.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       CORE CASES
+       ============================================================ -->
+
+  <section class="slide" data-title="Case · Manual Claude commit" data-group="Core cases" data-status="open">
+    <span class="tag">Case A</span>
+    <h1>Manual Claude commit.</h1>
+    <p class="brief">A team member opens Claude (or another MCP client) and edits a project's MD file directly. The change appears in Feed as a proposed commit, gets approved, and writes back to the source of truth.</p>
+    <div class="body">
+      <h3>Trigger</h3>
+      <p>Team member edits <code>sunspoke/design.md</code> via Claude.</p>
+      <h3>Steps</h3>
+      <ol>
+        <li>Edit submitted via Claude.</li>
+        <li>Feed surfaces the proposed change with a diff.</li>
+        <li>Reviewer approves (bulk or granular).</li>
+        <li>Change commits to the MD file.</li>
+        <li>Downstream consumers (Paper, Sunline, etc.) see the new state.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Case · Transcript ingestion" data-status="open">
+    <span class="tag">Case B</span>
+    <h1>Meeting transcript → updates.</h1>
+    <p class="brief">A meeting transcript (this meeting is the canonical example) is ingested. The system proposes requirement updates derived from the transcript. The team approves through Feed.</p>
+    <div class="body">
+      <h3>Trigger</h3>
+      <p>Transcript uploaded (GPT 5.5 Thinking + Assembly AI Transcription pipeline).</p>
+      <h3>Steps</h3>
+      <ol>
+        <li>Transcript parsed.</li>
+        <li>System drafts proposed updates to relevant MD files.</li>
+        <li>Feed shows transcript-ready notification.</li>
+        <li>Reviewer approves (bulk or granular diff review).</li>
+        <li>Approved changes commit to the source of truth.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Case · Sunpool save → update" data-status="open">
+    <span class="tag">Case C</span>
+    <h1>Save triggers requirement update.</h1>
+    <p class="brief">A save is added to Sunpool and associated with a project. The system proposes an update to that project's MD files based on the save's content.</p>
+    <div class="body">
+      <h3>Trigger</h3>
+      <p>Team texts a competitor reference into Sunpool, tagged Sunspoke.</p>
+      <h3>Steps</h3>
+      <ol>
+        <li>Save lands in Sunpool database.</li>
+        <li>System associates save with Sunspoke.</li>
+        <li>System drafts a proposed update to <code>sunspoke/design.md</code> (or wherever the save is most relevant).</li>
+        <li>Feed surfaces the proposal.</li>
+        <li>Reviewer approves; change commits.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Case · Weekly task generation" data-status="open">
+    <span class="tag">Case D</span>
+    <h1>Sunline weekly tasks.</h1>
+    <p class="brief">Sunline reads <code>roadmap.md</code> and generates weekly recommended tasks. The team accepts or rejects each recommendation.</p>
+    <div class="body">
+      <h3>Trigger</h3>
+      <p>Start of week.</p>
+      <h3>Steps</h3>
+      <ol>
+        <li>Sunline reads <code>roadmap.md</code> (and other MD files as needed).</li>
+        <li>Generates a prioritized list of weekly tasks.</li>
+        <li>Team reviews tasks; accepts or rejects each.</li>
+        <li>Accepted tasks become tracked work for the week.</li>
+        <li>Completed tasks feed back into roadmap status.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Case · Mission execution" data-status="open">
+    <span class="tag">Case E</span>
+    <h1>Sunrun mission run.</h1>
+    <p class="brief">A mission is run from inside a project, Sunpool, or Sunline. Sunrun executes the workflow against the project's source of truth and Sunpool memory.</p>
+    <div class="body">
+      <h3>Examples</h3>
+      <ul>
+        <li>Find partnerships for Sunspoke.</li>
+        <li>Generate marketing activation ideas for Sunspoke launch.</li>
+        <li>Contact vendors listed in Sunpool tools.</li>
+        <li>Generate a JD for a Sunspell hire.</li>
+        <li>Eventually: automate an engineering task (e.g. open a PR for a roadmap item).</li>
+      </ul>
+      <h3>Steps</h3>
+      <ol>
+        <li>Mission triggered from a project / Sunpool / Sunline surface.</li>
+        <li>Sunrun reads relevant MD files and Sunpool saves.</li>
+        <li>Mission output produced (deliverable, draft, message, code, etc.).</li>
+        <li>Output routed back to Feed for review where applicable.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       CROSS-CUTTING
+       ============================================================ -->
+
+  <section class="slide" data-title="Feed approval controls" data-group="Cross-cutting" data-status="open">
+    <span class="tag">Approvals</span>
+    <h1>Approval controls.</h1>
+    <p class="brief">Feed must support both bulk approval and advanced granular diff review. Revert / version history is required.</p>
+    <div class="body">
+      <ul>
+        <li><strong>Bulk approve</strong> — accept a batch of proposed changes in one click.</li>
+        <li><strong>Advanced granular approval</strong> — step through proposed changes individually.</li>
+        <li><strong>Diff review</strong> — see exactly what is being changed in each MD file before approving.</li>
+        <li><strong>Revert / version history</strong> — undo any approved change; see who approved what and when.</li>
+        <li><strong>Transcript-ready notifications</strong> — surface in Feed when a transcript is ready for ingestion.</li>
+      </ul>
+      <p>Owner: Jasmine specs the approval flows.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Voice &amp; microcopy" data-status="open">
+    <span class="tag">Voice</span>
+    <h1>How SunOS speaks.</h1>
+    <p class="brief">Voice rules to be filled in by Jasmine as the surfaces are designed. Working assumption: terse, project-aware, never shaming, dignified about failures.</p>
+    <div class="body">
+      <h3>Working assumptions</h3>
+      <ul>
+        <li>Terse — match the team's existing voice across Sunpull / Sunspell.</li>
+        <li>Project-aware — reference the active project by name.</li>
+        <li>Never shaming — quiet on missing requirements; offer to fill them rather than scolding.</li>
+        <li>Dignified failures — empty Feed, no Sunpool saves, missing roadmap all read calmly.</li>
+      </ul>
+      <p>To be specced fully when Feed and Project folder views are designed.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Notifications" data-status="open">
+    <span class="tag">Notifications</span>
+    <h1>When SunOS reaches out.</h1>
+    <p class="brief">Default notifications, opt-in notifications, and the never-ship list.</p>
+    <div class="body">
+      <h3>Default</h3>
+      <ul>
+        <li>Transcript ready for ingestion.</li>
+        <li>Proposed requirement changes ready for review.</li>
+        <li>Weekly Sunline task recommendations.</li>
+      </ul>
+      <h3>Opt-in</h3>
+      <ul>
+        <li>New Sunpool save associated with your project.</li>
+        <li>Mission completed.</li>
+      </ul>
+      <h3>Never ship</h3>
+      <ul>
+        <li>Marketing-style nudges. SunOS is internal; nothing should feel like growth-loop noise.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="External / physical surfaces" data-status="open">
+    <span class="tag">External</span>
+    <h1>Beyond the app.</h1>
+    <p class="brief">Out-of-app surfaces SunOS depends on.</p>
+    <div class="body">
+      <h3>Texting into Sunpool</h3>
+      <p>The team should be able to text saves into the Sunpool database. This is part of Michael's near-term Sunpool work.</p>
+      <h3>Claude / MCP clients</h3>
+      <p>Claude (and other MCP clients) must be able to read and write to the centralized MD source of truth. May require building an internal repo / editor / MCP server.</p>
+      <h3>Transcript pipelines</h3>
+      <p>GPT 5.5 Thinking + Assembly AI Transcription is the current pipeline; outputs are ingested into Feed.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Edge &amp; empty states" data-status="open">
+    <span class="tag">Edges</span>
+    <h1>Quiet failures.</h1>
+    <p class="brief">SunOS should be calm when things are missing. Never shaming.</p>
+    <div class="body">
+      <ul>
+        <li>Empty Home (no projects) — invite to create the first project; default to Sunspoke during v1.</li>
+        <li>Empty project folder (no MD files yet) — show the file template with prompts to fill.</li>
+        <li>Empty Sunpool — show how to text in the first save.</li>
+        <li>Empty Sunline (no <code>roadmap.md</code>) — explain that tasks are derived from the roadmap; offer to draft one.</li>
+        <li>Empty Feed — quiet, not promotional.</li>
+        <li>Failed transcript ingestion — surface the file and let the team retry.</li>
+        <li>Conflicting proposed changes — surface both, let the reviewer pick.</li>
+        <li>Sunrun mission failure — surface the failure with the relevant MD context, let the team retry.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Settings" data-status="open">
+    <span class="tag">Settings</span>
+    <h1>Trust, data, control.</h1>
+    <p class="brief">Settings the team can touch. To be filled in as surfaces are designed; below is the working list.</p>
+    <div class="body">
+      <ul>
+        <li>Project access (who can see / approve changes for which project).</li>
+        <li>Notification preferences per surface.</li>
+        <li>Sunpool source connections (Instagram, link saves, text-in number).</li>
+        <li>MCP / Claude client connections to the source of truth.</li>
+        <li>GitHub repo connection (Sunspell GitHub).</li>
+        <li>Data export / delete per project.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       STRATEGY
+       ============================================================ -->
+
+  <section class="slide" data-title="Internal-first positioning" data-group="Strategy" data-status="open">
+    <span class="tag">Strategy</span>
+    <h1>Internal first.</h1>
+    <p class="brief">The team aligned that SunOS should first be built as an internal operating system, not immediately as a customer-facing product.</p>
+    <div class="body">
+      <ul>
+        <li>The first job of SunOS is to ship Sunspoke faster and more coherently.</li>
+        <li>No customer-facing simplification yet. Build for the team, not for hypothetical users.</li>
+        <li>External evolution is a later decision — only revisited once the internal version proves itself.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Future paths" data-status="open">
+    <span class="tag">Strategy</span>
+    <h1>Where SunOS could go.</h1>
+    <p class="brief">Three later paths, all conditional on the internal version working.</p>
+    <div class="body">
+      <ol>
+        <li><strong>Consulting.</strong> Sunspell takes on consulting work and uses SunOS as the production engine.</li>
+        <li><strong>Licensing.</strong> Agencies running multiple client products license SunOS as their internal substrate.</li>
+        <li><strong>Fundraising narrative.</strong> SunOS is shown to investors as proprietary infrastructure that lets Sunspell launch products faster than peers — anchors a Sunspoke / Sunspell raise.</li>
+      </ol>
+      <p>Decision deferred. To be revisited once Sunspoke ships from SunOS.</p>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Figma usage" data-status="open">
+    <span class="tag">Strategy</span>
+    <h1>Figma stays light.</h1>
+    <p class="brief">Figma is used for conceptual direction, not production. Production design moves to Paper.</p>
+    <div class="body">
+      <ul>
+        <li>Jasmine may still use Figma for direction-setting and conceptual exploration.</li>
+        <li>Paper / design automation should become the main production path.</li>
+        <li>Wayeez has already built agent files, builders, and an audit agent that reviews the source of truth. Strong requirements unlock strong wireframes, prototypes, and (eventually) polished designs from Paper.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Out of scope for v1" data-status="open">
+    <span class="tag">Scope</span>
+    <h1>What we're not designing.</h1>
+    <p class="brief">Explicitly deferred to protect the v1 scope around Sunspoke.</p>
+    <div class="body">
+      <ul>
+        <li>Multi-project sprawl — only Sunspoke for v1.</li>
+        <li>Customer-facing simplification — internal only.</li>
+        <li>Sunrun / Missions full UI — embedded only, no main interface.</li>
+        <li>Engineering automation — comes later.</li>
+        <li>Licensed / external SunOS — comes later.</li>
+        <li>Final voice and microcopy spec — to be developed alongside surfaces.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       KEY DECISIONS
+       ============================================================ -->
+
+  <section class="slide" data-title="Key decisions" data-group="Decisions" data-status="open">
+    <span class="tag">Decisions</span>
+    <h1>Decisions made in the meeting.</h1>
+    <p class="brief">All eight decisions captured in the meeting summary, in order.</p>
+    <div class="body">
+      <ol>
+        <li><strong>SunOS is the internal engine first.</strong> Customer-facing simplification can come later.</li>
+        <li><strong>Start with only one project: Sunspoke.</strong> Do not overbuild multiple projects yet.</li>
+        <li><strong>Requirements are the source of truth.</strong> MD files should drive design, prototypes, roadmap generation, and future automation.</li>
+        <li><strong>Requirement updates can come from three places.</strong> Manual Claude commits, meeting transcripts, Sunpool saves / references.</li>
+        <li><strong>Feed needs approval controls.</strong> Support both bulk approval and advanced granular diff review.</li>
+        <li><strong>Sunrun comes later.</strong> Sunpool and Sunline are higher priority because Sunrun depends on them.</li>
+        <li><strong>Figma will be used lightly.</strong> Jasmine may still use it for conceptual direction, but Paper / design automation should become the main production path.</li>
+        <li><strong>Create separate GitHub structure.</strong> The team should separate Aether and Sunspell work, with Sunspell having its own GitHub.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       TASKS BY PERSON
+       ============================================================ -->
+
+  <section class="slide" data-title="Tasks · Jasmine · Product architecture" data-group="Tasks · Jasmine" data-status="open">
+    <span class="tag">Jasmine · 1</span>
+    <h1>Product architecture &amp; requirements.</h1>
+    <p class="brief">Jasmine's product / requirements track.</p>
+    <div class="body">
+      <ul>
+        <li>Write the SunOS tech spec.</li>
+        <li>Define the structure of the project folder, especially what belongs inside each MD file.</li>
+        <li>Continue building the Sunspoke requirements / source-of-truth files.</li>
+        <li>Create the initial <code>roadmap.md</code> structure so it can later map into Sunline.</li>
+        <li>Define what fields / components are needed for the roadmap view.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Jasmine · Design direction" data-status="open">
+    <span class="tag">Jasmine · 2</span>
+    <h1>Design direction.</h1>
+    <p class="brief">Jasmine's design direction track.</p>
+    <div class="body">
+      <ul>
+        <li>Finalize the hi-fi direction for the SunOS / Sunspoke homepage.</li>
+        <li>Provide Wayeez with the requirements and AD / design direction needed to build the homepage end to end.</li>
+        <li>Decide the highest-priority UI states for the homepage.</li>
+        <li>Define the project folder experience for Sunspoke, including tabs like requirements, roadmap, prototype, saves, missions, and team.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Jasmine · Feed / approval logic" data-status="open">
+    <span class="tag">Jasmine · 3</span>
+    <h1>Feed / approval logic.</h1>
+    <p class="brief">Jasmine specs how Feed works end to end.</p>
+    <div class="body">
+      <ul>
+        <li>Transcript-ready notifications.</li>
+        <li>Proposed requirement changes.</li>
+        <li>Bulk approve.</li>
+        <li>Advanced granular approval.</li>
+        <li>Diff review.</li>
+        <li>Revert / version history behavior.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Jasmine · Strategy" data-status="open">
+    <span class="tag">Jasmine · 4</span>
+    <h1>Strategy.</h1>
+    <p class="brief">Jasmine holds the strategic positioning of SunOS.</p>
+    <div class="body">
+      <ul>
+        <li>Keep SunOS focused on internal use for now.</li>
+        <li>Revisit later whether SunOS becomes:
+          <ul>
+            <li>Internal infrastructure.</li>
+            <li>Licensed agency software.</li>
+            <li>A fundraising narrative for Sunspoke / Sunspell.</li>
+            <li>A consulting / production engine.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Michael · Sunpool / database" data-group="Tasks · Michael" data-status="open">
+    <span class="tag">Michael · 1</span>
+    <h1>Sunpool / database.</h1>
+    <p class="brief">Michael's Sunpool track — the highest immediate technical priority.</p>
+    <div class="body">
+      <ul>
+        <li>Continue working on Sunpool as the highest immediate technical priority.</li>
+        <li>Get the Sunpool database to a point where the team can start texting into it.</li>
+        <li>Provide or expose the database in a way that Wayeez / Jasmine can eventually connect to the SunOS UI.</li>
+        <li>Help determine how saves get associated with projects like Sunspoke.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Michael · Centralized source of truth" data-status="open">
+    <span class="tag">Michael · 2</span>
+    <h1>Centralized source of truth.</h1>
+    <p class="brief">Michael owns where the MD files live and how clients reach them.</p>
+    <div class="body">
+      <ul>
+        <li>Figure out where the MD files should live.</li>
+        <li>Evaluate / build the centralized system for requirements instead of relying on Slack Canvas, Notion, or scattered local files.</li>
+        <li>Explore building the internal repo / editor structure for project MD files.</li>
+        <li>Consider what is needed for an MCP server so Claude / clients can read and write to the source of truth.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Michael · GitHub / infra" data-status="open">
+    <span class="tag">Michael · 3</span>
+    <h1>GitHub / infrastructure.</h1>
+    <p class="brief">Michael unlocks the Sunspell GitHub split and the Claude / AI client connection layer.</p>
+    <div class="body">
+      <ul>
+        <li>Help create or organize the Sunspell GitHub separately from Aether.</li>
+        <li>Support moving the current playground / prototype work into the Sunspell GitHub.</li>
+        <li>Help connect the centralized MD files to Claude or other AI clients.</li>
+        <li>Later, support transcript automation that can propose updates to requirements.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Michael · Sunline planning" data-status="open">
+    <span class="tag">Michael · 4</span>
+    <h1>Sunline planning.</h1>
+    <p class="brief">Michael evaluates the engine that turns MD files into weekly tasks.</p>
+    <div class="body">
+      <ul>
+        <li>Once Jasmine and Wayeez define the roadmap / task view, evaluate whether Aeon can read multiple MD files and generate weekly prioritized tasks.</li>
+        <li>Help design the extraction logic from <code>roadmap.md</code> into Sunline.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Wayeez · Design automation / Paper" data-group="Tasks · Wayeez" data-status="open">
+    <span class="tag">Wayeez · 1</span>
+    <h1>Design automation / Paper.</h1>
+    <p class="brief">Wayeez builds the SunOS / Sunspoke homepage end to end in Paper.</p>
+    <div class="body">
+      <ul>
+        <li>Continue using Paper to generate the SunOS / Sunspoke homepage at the highest fidelity possible.</li>
+        <li>Build the homepage end to end, starting with the existing Sumani / SunOS home direction.</li>
+        <li>Create all important UI states for the homepage:
+          <ul>
+            <li>One Sunspoke project tile / folder.</li>
+            <li>Background color customization.</li>
+            <li>Tabs visible.</li>
+            <li>Search interaction.</li>
+            <li>Click-through into Sunspoke.</li>
+            <li>Placeholder / fake data where needed.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Wayeez · Project folder UI" data-status="open">
+    <span class="tag">Wayeez · 2</span>
+    <h1>Project folder UI.</h1>
+    <p class="brief">Wayeez designs the next-level surface — inside the Sunspoke folder.</p>
+    <div class="body">
+      <ul>
+        <li>Work with Jasmine to design the inside of the Sunspoke folder.</li>
+        <li>Design the next-level folder experience after the homepage.</li>
+        <li>Include temporary / fake MD file content if the backend is not ready yet.</li>
+        <li>Build the visual structure for requirements, roadmap, saves, missions, and prototype areas.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Wayeez · Paper / source-of-truth workflow" data-status="open">
+    <span class="tag">Wayeez · 3</span>
+    <h1>Paper / source-of-truth workflow.</h1>
+    <p class="brief">Wayeez keeps improving the Paper agent setup so it produces work directly from the source of truth.</p>
+    <div class="body">
+      <h3>Keep improving the agent setup</h3>
+      <ul>
+        <li>Builders.</li>
+        <li>Audit agent.</li>
+        <li>Source-of-truth review.</li>
+      </ul>
+      <h3>Add global requirements where possible</h3>
+      <ul>
+        <li>Always design responsive views.</li>
+        <li>Always prioritize the first-time-user happy path.</li>
+        <li>Build wireframes in Paper first.</li>
+        <li>Move greenlit wireframes into prototype.</li>
+      </ul>
+      <h3>Stretch</h3>
+      <ul>
+        <li>Explore clickable prototype output from Paper.</li>
+        <li>Continue testing whether Paper can move from wireframes into polished design based on stronger requirements.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Tasks · Wayeez · GitHub" data-status="open">
+    <span class="tag">Wayeez · 4</span>
+    <h1>GitHub.</h1>
+    <p class="brief">Wayeez moves the playground work into the Sunspell GitHub once it exists.</p>
+    <div class="body">
+      <ul>
+        <li>Move current playground work out of personal GitHub if needed.</li>
+        <li>Push the work into the new Sunspell GitHub once available.</li>
+        <li>Treat the Paper / design system as a real code project with source-of-truth files.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       SHARED / TEAM TASKS
+       ============================================================ -->
+
+  <section class="slide" data-title="Immediate priorities" data-group="Shared / team tasks" data-status="open">
+    <span class="tag">Immediate</span>
+    <h1>Immediate priorities.</h1>
+    <p class="brief">What the team is working on right now, together.</p>
+    <div class="body">
+      <ol>
+        <li>Create the Sunspell GitHub.</li>
+        <li>Move the playground / prototype work into that repo.</li>
+        <li>Build a hi-fi SunOS homepage using only Sunspoke as the example project.</li>
+        <li>Centralize Sunspoke MD files in one place.</li>
+        <li>Connect or prepare the MD files so Claude / AI clients can access them.</li>
+        <li>Keep Sunpool database work moving so the team can start texting saves into it.</li>
+        <li>Design the Sunspoke folder view after the homepage.</li>
+        <li>Later, add transcript ingestion and requirement-update proposals through Feed.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Later priorities" data-status="open">
+    <span class="tag">Later</span>
+    <h1>Later priorities.</h1>
+    <p class="brief">What follows once the immediate sprint lands.</p>
+    <div class="body">
+      <ol>
+        <li>Build Feed approval flows.</li>
+        <li>Build Sunline roadmap / task extraction.</li>
+        <li>Add weekly task recommendations.</li>
+        <li>Add Sunrun / Missions workflows.</li>
+        <li>Explore engineering automation.</li>
+        <li>Decide whether SunOS becomes external, licensed, or stays internal.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <!-- ============================================================
+       CLOSE
+       ============================================================ -->
+
+  <section class="slide" data-title="Open questions" data-group="Close" data-status="open">
+    <span class="tag">Questions</span>
+    <h1>Open questions.</h1>
+    <p class="brief">The decisions still to be made — surfaced from the meeting.</p>
+    <div class="body">
+      <ol>
+        <li><strong>Where do the MD files live?</strong> Internal repo, owned editor, hosted database — Michael to evaluate.</li>
+        <li><strong>What does the MCP server need to expose?</strong> Read / write to which files, with what auth, by which clients.</li>
+        <li><strong>How are Sunpool saves associated with projects?</strong> Tagging, account linking, or auto-classification.</li>
+        <li><strong>What is the exact field schema for each MD file?</strong> Jasmine to define <code>product.md</code>, <code>design.md</code>, <code>brand.md</code>, <code>tech.md</code>, <code>launch.md</code>, <code>roadmap.md</code>.</li>
+        <li><strong>How does Sunline extract weekly tasks from <code>roadmap.md</code>?</strong> Field schema and extraction logic.</li>
+        <li><strong>When (if ever) does SunOS become external?</strong> Revisited after internal proves itself.</li>
+      </ol>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Success metrics" data-status="open">
+    <span class="tag">Metrics</span>
+    <h1>How we'll know it worked.</h1>
+    <p class="brief">v1 success is measured by Sunspoke shipping coherently from MD source-of-truth, with the team's tools (Paper, Claude, Feed) all reading from the same substrate.</p>
+    <div class="body">
+      <ul>
+        <li>Sunspoke can be specified, designed, and prototyped end-to-end from its MD files.</li>
+        <li>Wayeez can produce the Sunspoke homepage from <code>design.md</code> + <code>product.md</code> in Paper without re-briefing.</li>
+        <li>Michael's Sunpool database accepts texted-in saves and exposes them via API.</li>
+        <li>Centralized MD files are reachable by Claude / MCP clients.</li>
+        <li>The Sunspell GitHub exists and contains the playground work.</li>
+        <li>At least one transcript (this one) lives in the source of truth as a PRD.</li>
+        <li>What we won't optimize for: external usage, multi-project breadth, polished marketing surfaces.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Mood &amp; references" data-status="open">
+    <span class="tag">Mood</span>
+    <h1>Tone and references.</h1>
+    <p class="brief">References that ground the SunOS mental model.</p>
+    <div class="body">
+      <ul>
+        <li><strong>Desktop folders</strong> — for Home (project tiles, cover images, last-updated stamps).</li>
+        <li><strong>Pinterest / Are.na</strong> — for Sunpool's masonry of saves.</li>
+        <li><strong>GitHub PRs</strong> — for Feed's diff + approval pattern.</li>
+        <li><strong>Linear / Asana</strong> — for Sunline's task surface (but read out of the roadmap).</li>
+        <li><strong>Notion / Slack Canvas</strong> — anti-references. SunOS replaces them as the requirements substrate, not as chat.</li>
+        <li><strong>MCP servers</strong> — for the Claude / client connection layer.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+  <section class="slide" data-title="Close" data-status="open">
+    <span class="tag">Close</span>
+    <h1>Next steps.</h1>
+    <p class="brief">Owner, design lead, review cadence, and what happens after sign-off.</p>
+    <div class="body">
+      <h3>Owners</h3>
+      <ul>
+        <li><strong>DRI:</strong> Jasmine.</li>
+        <li><strong>Engineering:</strong> Michael.</li>
+        <li><strong>Design / automation:</strong> Wayeez.</li>
+      </ul>
+      <h3>Cadence</h3>
+      <ul>
+        <li>Sunspoke is the only project until the OS proves itself.</li>
+        <li>Feed surfaces every change to this PRD; bulk-approve for typos, granular for substance.</li>
+      </ul>
+      <h3>What happens after sign-off</h3>
+      <ul>
+        <li>Sunspell GitHub created; playground moved over.</li>
+        <li>Hi-fi SunOS / Sunspoke homepage built in Paper.</li>
+        <li>Sunspoke MD files centralized.</li>
+        <li>Sunpool database becomes texted-into.</li>
+        <li>Project folder UI designed.</li>
+        <li>Transcript ingestion and Feed approval flows follow.</li>
+      </ul>
+    </div>
+    <span class="page"></span>
+  </section>
+
+</main>
+
+<script>
+  /*
+    Slides runtime — stamp tag ("[dot] NN · Label") and page ("NN / TOTAL")
+    on every <section class="slide">. The sidebar nav + scroll-spy is owned
+    by shared/ds-menu.js — adding a slide is enough; everything else derives.
+  */
+  (function () {
+    var deck   = document.getElementById('deck');
+    if (!deck) return;
+    var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+    var total  = slides.length;
+    var pad    = function (n) { return (n < 10 ? '0' : '') + n; };
+    var isSigned = function (slide) {
+      return (slide.getAttribute('data-status') || '').toLowerCase() === 'signed';
+    };
+
+    slides.forEach(function (slide, i) {
+      var num = i + 1;
+      if (!slide.id) slide.id = 's' + num;
+
+      var tag = slide.querySelector('.tag');
+      if (tag) {
+        var raw = (tag.textContent || '').trim();
+        var label = raw.replace(/^\s*\d+\s*[·\-–—]\s*/, '');
+        tag.innerHTML = '';
+        if (isSigned(slide)) {
+          var dot = document.createElement('span');
+          dot.className = 'status-dot is-signed';
+          tag.appendChild(dot);
+        }
+        var text = document.createElement('span');
+        text.textContent = pad(num) + ' · ' + label;
+        tag.appendChild(text);
+      }
+
+      var page = slide.querySelector('.page');
+      if (page) page.textContent = pad(num) + ' / ' + pad(total);
+    });
+  })();
+</script>
+
+<script src="../shared/firebase-config.js"></script>
+<script src="../shared/comments.js" defer></script>
+<link rel="stylesheet" href="../shared/comments-brand.css">
+</body>
+</html>

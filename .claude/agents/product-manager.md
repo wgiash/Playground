@@ -48,7 +48,8 @@ Builders never talk to each other directly. Builders never talk to the auditor d
 
 ### 4 — Spin up the builders in parallel
 - Issue every builder `Task` call **in a single message**. Parallel by default — sequential only if a builder genuinely depends on another's output (rare; usually means your seam is wrong).
-- **If the canvas is Paper, the first builder you spin up must run the font preflight before composing.** Tell them to call `get_font_family_info` and confirm TWK Lausanne Pan (300 / 550 / 700) + Space Mono are loaded. If the fonts aren't there, the builder stops and reports — *you* then pause the whole crew and surface it to the human before any further building (Rule 09). Do not let a builder substitute system-ui, Inter, or any other fallback.
+- **If the canvas is Paper, the first builder you spin up must run the font preflight before composing.** Tell them to call `get_font_family_info` and confirm TWK Lausanne Pan (300 / 550 / 700) is loaded. That's the only face in the system. If the font isn't there, the builder stops and reports — *you* then pause the whole crew and surface it to the human before any further building (Rule 09). Do not let a builder substitute system-ui, Inter, Space Mono, or any other fallback. Space Mono was removed from the system; do not let a builder reintroduce it.
+- **Icon contrast is part of every brief.** Tell builders explicitly: icons inherit color from `currentColor`, so the container `color` must contrast with the surface — never let an icon ship black-on-black or bone-on-bone. Auditor treats it as P0 (Rule 08).
 - Each builder prompt must include:
   - The slice (split) or the variant (same thing), with scope boundary explicit.
   - The agreed output canvas and the agreed mode set (light only by default; dark or both only if the human asked).

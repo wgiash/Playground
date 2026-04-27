@@ -4,7 +4,7 @@
    + TWK Lausanne Pan (300 / 550 / 700 licensed locally) as
    the only body and heading face inside wireframes.
    Apercu Pro is display-only and lives on the home tile.
-   No Inter, no system-default sans inside the wireframe.
+   No Space Mono. No Inter. No system-default sans inside the wireframe.
    ========================================================= */
 
 @font-face {
@@ -29,7 +29,7 @@
   font-display: swap;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
 
 :root {
   /* Neutrals */
@@ -79,9 +79,12 @@
 
   /* Type — TWK Lausanne Pan is the only face inside wireframes.
      Three licensed weights: 300 (body), 550 (medium), 700 (bold).
-     Apercu lives on the home tile only; never used in --font-ui. */
+     Apercu lives on the home tile only; never used in --font-ui.
+     There is no monospace face in the system. --font-mono is kept as
+     an alias of --font-ui so legacy callers keep resolving to Lausanne;
+     do not introduce Space Mono or any other monospace. */
   --font-ui:         "TWK Lausanne Pan", system-ui, -apple-system, sans-serif;
-  --font-mono:       "Space Mono", ui-monospace, monospace;
+  --font-mono:       "TWK Lausanne Pan", system-ui, -apple-system, sans-serif;
   --font-note:       "Caveat", "Bradley Hand", cursive;  /* for canvas labels only */
 
   /* Weights — three real Lausanne weights. The token names cover the
