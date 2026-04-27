@@ -12020,9 +12020,9 @@ function DsFoundations() {
           <div className="ds-type-row"><span className="lab">Kicker</span><span className="spec" style={{fontSize:10, fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase'}}>10 / 500 · KICKER</span></div>
         </DsTile>
 
-        <DsTile title="Faces" tag="--font-ui / --font-mono / --font-note" foot="Apercu reserved for covers / merch" stack>
-          <div className="ds-type-row"><span className="lab">UI</span><span className="spec" style={{fontFamily:'"TWK Lausanne Pan", Inter, sans-serif', fontSize:15, fontWeight:300}}>TWK Lausanne Pan 300 · quick brown fox</span></div>
-          <div className="ds-type-row"><span className="lab">Mono</span><span className="spec" style={{fontFamily:'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize:13}}>Space Mono · 1234567890</span></div>
+        <DsTile title="Faces" tag="--font-ui / --font-note" foot="Apercu reserved for covers / merch · Space Mono removed (Rule 09)" stack>
+          <div className="ds-type-row"><span className="lab">UI</span><span className="spec" style={{fontFamily:'var(--font-ui)', fontSize:15, fontWeight:300}}>TWK Lausanne Pan 300 · quick brown fox</span></div>
+          <div className="ds-type-row"><span className="lab">Mono <em style={{fontStyle:'normal', opacity:0.55}}>(legacy alias)</em></span><span className="spec" style={{fontFamily:'var(--font-ui)', fontWeight:550, letterSpacing:'0.08em', textTransform:'uppercase', fontSize:11}}>--font-mono → Lausanne 550 · 1234567890</span></div>
           <div className="ds-type-row"><span className="lab">Note</span><span className="spec" style={{fontFamily:'Caveat, cursive', fontSize:20}}>Caveat · canvas annotations only</span></div>
         </DsTile>
       </div>
@@ -14608,7 +14608,7 @@ function Topbar({ scale, setScale, resetView, openIndex }) {
   return (
     <div className="topbar" style={{ paddingLeft: 120 }}>
       <a href="../index.html" title="Back to home" aria-label="Back to home"
-         style={{ position: 'fixed', top: 12, left: 12, zIndex: 9999, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', fontFamily: "'Space Mono', ui-monospace, monospace", fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(234,228,226,0.75)', background: 'rgba(18,13,11,0.55)', border: '1px solid rgba(234,228,226,0.18)', borderRadius: 4, textDecoration: 'none', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+         style={{ position: 'fixed', top: 12, left: 12, zIndex: 9999, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', fontFamily: 'var(--font-ui)', fontWeight: 550, letterSpacing: '0.04em', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(234,228,226,0.75)', background: 'rgba(18,13,11,0.55)', border: '1px solid rgba(234,228,226,0.18)', borderRadius: 4, textDecoration: 'none', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
          onMouseOver={(e) => { e.currentTarget.style.color = 'rgba(234,228,226,1)'; e.currentTarget.style.borderColor = 'rgba(234,228,226,0.4)'; }}
          onMouseOut={(e) => { e.currentTarget.style.color = 'rgba(234,228,226,0.75)'; e.currentTarget.style.borderColor = 'rgba(234,228,226,0.18)'; }}
       >&larr; Home</a>
