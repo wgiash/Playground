@@ -9,7 +9,7 @@ Live site: **https://wgiash.github.io/Playground**
 
 - **Home** — [index.html](index.html) — launcher for every app below. Search
   box filters tiles live.
-- **Design System & UX Templates** — [apps/wireframe-library.html](apps/wireframe-library.html) —
+- **Design System In Use** — [apps/wireframe-library.html](apps/wireframe-library.html) —
   an infinite pan/zoom canvas with three zones, left-to-right: **Design
   System → Templates → Flows**. The Design System zone is organised by
   atomic design (Foundations → Atoms → Molecules → Organisms → Patterns).
