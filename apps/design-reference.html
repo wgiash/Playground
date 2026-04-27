@@ -942,7 +942,7 @@
 
   <!-- ===== 01 · Overview ===== -->
   <section class="ds-section" id="overview" data-title="Overview">
-    <span class="kicker">Manual · 01</span>
+    <span class="kicker">Manual</span>
     <h1>The system, as rules.</h1>
     <p class="lede">A linear, operational reference for the Aither design system. Read it before you ship anything inside this repo. Every token, scale, and atom has exactly one canonical use; this page documents what that use is, why it exists, and what's forbidden.</p>
 
@@ -961,7 +961,7 @@
 
   <!-- ===== 02 · Standing rules ===== -->
   <section class="ds-section" id="rules" data-title="Standing rules">
-    <span class="kicker">Manual · 02</span>
+    <span class="kicker">Manual</span>
     <h2>Standing rules.</h2>
     <p class="lede">Five rules that override everything else. They are the operational form of <code>CLAUDE.md</code>. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
 
@@ -1003,7 +1003,7 @@
 
   <!-- ===== 03 · Atomic taxonomy ===== -->
   <section class="ds-section" id="taxonomy" data-title="Atomic taxonomy">
-    <span class="kicker">Manual · 03</span>
+    <span class="kicker">Manual</span>
     <h2>Atomic taxonomy.</h2>
     <p class="lede">The canvas grows along five layers, left-to-right and top-to-bottom: Foundations → Atoms → Molecules → Organisms → Patterns → Flows. Every new item goes into exactly one of them, under the labelled header for that layer.</p>
 
@@ -1055,7 +1055,7 @@
 
   <!-- ===== 04 · Color ===== -->
   <section class="ds-section" id="color" data-title="Color">
-    <span class="kicker">Foundations · 04</span>
+    <span class="kicker">Foundations</span>
     <h2>Color.</h2>
     <p class="lede">Bone (#EAE4E2) and dark (#120D0B) are the two anchor neutrals — every interface state is built from them plus a hairline opacity stack. Warm and cool tones support specific moments. They are never branding, and never used to indicate selection or severity in wireframes (Rule 04).</p>
 
@@ -1136,7 +1136,7 @@ color: white;</code>
 
   <!-- ===== 05 · Typography ===== -->
   <section class="ds-section" id="typography" data-title="Typography">
-    <span class="kicker">Foundations · 05</span>
+    <span class="kicker">Foundations</span>
     <h2>Typography.</h2>
     <p class="lede">TWK Lausanne Pan 300 carries the body. Inter steps in for the heavier weights until more Lausanne weights are licensed. Space Mono labels the system. <strong>No Apercu in wireframes</strong> — it is display-only and lives on the home tile.</p>
 
@@ -1270,7 +1270,7 @@ font-weight: 600;</code>
 
   <!-- ===== 06 · Spacing ===== -->
   <section class="ds-section" id="spacing" data-title="Spacing">
-    <span class="kicker">Foundations · 06</span>
+    <span class="kicker">Foundations</span>
     <h2>Spacing.</h2>
     <p class="lede">A 4px base scale. Use the named tokens — never a raw px value in production styles. The scale is intentionally sparse: one token per role, not one per pixel. If you find yourself reaching for <code>10px</code>, use <code>--s-2</code> or <code>--s-3</code>.</p>
 
@@ -1302,7 +1302,7 @@ font-weight: 600;</code>
 
   <!-- ===== 07 · Radii ===== -->
   <section class="ds-section" id="radii" data-title="Radii">
-    <span class="kicker">Foundations · 07</span>
+    <span class="kicker">Foundations</span>
     <h2>Radii.</h2>
     <p class="lede">Four radii. Two are structural (sharp + slightly rounded). One is for inputs. The pill is reserved.</p>
 
@@ -1322,7 +1322,7 @@ font-weight: 600;</code>
 
   <!-- ===== 08 · Motion ===== -->
   <section class="ds-section" id="motion" data-title="Motion">
-    <span class="kicker">Foundations · 08</span>
+    <span class="kicker">Foundations</span>
     <h2>Motion.</h2>
     <p class="lede">One duration, one easing curve. Everything that moves uses these. The curve favors a fast start and a long tail — feels like a heavy object settling, not a tween.</p>
 
@@ -1364,7 +1364,7 @@ font-weight: 600;</code>
 
   <!-- ===== 09 · Modes ===== -->
   <section class="ds-section" id="modes" data-title="Modes">
-    <span class="kicker">Foundations · 09</span>
+    <span class="kicker">Foundations</span>
     <h2>Modes.</h2>
     <p class="lede">Two modes, paired everywhere. <strong>Dark</strong> is the product default — what users see. <strong>Light</strong> is the annotated review context — what the team marks up. Every wireframe ships in both, and the canvas displays them side-by-side.</p>
 
@@ -1385,7 +1385,7 @@ font-weight: 600;</code>
 
   <!-- ===== 10 · Atoms ===== -->
   <section class="ds-section" id="atoms" data-title="Atoms">
-    <span class="kicker">Components · 10</span>
+    <span class="kicker">Components</span>
     <h2>Atoms.</h2>
     <p class="lede">The shared primitives every wireframe is built from. Each lives under <code>.wf-*</code> in <code>system/tokens.css</code> and inherits its palette from the parent <code>.wf[data-mode]</code> wrapper (§09).</p>
 
@@ -1483,7 +1483,7 @@ font-weight: 600;</code>
 
   <!-- ===== 11 · Composition recipes ===== -->
   <section class="ds-section" id="recipes" data-title="Composition recipes">
-    <span class="kicker">Patterns · 11</span>
+    <span class="kicker">Patterns</span>
     <h2>Composition recipes.</h2>
     <p class="lede">The canonical compositions you should reach for first. Each one is the answer to "how do I open a section / build a form / lay out a row in this system." If your need maps to a recipe, use it. If it doesn't, ask before inventing.</p>
 
@@ -1579,7 +1579,7 @@ never:
 
   <!-- ===== 12 · Flows ===== -->
   <section class="ds-section" id="flows" data-title="Flows">
-    <span class="kicker">Patterns · 12</span>
+    <span class="kicker">Patterns</span>
     <h2>Flows.</h2>
     <p class="lede">A flow is a labelled sequence of frames stacked vertically on the right of the canvas. Every flow represents one user journey from a starting state to a steady state. Every flow ships with auth and error states (Rule 05).</p>
 
@@ -1609,7 +1609,7 @@ never:
 
   <!-- ===== 13 · Grid ===== -->
   <section class="ds-section" id="grid" data-title="Grid">
-    <span class="kicker">Foundations · 13</span>
+    <span class="kicker">Foundations</span>
     <h2>Grid.</h2>
     <p class="lede">Two grids, one per surface family. The numbers below are locked from the canvas IntroCard (<code>system/app.jsx</code>).</p>
 
@@ -1635,7 +1635,7 @@ never:
 
   <!-- ===== 14 · Voice & microcopy ===== -->
   <section class="ds-section" id="voice" data-title="Voice &amp; microcopy">
-    <span class="kicker">Manual · 14</span>
+    <span class="kicker">Manual</span>
     <h2>Voice &amp; microcopy.</h2>
     <p class="lede">The system speaks in short, declarative sentences. Headlines end in periods. Kickers are categorical, not editorial. Errors are dignified, not apologetic.</p>
 
@@ -1671,7 +1671,7 @@ never:
 
   <!-- ===== 15 · File map ===== -->
   <section class="ds-section" id="files" data-title="File map">
-    <span class="kicker">Manual · 15</span>
+    <span class="kicker">Manual</span>
     <h2>File map.</h2>
     <p class="lede">Where things live, and what you're allowed to do to them. <code>EDIT</code> = open for changes. <code>BAKED</code> = generated output, regenerate from source. <code>FROZEN</code> = infrastructure, never modify (Rule 02).</p>
 
@@ -1696,7 +1696,7 @@ never:
 
   <!-- ===== 16 · Anti-patterns ===== -->
   <section class="ds-section" id="never" data-title="Anti-patterns">
-    <span class="kicker">Manual · 16</span>
+    <span class="kicker">Manual</span>
     <h2>Anti-patterns.</h2>
     <p class="lede">A consolidated list of moves that are wrong inside this system. If you find yourself reaching for one of these, stop and reach for the recipe instead.</p>
 
