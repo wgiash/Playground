@@ -39,7 +39,7 @@ Before you signal done to the PM, every one of these must be true:
 
 1. **Tokens only.** No raw hex, no raw px outside the spacing/radius/font scales, no font names other than `--font-ui` and `--font-mono`. If you reached for a value that isn't tokenized, stop and report it as a system gap to the PM — do not add a token yourself.
 2. **Atomic taxonomy respected.** Every new thing lives under exactly one of Foundations / Atoms / Molecules / Organisms / Patterns / Flows, in the labelled row. If it doesn't fit, raise it to the PM rather than forcing it.
-3. **Four frames per surface.** Web × light, web × dark, mobile × light, mobile × dark. Light is the default mode; dark is the companion mode, fully tokenized. Missing a quadrant means the surface isn't done.
+3. **Frames in the agreed mode set, per surface.** Light is the default. The PM's brief names the mode set: light only (web + mobile = 2 frames), dark only (web + mobile = 2 frames), or both (web-light + web-dark + mobile-light + mobile-dark = 4 frames). Don't infer — read the brief. Producing extra modes the PM didn't ask for is a violation, not a generosity. Missing a frame within the agreed mode set means the surface isn't done.
 4. **States covered.** Default, hover, active, disabled, empty, loading, error — whichever apply. Action hierarchy: exactly one `data-primary` per surface.
 5. **Flows include auth + error.** If your slice contains a flow, it ships with the auth path(s) and at least one error/failure state.
 6. **Voice clean.** Short declarative sentences. No exclamation marks. No apologetic or cute copy. Wireframe content uses plausible domain text, not lorem ipsum.

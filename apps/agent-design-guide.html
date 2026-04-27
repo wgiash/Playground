@@ -1979,7 +1979,7 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
       <div class="tax-row">
         <span class="layer">Mobile</span>
         <div>
-          <div class="desc">390 × 844 (iPhone class). 4-col grid, 24px gutter, 24px side margin. Includes the mobile status bar (Signal/Wifi/Battery).</div>
+          <div class="desc">390 × 844 (iPhone class). 4-col grid, 24px gutter, 24px side margin. Frame starts at the app's first pixel — no iOS / Android status bar (Rule 06).</div>
           <div class="examples">390 × 844 · 4-col · 24/24</div>
         </div>
       </div>
@@ -1988,9 +1988,15 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
     <h3>The pairing rule</h3>
     <div class="rule">
       <span class="v">Studio convention · pairing</span>
-      <p class="r">Every surface ships four frames: web × dark, web × light, mobile × dark, mobile × light.</p>
-      <p><strong>Why.</strong> Light is the default mode; dark is the companion mode, fully tokenized so every atom has values in both. Web and mobile are paired so we never design one in isolation. Missing a quadrant means the surface isn't done.</p>
-      <p><strong>How.</strong> When adding a new surface to the canvas, register the four frames together as a row labelled by the surface name. The canvas displays them side-by-side in the order: web-dark · web-light · mobile-dark · mobile-light.</p>
+      <p class="r">Every surface ships in the agreed mode set, paired across web and mobile.</p>
+      <p><strong>Why.</strong> Light is the production default and the studio's default deliverable. Dark is fully tokenized — every atom resolves in both modes — but it's only produced when the human asks for it. Web and mobile are always paired so we never design one in isolation.</p>
+      <p><strong>How.</strong> The PM agrees the mode set with the human in the first conversation. Three valid sets:</p>
+      <ul>
+        <li><strong>Light only</strong> (default): web-light + mobile-light = 2 frames per surface.</li>
+        <li><strong>Dark only</strong> (only when asked): web-dark + mobile-dark = 2 frames per surface.</li>
+        <li><strong>Both</strong> (only when asked): web-light + web-dark + mobile-light + mobile-dark = 4 frames per surface.</li>
+      </ul>
+      <p>Within the agreed set, missing a frame means the surface isn't done. <em>Extra</em> frames in modes the human didn't ask for are also wrong — they waste builder time and clutter the deliverable.</p>
     </div>
 
     <h3>Frame anatomy</h3>

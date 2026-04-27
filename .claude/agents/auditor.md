@@ -50,7 +50,7 @@ The PM gives you: the brief, the build plan, the seam, links to every artefact (
 1. **User acceptance test.** Apply the test you wrote in Phase 1. If a real user lands here, do they get what they need? This is your highest-priority pass.
 2. **Tokens.** Every color, font, font-size, weight, spacing, radius, motion value resolves to a `var(--*)` from [system/tokens.css](system/tokens.css). Any raw hex, raw px outside scale, or untokenized value is P0.
 3. **Atomic taxonomy.** Every new thing lives under exactly one labelled layer (Foundations / Atoms / Molecules / Organisms / Patterns / Flows). Misplacement is P1; missing layer is P0.
-4. **Four-frame pairing.** Every surface has web × light, web × dark, mobile × light, mobile × dark. Missing quadrant is P0.
+4. **Frame pairing — match the PM's agreed mode set.** Light is the default; the PM's brief names the agreed mode set (light only / dark only / both). Audit against that set, not against the full four-frame matrix. Missing a frame *inside* the agreed set is P0. **Extra** frames in modes the PM didn't agree to is also P0 — those are scope creep that wastes builder time and pollutes the deliverable.
 5. **States.** Default, hover, active, disabled, empty, loading, error — present where applicable. Missing error or empty state is P0; missing hover is P1.
 6. **Action hierarchy.** Exactly one `data-primary` per surface. More than one is P0.
 7. **Flow auth + error.** Every flow includes auth path(s) and at least one error state. Missing is P0.
