@@ -903,7 +903,7 @@
 <aside class="ds-menu" id="ds-menu">
   <div>
     <h1 class="deck-title">Agent Design Guide</h1>
-    <p class="deck-sub">Aither · system manual · v0.1</p>
+    <p class="deck-sub">Aither · system manual · v0.4</p>
   </div>
   <h2>Sections</h2>
   <nav id="ds-menu-nav"><!-- auto-built by shared/ds-menu.js --></nav>
@@ -976,9 +976,9 @@
       <div class="qs-step">
         <span class="num">04</span>
         <div class="body">
-          <span class="title">Compose with atoms.</span>
-          <span class="sub"><code>.wf-*</code> primitives are the only legal building blocks at the wireframe stage. Frame chrome is <code>.ki-*</code>, frozen.</span>
-          <span class="ref">→ §Atoms · §Iconography · §Naming conventions</span>
+          <span class="title">Check the library before composing from scratch.</span>
+          <span class="sub">As of v0.4 the kit ships ~280 specimens across F · A · M · O · P. Before building a new molecule or organism, check whether the shape already exists. <code>.wf-*</code> primitives are the only legal building blocks at the wireframe stage; frame chrome is <code>.ki-*</code>, frozen.</span>
+          <span class="ref">→ §Library inventory · §Atoms · §Iconography · §Naming conventions</span>
         </div>
       </div>
       <div class="qs-step">
@@ -1037,7 +1037,7 @@
   <section class="ds-section" id="rules" data-title="Standing rules">
     <span class="kicker">Manual</span>
     <h2>Standing rules.</h2>
-    <p class="lede">Seven rules that override everything else. They are the operational form of <code>CLAUDE.md</code> — same numbering, same order. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
+    <p class="lede">Nine rules that override everything else. They are the operational form of <code>CLAUDE.md</code> — same numbering, same order. If a request would violate one of these, surface the conflict instead of silently breaking the system.</p>
 
     <div class="rule">
       <span class="v">Rule 01</span>
@@ -1085,7 +1085,21 @@
       <span class="v">Rule 07</span>
       <p class="r">Keep canvas maintenance current.</p>
       <p><strong>Why.</strong> The wireframe canvas is read at zoom — labelled header rows are the navigation. The IntroCard is the entry point for every new agent and reviewer. Both rot the moment they fall behind the actual structure.</p>
-      <p><strong>How.</strong> Preserve zoomed-out readability of labelled header rows when adding to the canvas. If a change alters the taxonomy, canonical file, or growth rules, update the <code>IntroCard</code> and <code>DsIntro</code> in <code>apps/wireframe-library.html</code> — mirrored in <code>system/app.jsx</code> and <code>system/app.combined.jsx</code>.</p>
+      <p><strong>How.</strong> Preserve zoomed-out readability of labelled header rows when adding to the canvas. If a change alters the taxonomy, canonical file, or growth rules, update the <code>IntroCard</code> and <code>DsIntro</code> in <code>apps/rendered-design-system.html</code> — mirrored in <code>system/app.jsx</code> and <code>system/app.combined.jsx</code>.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 08</span>
+      <p class="r">Icons come from a real icon library. Never hand-draw glyphs.</p>
+      <p><strong>Why.</strong> Hand-drawn SVGs drift in stroke, viewBox, terminals, and metaphor — the kit looks consistent at 24px and falls apart at 14px. A real library is the only way to keep the visual grammar tight as the system grows.</p>
+      <p><strong>How.</strong> In Playground, use <code>Icons.*</code> from <code>system/icons.jsx</code> (the kit is sourced from <strong>Lucide</strong>: 1.5px stroke, 24px viewBox, currentColor). In Paper, drop in icons from a real library — Lucide first (matches the kit), Phosphor or Heroicons if Lucide can't express the metaphor — never compose icons from rectangles, lines, or freehand shapes. If the icon you need isn't in the system or the chosen library, raise the gap to the PM rather than inlining a one-off SVG.</p>
+    </div>
+
+    <div class="rule">
+      <span class="v">Rule 09</span>
+      <p class="r">Design-system fonts only. In Paper, preflight the font set before composing.</p>
+      <p><strong>Why.</strong> The system is calibrated to TWK Lausanne Pan (300 / 550 / 700) plus Space Mono. Any other face — Inter, system-ui fallback, Apercu in body copy — silently rewrites the hierarchy. In Paper, the file inherits whatever the user has loaded; if Lausanne Pan or Space Mono is missing, every weight, leading, and tracking value in the system is wrong by default.</p>
+      <p><strong>How.</strong> Before any typographic styling in Paper, call <code>get_font_family_info</code>. If TWK Lausanne Pan (300 / 550 / 700) and Space Mono are not in the file's font list, <strong>stop</strong> — surface that to the PM (and the human, via the PM) before drawing anything. Do not substitute system-ui, Inter, or any other fallback. In Playground, use only <code>var(--font-ui)</code> / <code>var(--font-mono)</code> / <code>var(--font-note)</code> — never name a face directly.</p>
     </div>
   </section>
 
@@ -1174,29 +1188,29 @@
       <div class="tax-row">
         <span class="layer">Atoms</span>
         <div>
-          <div class="desc">Single-purpose primitives that take one prop and render one thing. Live in <code>system/tokens.css</code> as <code>.wf-*</code>.</div>
-          <div class="examples">.wf-kicker · .wf-meta · .wf-label · .wf-pill · .wf-btn · .wf-input · .wf-hair · .wf-dot · .wf-placeholder</div>
+          <div class="desc">Single-purpose primitives that take one prop and render one thing. Live in <code>system/tokens.css</code> as <code>.wf-*</code>, plus inline atoms (icons, glyphs, identity, form controls, library decorators).</div>
+          <div class="examples">.wf-kicker · .wf-meta · .wf-label · .wf-pill · .wf-btn · .wf-input · .wf-hair · .wf-dot · .wf-placeholder · 23 icons · avatar · badge · skeleton · kbd · typing dots · step dot · spinner · switch · checkbox · OTP box · avatar uploader · or-divider · neighborhood chip · moon glyph · sparkle field · circular FAB · sheet handle · icon+count chip · ↗ count meta · hierarchy tag · NEW badge · sort toggle · suggestion marker · resize handle · presence dot</div>
         </div>
       </div>
       <div class="tax-row">
         <span class="layer">Molecules</span>
         <div>
-          <div class="desc">Atoms composed into a labelled unit. They have a name, an anatomy, and one or two states.</div>
-          <div class="examples">labelled input · pill row · row item · empty state · search bar · meta line</div>
+          <div class="desc">Atoms composed into a labelled unit with a name, an anatomy, and one or two states. Each molecule does one job.</div>
+          <div class="examples">search input · form field · button pair · pill filter bar · kicker+title · meta row · search-result row · empty state · message bubble · composer · banners · field validation · OTP composite · SSO stack · resend timer · step header · sticky foot · toggle row · checkbox-count row · range slider · autocomplete · filter section head · applied chipbar · preset summary · choice card · directory row · handle suggestions · event row · quad covers (equal · 1+3 · +N overflow) · labeled covers (overlay · stacked) · cover with attribution · three-action row (pills · icons) · two-tab strip (underline · segmented) · sort+select bar · selection toolbar · reference list row · count metadata strip · progress micro-note · activity rows (text · with media) · invite row with inline actions · suggestion prompt row · integration rows (connect · connected) · folder picker row · search recent row · search result with type-tag</div>
         </div>
       </div>
       <div class="tax-row">
         <span class="layer">Organisms</span>
         <div>
-          <div class="desc">Self-contained surfaces, several molecules deep. They occupy a frame and have their own header/scroll/footer.</div>
-          <div class="examples">nav · table · modal · onboarding step · settings panel · dense list</div>
+          <div class="desc">Self-contained surfaces, several molecules deep. They occupy a frame and have their own header / scroll / footer / sheet.</div>
+          <div class="examples">desktop nav (5 cases) · side nav · sub-nav · footer · mobile header (4 cases) · bottom nav (3 cases · plus 5-tab + center FAB · 2 variants) · bottom sheet · command modal · chatbot widget · filter sheet · filter rail · date-range picker · onboarding step shells · welcome hero · done screen · collection browse (grid · list) · detail banner (actions · pinned compact) · filtered masonry (pill row · segmented) · activity feed (chronological · grouped) · search overlay (recents · results) · action sheets (icon · plain) · confirmation sheets (destructive · success) · folder picker sheet · insert-link sheet with toast · integrations sheet (manage · add) · empty collection (decorative · glyph+CTA) · edit-style mode bar · group-edit naming bar · toasts (success · action+undo · error)</div>
         </div>
       </div>
       <div class="tax-row">
         <span class="layer">Patterns</span>
         <div>
-          <div class="desc">Page-template patterns — reusable composition shells that define a whole surface. In Atomic Design these are sometimes called <em>templates</em>; we keep the name <em>Patterns</em> for continuity with the canvas. Currently three: dense-list, editorial-detail, multistep-form. Source under <code>templates/</code>.</div>
-          <div class="examples">dense-list · editorial-detail · multistep-form</div>
+          <div class="desc">Page-template patterns and recurring arrangements — reusable composition shells that define a whole surface, plus library/creation conventions that govern how content products read. Source under <code>templates/</code>; baked into <code>apps/rendered-design-system.html</code>.</div>
+          <div class="examples">dense-list · editorial-detail · multistep-form · kicker→title→body · meta-sandwich · filter→list · breakpoint pair · paired light/dark · flow states anchor · auth-gate interrupt · journey strip · multi-step progress · gated-save · retry loop · permission degradation · completion · quad-collage convention · cover-header→light-body · selection mode (entry · in-mode) · progress promotion · AI-suggestion→action · invite acceptance inline · hierarchy ladder · long-press→edit-style · toast confirmation</div>
         </div>
       </div>
       <div class="tax-row">
@@ -1287,6 +1301,13 @@ color: white;</code>
     <span class="kicker">Foundations</span>
     <h2>Typography.</h2>
     <p class="lede">TWK Lausanne Pan is the only face inside wireframes, licensed locally at <strong>300, 550, and 700</strong>. Space Mono labels the system. Caveat is for canvas annotations only. <strong>No Apercu, no Inter</strong> — Apercu is display-only on the home tile, Inter is not in the system at all.</p>
+
+    <div class="rule">
+      <span class="v">Paper preflight</span>
+      <p class="r">Before any typographic styling in Paper, confirm Lausanne Pan and Space Mono are loaded in the file.</p>
+      <p><strong>Why.</strong> Paper inherits whatever the user has loaded. If the system fonts are missing, every weight, leading, and tracking value in this manual is wrong by default — a "550" looks like a different size, line-heights collapse, the hierarchy that the system depends on disappears.</p>
+      <p><strong>How.</strong> Call <code>get_font_family_info</code> before drawing. Look for <em>TWK Lausanne Pan</em> at 300 / 550 / 700 and <em>Space Mono</em>. If either is missing, <strong>stop</strong>: tell the PM (who tells the human) that the file needs the system fonts loaded before composition can start. Do not substitute system-ui, Inter, or any other fallback — substituting silently is the failure mode this rule exists to prevent. (See <a href="#rules">Rule 09</a>.)</p>
+    </div>
 
     <div class="rule">
       <span class="v">Three weights, one face</span>
@@ -1923,9 +1944,11 @@ data-primary    data-primary</code>
   <section class="ds-section" id="icons" data-title="Iconography">
     <span class="kicker">Components</span>
     <h2>Iconography.</h2>
-    <p class="lede">Lucide-style line icons. 1.5px stroke, 24×24 viewBox, default render at 18px. Stroke uses <code>currentColor</code> so icons inherit from their parent — never set an icon's color directly.</p>
+    <p class="lede">Lucide line icons. 1.5px stroke, 24×24 viewBox, default render at 18px. Stroke uses <code>currentColor</code> so icons inherit from their parent — never set an icon's color directly.</p>
 
-    <p>The full set lives in <code>system/icons.jsx</code> as <code>window.Icons</code>. Use what's there before drawing a new one. If you need an icon that isn't in the set, raise it for review rather than inlining a one-off SVG.</p>
+    <p>The full set lives in <code>system/icons.jsx</code> as <code>window.Icons</code>, sourced from <strong>Lucide</strong>. Use what's there before drawing a new one. If you need an icon that isn't in the set, raise it for review rather than inlining a one-off SVG.</p>
+
+    <p><strong>In Paper.</strong> Pull icons from a real icon library — Lucide first (matches the kit), Phosphor or Heroicons only if Lucide can't express the metaphor. <strong>Never hand-draw glyphs in Paper</strong> by composing rectangles, lines, or freehand shapes — the result drifts in stroke, weight, and metaphor and will not match the kit at any size. If the icon you need isn't in Lucide, surface the gap rather than improvising. (See <a href="#rules">Rule 08</a>.)</p>
 
     <h3>Set</h3>
     <pre><code>navigation : Back · ChevL · ChevR · ChevD
@@ -2122,7 +2145,7 @@ never:
   <section class="ds-section" id="patterns" data-title="Pattern templates">
     <span class="kicker">Patterns</span>
     <h2>Pattern templates.</h2>
-    <p class="lede">Three pattern templates ship with the system. They are the answer to "what kind of screen is this?" — domain-agnostic shells that work for any product the studio is composing. Source under <code>templates/</code>; baked into <code>apps/wireframe-library.html</code>.</p>
+    <p class="lede">Three pattern templates ship with the system. They are the answer to "what kind of screen is this?" — domain-agnostic shells that work for any product the studio is composing. Source under <code>templates/</code>; baked into <code>apps/rendered-design-system.html</code>.</p>
 
     <p>If your surface needs a fourth pattern, surface the gap before inventing one. Most "new" patterns are an existing pattern at a different content density.</p>
 
@@ -2192,6 +2215,111 @@ mobile layout
   [pinned bottom: Skip · Continue]</code></pre>
       </div>
     </div>
+  </section>
+
+  <!-- ===== Library inventory ===== -->
+  <section class="ds-section" id="inventory" data-title="Library inventory">
+    <span class="kicker">Components</span>
+    <h2>Library inventory · v0.4.</h2>
+    <p class="lede">A catalog of every specimen the kit ships, sorted by atomic layer. Before composing a new molecule or organism, scan this list — most product surfaces can be assembled from existing specimens. The full rendered set lives in <code>apps/rendered-design-system.html</code> on the canvas; this section is the manifest.</p>
+
+    <p style="font-size: 12px; color: var(--canvas-label);"><strong>How to read this.</strong> Each row names a specimen group + the specimens inside it. Variants of the same shape are grouped (e.g. "Quad cover · equal · 1+3 · +N overflow"). Use case appears in italics. Open <code>rendered-design-system.html</code> and pan to the §F · §A · §M · §O · §P sections to see the rendered tile.</p>
+
+    <h3>Foundations · §F</h3>
+    <div class="recipe">
+      <div class="recipe-title">Tokens · invisible substrate</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 8px;"><strong>Palette.</strong> Bone + dark + warm/cool neutrals; canvas + frame palettes for both modes. <em>Anchors every rendered surface.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Hairlines.</strong> Alpha ladder over dark and over light. <em>Borders, dividers, depth without elevation.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Type.</strong> Lausanne 300 / 550 / 700, Space Mono, Caveat. Five weight tokens, six size roles. <em>Every rendered glyph.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Spacing.</strong> 4px base, 12 stops (s-1 → s-24). <em>Every gap, padding, margin.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Radii.</strong> r-0 / r-1 / r-2 / r-full. <em>Hard edges by default; pill reserved for chips and avatars.</em></p>
+          <p style="margin: 0;"><strong>Grid.</strong> 1440 × 12 col / 390 × 4 col, 24px gutter + margin. <em>Every rendered frame.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Atoms · §A</h3>
+    <div class="recipe">
+      <div class="recipe-title">Buttons · pills · input · type · decorators · icons · identity · waiting · form controls · library decorators</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 8px;"><strong>Buttons.</strong> .wf-btn default + primary. <em>Any CTA, in any state.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Pills.</strong> .wf-pill default + active. <em>Filter / category / status chips.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Input.</strong> .wf-input. <em>Wraps any native input.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Micro-type.</strong> .wf-kicker · .wf-label · .wf-meta. <em>Section pre-labels, form labels, inline metadata.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Decorators.</strong> .wf-hair · .wf-dot · .wf-placeholder. <em>Dividers, separators, image blocks.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Icons.</strong> 23 in <code>system/icons.jsx</code> (Search, Plus, Back, More, MoreH, Info, Filter, Check, ChevR/L/D, Download, Share, Heart, Play, PlayOutline, Bookmark, Pin, Pin2, Map, Calendar, Globe, User). <em>1.5px stroke, 24px viewBox, currentColor.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Identity.</strong> AitherMark · avatar (initials) · badge (count). <em>Brand mark, person chip, unread count.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Waiting &amp; progress.</strong> Skeleton bar · kbd chip · typing dots · step dot · spinner. <em>Loading, shortcut hint, chatbot thinking, multi-step progress.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Form controls.</strong> Switch · checkbox · OTP box · avatar uploader · or-divider · neighborhood chip. <em>Settings, validation, larger tap-target chips.</em></p>
+          <p style="margin: 0;"><strong>Library &amp; canvas atoms (v0.4).</strong> Moon glyph · sparkle field · circular FAB · sheet handle · icon+count chip · ↗ count meta · hierarchy tag · NEW badge · sort toggle · suggestion marker · resize handle · presence dot. <em>Any list, library, collection, feed, or creation surface.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Molecules · §M</h3>
+    <div class="recipe">
+      <div class="recipe-title">Form composites · action clusters · list rows · conversation · feedback · auth · step · pickers · filters · cards · directory · library composites · feed rows</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 8px;"><strong>Form &amp; input composites.</strong> Search input · form field. <em>Any wf-input augmented with icon or label.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Action clusters.</strong> Button pair · pill filter bar. <em>Form / modal footers, list filter heads.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Micro-type composites.</strong> Kicker + title · meta row. <em>Hero opens, inline metadata.</em></p>
+          <p style="margin: 0 0 8px;"><strong>List &amp; result rows.</strong> Search result row · empty state block. <em>Dense list / map rail / chat threads / no-results.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Conversation.</strong> Message bubble (received / sent) · composer. <em>Chatbot widget, sheet, expanded view.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Feedback.</strong> Inline banner · inline alert · field validation · inline hint. <em>Offline, errors, ok states, sub-field context.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Authentication composites.</strong> OTP input · SSO stack · resend timer. <em>Any throttled-retry / verification flow.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Step scaffold.</strong> Step header block · sticky foot action. <em>Mobile onboarding spine.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Pickers.</strong> Toggle row · checkbox count · range slider · autocomplete dropdown. <em>Settings, capacity, price, location.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Filter composites.</strong> Filter section head · applied chipbar · preset summary card. <em>Filter sheet / rail composition.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Selection cards &amp; directory.</strong> Choice card · directory row · handle suggestion · event list row. <em>Role pickers, follow lists, alternatives, list results.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Collection &amp; item composites (v0.4).</strong> Quad covers (equal · 1+3 · +N overflow) · labeled covers (overlay · stacked) · cover with attribution · three-action rows (pills · icons) · two-tab strips (underline · segmented) · sort+select bar · selection toolbar · reference list row · count metadata strip · progress micro-note. <em>Folder/album/project covers, detail header actions, list-view toolbars.</em></p>
+          <p style="margin: 0;"><strong>Feed &amp; directory rows (v0.4).</strong> Activity row (text · with media) · invite row with inline actions · suggestion prompt row · integration rows (connect · connected) · folder picker row · search recent row · search result with type-tag. <em>Activity streams, invitations, AI suggestions, integration lists, search overlays.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Organisms · §O</h3>
+    <div class="recipe">
+      <div class="recipe-title">Desktop nav · vertical nav · sub-nav · footer · mobile header · bottom nav · sheets · modal · widget · filter · onboarding · hero · done · library product chrome · action sheets &amp; modals</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 8px;"><strong>Desktop · primary nav (5 cases).</strong> HorizontalNav · MinimalNav · MarketingNav · WorkspaceNav · StepperNav. <em>Authenticated app, compact dashboard, public marketing, deep editing, multi-step.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Desktop · vertical nav.</strong> SideNav. <em>Dashboard products with many top-level destinations.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Desktop · sub-nav.</strong> SubNav. <em>In-page navigation under any primary nav.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Desktop · footer.</strong> Footer. <em>Bottom of every web template.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Mobile · headers (4 cases).</strong> MobileHeader · LargeTitleHeader · SearchHeader · ModalHeader. <em>Pushed screen, top-of-stack, search-led, sheet/form.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Mobile · bottom nav (3 cases).</strong> BottomNav · BottomNavFive · BottomNavFab. <em>Floating-pill, native 5-tab, FAB-led.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Mobile · bottom sheet.</strong> .cbm-sheet. <em>Modal surface on mobile — chatbot variant, but structure reusable.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Desktop · command modal.</strong> .sfw-overlay. <em>⌘K palette and any single-input modal.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Desktop · chatbot widget.</strong> .cbw-widget. <em>Persistent companion chrome, floating bottom-right.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Filter sheet · rail · date-range.</strong> Mobile sheet, desktop rail, custom date range. <em>Filterable surfaces.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Onboarding shells.</strong> Mobile step shell (single field · grid body) · desktop 2-pane. <em>Any multi-step flow.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Welcome hero · done screen.</strong> .onb-welcome-hero · .onb-done. <em>First-screen / completion surfaces.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Library product chrome (mobile, v0.4).</strong> Collection browse (grid · list) · detail banner (actions · pinned compact) · filtered masonry (pill row · segmented) · activity feed (chronological · grouped by day) · search overlay (recents · results) · BottomNav 5-tab + center FAB (with progress · plain). <em>Any catalog / library / collection / feed product.</em></p>
+          <p style="margin: 0;"><strong>Action sheets, modals &amp; confirmations (mobile, v0.4).</strong> Action sheet (icon · plain) · confirmation sheet (destructive · success) · folder picker sheet · insert-link sheet + toast · integrations sheet (manage · add) · empty collection (decorative · glyph+CTA) · edit-style mode bar · group-edit naming bar · toasts (success · action+undo · error). <em>Async-completion, destructive, picker, settings, empty-state, edit-mode, and confirmation surfaces.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Patterns · §P</h3>
+    <div class="recipe">
+      <div class="recipe-title">Template compositions · library conventions · state sets · auth-gate · journey · multi-step · gated-save · retry · permission · completion · library &amp; creation conventions</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 8px;"><strong>Template compositions.</strong> Kicker→title→body · meta→title→meta · section header · filter→list. <em>Recurring arrangements inside template frames.</em></p>
+          <p style="margin: 0 0 8px;"><strong>How the library reads.</strong> Breakpoint pair · paired light/dark. <em>Mobile + web pairing, light is default.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Flow states anchor.</strong> Per-flow column of state sets. <em>End of every flow — outcome to evidence.</em></p>
+          <p style="margin: 0 0 8px;"><strong>Auth-gate · journey · progress · gated-save · retry · permission · completion.</strong> Standard flow scaffolding patterns. <em>Onboarding, recovery, sign-out, error recovery.</em></p>
+          <p style="margin: 0;"><strong>Library &amp; creation conventions (v0.4).</strong> Quad-collage convention · cover-header→light-body · selection mode (entry · in-mode) · progress promotion · AI-suggestion→action · invite acceptance inline · hierarchy ladder · long-press→edit-style · toast confirmation. <em>How content products read — selection, suggestion, taxonomy, edit-mode, and async-confirmation conventions usable on any catalog / library / feed surface.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>What to do when a shape isn't here</h3>
+    <p>If the surface you're composing genuinely needs a primitive that isn't in this list, raise the gap to the PM before inventing. Most "missing" specimens are existing ones at a different content density or a different copy register. Naming new primitives without a canvas slot is the fastest way to rot the taxonomy (Rule 03).</p>
   </section>
 
   <!-- ===== Data display ===== -->
@@ -2463,11 +2591,11 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
       <div class="file-row"><span class="path">system/chrome.css</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Frame chrome shared across wireframes. Don't modify.</span></div>
       <div class="file-row"><span class="path">system/app.jsx</span><span class="badge" data-state="edit">Edit*</span><span class="what">Canvas app. Add new frame registrations only. Never modify pan/zoom logic.</span></div>
       <div class="file-row"><span class="path">system/app.combined.jsx</span><span class="badge" data-state="baked">Baked</span><span class="what">Combined source for canvas. Regenerated from app.jsx + atoms + templates.</span></div>
-      <div class="file-row"><span class="path">apps/wireframe-library.html</span><span class="badge" data-state="baked">Baked</span><span class="what">Canonical canvas. Inlines tokens, chrome, canvas, app. Regenerate from system/.</span></div>
+      <div class="file-row"><span class="path">apps/rendered-design-system.html</span><span class="badge" data-state="baked">Baked</span><span class="what">Canonical canvas. Inlines tokens, chrome, canvas, app. Regenerate from system/.</span></div>
       <div class="file-row"><span class="path">apps/prd-template.html</span><span class="badge" data-state="frozen">Frozen</span><span class="what">PRD foundation. Clone — never edit. Add slides only inside clones.</span></div>
       <div class="file-row"><span class="path">apps/sunspell-prd-template.html</span><span class="badge" data-state="edit">Edit</span><span class="what">Live PRD cloned from the template. Add/edit slides freely under scoped classes.</span></div>
       <div class="file-row"><span class="path">apps/agent-design-guide.html</span><span class="badge" data-state="edit">Edit</span><span class="what">This file. Regenerate when tokens.css or CLAUDE.md changes.</span></div>
-      <div class="file-row"><span class="path">templates/*.{css,jsx}</span><span class="badge" data-state="edit">Edit</span><span class="what">UI pattern source. Get inlined into wireframe-library.html.</span></div>
+      <div class="file-row"><span class="path">templates/*.{css,jsx}</span><span class="badge" data-state="edit">Edit</span><span class="what">UI pattern source. Get inlined into rendered-design-system.html.</span></div>
       <div class="file-row"><span class="path">shared/auth-gate.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">Auth enforcement. Don't modify.</span></div>
       <div class="file-row"><span class="path">shared/firebase-config.js</span><span class="badge" data-state="edit">Edit</span><span class="what">Firebase keys. Edit only when auth project changes.</span></div>
       <div class="file-row"><span class="path">shared/comments.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">In-page comment system. Don't modify.</span></div>
@@ -2515,6 +2643,8 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apologetic, cute, or exclamatory copy.</p><p>Wireframes communicate in short declarative sentences. No <em>"oops"</em>, no exclamation marks.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§Atomic taxonomy).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Render OS or device chrome inside a wireframe.</p><p>No iOS / Android status bar (carrier · time · battery), no notch or Dynamic Island, no home indicator, no Mac menu bar / Touch Bar, no browser address bar, no scroll bars drawn into the frame. Wireframes show only the product surface. The mobile frame starts at the app's first pixel — the surrounding device is implied by the 390 × 844 ratio, not drawn.</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-draw icons in Paper from rectangles, lines, or freehand shapes.</p><p>Pull from a real icon library — Lucide first (matches the Playground kit), Phosphor or Heroicons if Lucide can't express the metaphor. If the icon you need isn't available, surface the gap rather than improvising one (Rule 08).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Compose typography in Paper without first confirming Lausanne Pan + Space Mono are loaded.</p><p>Call <code>get_font_family_info</code> as your first typographic move. If the system fonts are missing, stop and tell the PM — do not substitute system-ui, Inter, or any other fallback (Rule 09).</p></div>
   </section>
 
 </main>

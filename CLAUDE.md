@@ -1,4 +1,4 @@
-# Aither Wireframe Library
+# Aither Rendered Design System
 
 ## The app
 An infinite pan/zoom canvas with three zones, left-to-right: **Design System → Templates → Flows**.
@@ -7,7 +7,20 @@ An infinite pan/zoom canvas with three zones, left-to-right: **Design System →
 - Rightward is reserved for **Templates**.
 - **Flows** live on the right and stack vertically.
 
-Canonical artifact: [wireframe-library.html](apps/wireframe-library.html) — it inlines tokens, chrome, and app. Source files ([tokens.css](system/tokens.css), [chrome.css](system/chrome.css), [canvas.css](system/canvas.css), [app.jsx](system/app.jsx), etc.) are the editable sources that get baked into the canonical file.
+Canonical artifact: [rendered-design-system.html](apps/rendered-design-system.html) — it inlines tokens, chrome, and app. Source files ([tokens.css](system/tokens.css), [chrome.css](system/chrome.css), [canvas.css](system/canvas.css), [app.jsx](system/app.jsx), etc.) are the editable sources that get baked into the canonical file.
+
+## Reference materials — always check before designing
+
+Before composing anything for a named product, surface, or feature, **scan the repo for reference materials first.** The user drops PRDs, screenshots, briefs, and other source material into the repo as work comes in — none of it is wired into the canvas, but all of it is load-bearing context.
+
+Where to look (non-exhaustive — new folders appear over time):
+
+- `assets/<product>-references/` or `assets/aither-work(references)/` — screenshot dumps, mood boards, competitor refs, exported Figma frames.
+- `apps/<product>-prd*.html`, `apps/<product>-prd-template.html` — product requirement decks ([sunpull-prd.html](apps/sunpull-prd.html), [sunspell-prd-template.html](apps/sunspell-prd-template.html)).
+- `apps/<product>-flows.html`, `apps/<product>-prototype.html` — existing flow canvases or working prototypes for that product.
+- Anywhere else under `assets/`, `apps/`, or the repo root — folder names usually carry the product name.
+
+How to apply: when a brief names a product (e.g. "design a sunpull onboarding"), run a Glob / Grep pass for that product name across the repo before drawing. If you find a PRD, read its slides; if you find a references folder, look at the images. Never compose for a named product without first checking what context already exists — the user will not always remember to point you at it.
 
 ## Standing rules (always apply)
 
@@ -19,7 +32,9 @@ Mirrored in [apps/agent-design-guide.html#rules](apps/agent-design-guide.html#ru
 - **Rule 04 — No color at the wireframe stage.** Compose with bone and dark via the wireframe-mode tokens (`--bg`, `--fg`, `--panel`, `--input`, `--hair`) inherited from the `.wf` wrapper. Warm and cool tones exist as system colors but never indicate state, severity, or selection at this stage. Selection = filled background inversion; severity = position; state = label. Brand color enters in the §Brand layer, after wireframe approval.
 - **Rule 05 — Flows always include auth and error states.** Any flow added to the Flows zone must show its auth path(s) and at least one error/failure state, not just the happy path. If these are missing from a source template, surface the gap rather than shipping the flow without them.
 - **Rule 06 — No OS or device chrome in wireframes.** No iOS / Android status bar (carrier · time · battery), no notch or Dynamic Island, no home indicator, no Mac menu bar / Touch Bar, no browser address bar, no drawn scrollbars. Wireframes show only the product surface — the device is implied by the frame ratio, not rendered.
-- **Rule 07 — Keep canvas maintenance current.** Preserve zoomed-out readability of labelled header rows. If a change alters the taxonomy, canonical file, or growth rules, update the IntroCard (`IntroCard` and `DsIntro` in [wireframe-library.html](apps/wireframe-library.html); mirrored in [app.jsx](system/app.jsx) and [app.combined.jsx](system/app.combined.jsx)).
+- **Rule 07 — Keep canvas maintenance current.** Preserve zoomed-out readability of labelled header rows. If a change alters the taxonomy, canonical file, or growth rules, update the IntroCard (`IntroCard` and `DsIntro` in [rendered-design-system.html](apps/rendered-design-system.html); mirrored in [app.jsx](system/app.jsx) and [app.combined.jsx](system/app.combined.jsx)).
+- **Rule 08 — Icons come from a real icon library; never hand-drawn.** In Playground, use `Icons.*` from [system/icons.jsx](system/icons.jsx) (the kit is sourced from Lucide: 1.5px stroke, 24px viewBox, currentColor). In Paper, drop in icons from a real library — Lucide first (matches the kit), Phosphor or Heroicons only if Lucide can't express the metaphor. Never compose icons from rectangles, lines, or freehand shapes. If the icon you need isn't available, raise the gap rather than inlining a one-off SVG.
+- **Rule 09 — Design-system fonts only; in Paper, preflight the font set.** Wireframes use TWK Lausanne Pan (300 / 550 / 700) and Space Mono — nothing else. Apercu is display-only on the home tile; Inter is not in the system. In Playground, use `var(--font-ui)` / `var(--font-mono)` / `var(--font-note)` — never name a face directly. In Paper, before any typographic styling, call `get_font_family_info`; if Lausanne Pan or Space Mono is missing from the file, **stop** and surface that to the PM (and the human, via the PM) before composing. Do not substitute system-ui, Inter, or any other fallback.
 
 ## Shared menu component — [shared/ds-menu.css](shared/ds-menu.css) + [shared/ds-menu.js](shared/ds-menu.js)
 

@@ -116,7 +116,7 @@ function Section({ x, y, w, h, num, name, tag, children }) {
 function IntroCard({ x, y }) {
   return (
     <div className="intro-card" style={{ left: x, top: y }}>
-      <div className="num">Aither · Wireframe Library · v0.1</div>
+      <div className="num">Aither · Rendered Design System · v0.1</div>
       <h1>Three templates, six frames.<br/>A test batch for the kit.</h1>
       <p className="body">
         Dense List, Editorial Detail, and Multi-step Form — each shipped in mobile + web

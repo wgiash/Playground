@@ -9,7 +9,7 @@ Live site: **https://wgiash.github.io/Playground**
 
 - **Home** — [index.html](index.html) — launcher for every app below. Search
   box filters tiles live.
-- **Design System In Use** — [apps/wireframe-library.html](apps/wireframe-library.html) —
+- **Design System In Use** — [apps/rendered-design-system.html](apps/rendered-design-system.html) —
   an infinite pan/zoom canvas with three zones, left-to-right: **Design
   System → Templates → Flows**. The Design System zone is organised by
   atomic design (Foundations → Atoms → Molecules → Organisms → Patterns).
@@ -21,7 +21,7 @@ Live site: **https://wgiash.github.io/Playground**
   the operational manual for agents and humans composing inside the system.
   A linear, document-style walkthrough of every token, foundation, atom,
   rule, and agent-architecture pattern. The non-canvas counterpart to the
-  wireframe library.
+  rendered design system.
 - **AI Design Process** — [apps/ai-design-process.html](apps/ai-design-process.html) —
   one-slide diagram of the Playground → Claude Code → Rivet → Handoff
   pipeline.
@@ -32,7 +32,7 @@ Live site: **https://wgiash.github.io/Playground**
 /                      Home, login, README, CLAUDE.md
 /apps/                 User-facing canvases and decks
 /system/               Design-system source (tokens, canvas, chrome, app) —
-                       gets inlined into wireframe-library.html
+                       gets inlined into rendered-design-system.html
 /templates/            UI pattern source (dense-list, editorial-detail,
                        multistep-form)
 /shared/               Cross-page runtime — auth gate, Firebase config,
@@ -53,7 +53,7 @@ can load the content.
 
 ## Editing
 
-The canonical artifact that ships is [apps/wireframe-library.html](apps/wireframe-library.html).
+The canonical artifact that ships is [apps/rendered-design-system.html](apps/rendered-design-system.html).
 It **inlines** [system/tokens.css](system/tokens.css),
 [system/chrome.css](system/chrome.css), [system/canvas.css](system/canvas.css),
 [system/app.jsx](system/app.jsx), and the pattern templates under

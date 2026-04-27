@@ -469,7 +469,7 @@
   const countEl = toolbar.querySelector('.cm-count');
 
   // The iframe on the wireframe page is rendered with pointer-events: none
-  // permanently (see wireframe-library.html) so you can drag-pan over the
+  // permanently (see rendered-design-system.html) so you can drag-pan over the
   // slides. No toggling needed here.
 
   const setAddMode = (on) => {
@@ -578,7 +578,7 @@
   const waitForContainer = () => new Promise(resolve => {
     if (isDeck || getCanvasSurface()) return resolve();
     // .canvas-surface is only created at runtime by the React app mounted
-    // into #root (wireframe-library / flows canvas). Pages without that
+    // into #root (rendered-design-system / flows canvas). Pages without that
     // root — e.g. prd-template — should boot immediately against body.
     const root = document.getElementById('root');
     if (!root) return resolve();

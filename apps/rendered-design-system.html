@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aither · Wireframe Library · Test Batch</title>
+<title>Aither · Rendered Design System · Test Batch</title>
 
 <script src="../shared/firebase-config.js"></script>
 <script src="../shared/auth-gate.js"></script>
@@ -11,7 +11,7 @@
 <style>
 /* ========== tokens.css ========== */
 /* =========================================================
-   Aither Wireframe Library — tokens
+   Aither Rendered Design System — tokens
    Subset of the full Aither DS — wireframes use bone/light
    + TWK Lausanne Pan (300 licensed locally) as the primary
    the only body and heading face inside wireframes (300 / 550 / 700).
@@ -11855,23 +11855,24 @@ const DS_ZONE_X = -10500;        // left edge of the zone on the canvas
 const DS_FRAME_W = 2800;
 const DS_FRAME_W_WIDE = 3200;    // organisms need extra width for 1440-wide nav
 const DS_COL_GAP = 400;          // horizontal gap between frames in the same row
-const DS_ROW_2_Y = 5800;         // top of row 2 — clears row-1 max h (4720) + buffer for minHeight growth
+const DS_ROW_2_Y = 7400;         // top of row 2 — clears row-1 max h (Molecules 6300 after v0.4 expansion) + buffer for minHeight growth
 
 function DsIntro({ x, y }) {
   return (
     <div className="ds-intro-card" style={{ left: x, top: y }}>
-      <div className="num">Aither · Design System · v0.3</div>
+      <div className="num">Aither · Design System · v0.4</div>
       <h1>The shared language.<br/>Taxonomy, not ornament.</h1>
       <p className="body">
-        Every primitive the templates and four flows lean on, sorted by the
-        atomic layer it belongs to. Search, Chatbot, Filter, and Onboarding
-        are all accounted for here — this is the inventory, the names, and
-        the rules for adding more.
+        Every primitive the templates and flows lean on, sorted by the
+        atomic layer it belongs to. Search, Chatbot, Filter, Onboarding,
+        plus the v0.4 expansion — library, collection, feed, sheet,
+        and edit-mode primitives — are all accounted for here. This is
+        the inventory, the names, and the rules for adding more.
       </p>
       <dl className="rules">
         <dt>Order</dt><dd>Foundations → Atoms → Molecules → Organisms → Patterns · top to bottom</dd>
         <dt>Grows</dt><dd>Down for more items within a layer. Right is reserved for Templates · Flows.</dd>
-        <dt>Canonical</dt><dd>wireframe-library.html — baked artifact; inlines tokens, chrome, app.</dd>
+        <dt>Canonical</dt><dd>rendered-design-system.html — baked artifact; inlines tokens, chrome, app.</dd>
         <dt>Scope</dt><dd>Every primitive shipped by a flow gets a slot — even one-flow items — so the inventory stays honest.</dd>
         <dt>New atom</dt><dd>Must be irreducible. If it splits into two atoms, it's a molecule.</dd>
         <dt>New molecule</dt><dd>Two or more atoms composed into a reusable unit with one purpose.</dd>
@@ -12074,7 +12075,7 @@ function DsAtoms() {
   ];
   return (
     <DsFrame
-      x={0} y={0} w={DS_FRAME_W} h={3560}
+      x={0} y={0} w={DS_FRAME_W} h={4400}
       kicker="LAYER · 02"
       title="Atoms."
       sub="The smallest indivisible UI units — every .wf-* primitive, every icon, every brand mark, every form control. Indivisible: breaking one apart loses meaning."
@@ -12254,6 +12255,80 @@ function DsAtoms() {
             </DsTile>
           </div>
         </DsGroup>
+
+        <DsGroup title="Library & canvas atoms" tag="primitives shared by any list / library / collection / creation surface — not product-specific">
+          <div className="ds-grid c4">
+            <DsTile title="Sparkle field" tag="2–4px filled circles · α 0.3–0.6" foot="Decorator for any cover / hero / empty surface that needs subtle visual rhythm without imagery" center>
+              <div style={{display:'flex', gap:14, alignItems:'center'}}>
+                {[2,3,2,4,2].map((s,i) => (
+                  <span key={i} style={{width:s, height:s, borderRadius:'50%', background:'currentColor', opacity: 0.35 + (i % 2) * 0.25, display:'inline-block'}}/>
+                ))}
+              </div>
+            </DsTile>
+
+            <DsTile title="FAB · circular" tag="54px filled pill · centered icon" foot="Primary-action floating button. Center-anchored on bottom-nav, corner-anchored on a list. fg-fill in wireframe; brand fill in §Brand" center>
+              <button style={{width:54, height:54, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0, display:'inline-flex', alignItems:'center', justifyContent:'center', cursor:'pointer'}}>
+                <Icons.Plus size={20}/>
+              </button>
+            </DsTile>
+
+            <DsTile title="Sheet handle" tag="36×4 · pill · α 0.35" foot="Drag affordance pinned to the top of any bottom sheet, drawer, or modal — universal" center>
+              <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35}}/>
+            </DsTile>
+
+            <DsTile title="Icon + count chip" tag="bookmark / heart / pin + number · mono" foot="Universal counter atom — saves, likes, replies, references, attachments. Swap the icon, keep the shape" center>
+              <span style={{display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontFamily:'var(--font-mono)', letterSpacing:'0.04em', color:'var(--fg-soft)'}}>
+                <Icons.Bookmark size={11}/> 32
+              </span>
+            </DsTile>
+
+            <DsTile title="↗ count meta" tag="arrow + number + noun · mono" foot="Inline count callout for any aggregate — 'from N saves', '↗ 12 mentions', '↗ 4 forks'. The arrow signals 'rolled up from'" center>
+              <span style={{fontSize:12, color:'var(--fg-soft)', fontFamily:'var(--font-mono)', letterSpacing:'0.04em'}}>↗ 354 saves</span>
+            </DsTile>
+
+            <DsTile title="Hierarchy tag" tag="9 / 500 · 0.14em · upper · mono" foot="Type-of-thing label — Folder / Group / Project / Feed / Channel / etc. Lives above titles in any taxonomy" center>
+              <div style={{display:'inline-flex', flexDirection:'column', gap:4, alignItems:'flex-start'}}>
+                <span style={{fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', fontFamily:'var(--font-mono)'}}>Folder</span>
+                <span style={{fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', fontFamily:'var(--font-mono)'}}>Group · variant</span>
+                <span style={{fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', fontFamily:'var(--font-mono)'}}>Project</span>
+              </div>
+            </DsTile>
+
+            <DsTile title="NEW badge" tag="9 / 600 · 0.16em · upper · fg" foot="Trailing freshness marker on any list row — invites, items, drafts, releases" center>
+              <span style={{fontSize:9, letterSpacing:'0.16em', textTransform:'uppercase', fontWeight:'var(--w-title)', color:'var(--fg)'}}>NEW</span>
+            </DsTile>
+
+            <DsTile title="Sort toggle" tag="↕ glyph + label · 12 / 500" foot="Inline sort control. Top-left of any list / feed / table — sortable by any column" center>
+              <span style={{display:'inline-flex', alignItems:'center', gap:6, fontSize:12, fontWeight:'var(--w-ui)'}}>
+                <span style={{display:'inline-flex', flexDirection:'column', lineHeight:0.7, fontSize:9}}>
+                  <span>▲</span><span>▼</span>
+                </span>
+                Recents
+              </span>
+            </DsTile>
+
+            <DsTile title="Suggestion marker" tag="6px filled · leading dot" foot="Distinguishes AI / system-suggested rows from user-authored rows in any feed or activity stream" center>
+              <span style={{display:'inline-flex', alignItems:'center', gap:8, fontSize:12, color:'var(--fg-soft)'}}>
+                <span style={{width:6, height:6, borderRadius:'50%', background:'var(--fg)', display:'inline-block'}}/>
+                Suggested
+              </span>
+            </DsTile>
+
+            <DsTile title="Resize handle" tag="2 outline dots · diag corners · dashed frame" foot="Edit / arrange / select-mode affordance for any tile, image crop, or canvas object" center>
+              <div style={{position:'relative', width:48, height:48, border:'1px dashed var(--hair-2)', borderRadius:'var(--r-1)'}}>
+                <span style={{position:'absolute', top:-4, right:-4, width:8, height:8, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+                <span style={{position:'absolute', bottom:-4, left:-4, width:8, height:8, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+              </div>
+            </DsTile>
+
+            <DsTile title="Presence dot" tag="6px · pinned to avatar · ring on bg" foot="Universal availability / connection / online indicator on any avatar or icon — chat, directory, integration rows" center>
+              <div style={{position:'relative', width:32, height:32, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'var(--fg-mute)'}}>
+                AS
+                <span style={{position:'absolute', bottom:-1, right:-1, width:8, height:8, borderRadius:'50%', background:'var(--fg)', border:'2px solid var(--bg)'}}/>
+              </div>
+            </DsTile>
+          </div>
+        </DsGroup>
     </DsFrame>
   );
 }
@@ -12262,7 +12337,7 @@ function DsAtoms() {
 function DsMolecules() {
   return (
     <DsFrame
-      x={0} y={0} w={DS_FRAME_W} h={4720}
+      x={0} y={0} w={DS_FRAME_W} h={6300}
       kicker="LAYER · 03"
       title="Molecules."
       sub="Atoms combined into small reusable units that do one job. Compose these; don't rebuild from the primitives."
@@ -12619,6 +12694,265 @@ function DsMolecules() {
           </div>
         </DsGroup>
 
+        <DsGroup title="Collection & item composites" tag="cover tiles · action rows · tab strips · list rows · meta — usable on any library / catalog / project surface">
+          <div className="ds-grid c3">
+            <DsTile title="Quad cover · equal" tag="2×2 placeholder · 1px hair gaps" foot="Folder / album / playlist cover — equal four-up grid. Use any thumbnail asset" center>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:2, width:140, height:140, background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>)}
+              </div>
+            </DsTile>
+
+            <DsTile title="Quad cover · 1+3" tag="lead tile + 3 supporters" foot="Hero one + supporting three — covers where one item is canonical (mood-board, primary asset)" center>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:2, width:140, height:140, background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8, gridRow:'1 / span 2'}}>LEAD</div>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Quad cover · 3 + overflow" tag="3 thumbs + +N count tile" foot="Cover with explicit overflow count — when total exceeds 4. Tile 4 reads '+N'" center>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:2, width:140, height:140, background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>
+                <div className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>
+                <div style={{background:'var(--fg)', color:'var(--bg)', display:'grid', placeItems:'center', fontSize:14, fontWeight:'var(--w-title)'}}>+18</div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Labeled cover · overlay" tag="quad cover + bottom label band" foot="Folder / collection tile with name burned into the cover — uppercase tracked label" stack>
+              <div style={{position:'relative', width:'100%', maxWidth:180, aspectRatio:'1 / 1', background:'var(--input)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:2, height:'100%', background:'var(--hair)'}}>
+                  {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>)}
+                </div>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, padding:'8px 10px', background:'linear-gradient(transparent, var(--dark-soft))', color:'var(--bone)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontWeight:'var(--w-title)'}}>Strategy</div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Labeled cover · stacked" tag="cover + label below + meta" foot="Same cover, label below the tile — when burning into the image is wrong (light covers, photo-led lists)" stack>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:2, width:'100%', maxWidth:180, aspectRatio:'1 / 1', background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:8}}>IMG</div>)}
+              </div>
+              <div style={{display:'flex', flexDirection:'column', gap:2}}>
+                <span style={{fontSize:13, fontWeight:'var(--w-title)', letterSpacing:'-0.01em'}}>Strategy</span>
+                <span className="wf-meta" style={{fontSize:11}}>18 items · updated 2d</span>
+              </div>
+            </DsTile>
+
+            <DsTile title="Cover with attribution" tag="image-led tile + leader chip" foot="Save / item card — image on top, attribution chip pinned below (avatar + handle + caption)" stack>
+              <div className="wf-placeholder" style={{width:'100%', height:120}}>IMG</div>
+              <div style={{display:'flex', alignItems:'center', gap:8, marginTop:8}}>
+                <div style={{width:18, height:18, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                <div style={{minWidth:0, flex:1}}>
+                  <div style={{fontSize:11, fontWeight:'var(--w-ui)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>@author</div>
+                  <div style={{fontSize:10, color:'var(--fg-soft)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>Caption line</div>
+                </div>
+              </div>
+            </DsTile>
+          </div>
+
+          <div className="ds-grid c2" style={{marginTop:18}}>
+            <DsTile title="Three-action row · pills" tag="primary + outline + outline + ⋯" foot="Header action cluster on a detail surface — Update / Edit / + Connect / overflow. Swap labels per product" stack>
+              <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+                <button className="wf-btn" data-primary="true" style={{padding:'8px 16px', textTransform:'none', letterSpacing:'-0.01em', fontSize:12}}>Update</button>
+                <button className="wf-btn" style={{padding:'8px 16px', textTransform:'none', letterSpacing:'-0.01em', fontSize:12}}>Edit</button>
+                <button className="wf-btn" style={{padding:'8px 16px', textTransform:'none', letterSpacing:'-0.01em', fontSize:12}}>+ Connect</button>
+                <button className="wf-btn" aria-label="More" style={{padding:'8px 12px', textTransform:'none', letterSpacing:'-0.01em', fontSize:12}}><Icons.MoreH size={14}/></button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Three-action row · icon" tag="icon buttons + label tooltip" foot="Compact alternative — same three actions when horizontal space is tight" stack>
+              <div style={{display:'flex', alignItems:'center', gap:6}}>
+                <button className="wf-btn" data-primary="true" style={{padding:'8px 12px'}} aria-label="Update"><Icons.Check size={14}/></button>
+                <button className="wf-btn" style={{padding:'8px 12px'}} aria-label="Edit"><Icons.More size={14}/></button>
+                <button className="wf-btn" style={{padding:'8px 12px'}} aria-label="Connect"><Icons.Plus size={14}/></button>
+                <button className="wf-btn" style={{padding:'8px 12px'}} aria-label="More"><Icons.MoreH size={14}/></button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Two-tab strip · underline" tag="active text-fg + 2px bottom rule" foot="Switch between two views of the same surface — Items / Activity, Builds / Saves, Posts / Replies" stack>
+              <div style={{display:'flex', gap:24, borderBottom:'1px solid var(--hair)', width:'100%'}}>
+                <button style={{padding:'10px 0', fontWeight:'var(--w-ui)', fontSize:13, color:'var(--fg)', background:'none', border:0, borderBottom:'2px solid var(--fg)'}}>Builds</button>
+                <button style={{padding:'10px 0', fontSize:13, color:'var(--fg-soft)', background:'none', border:0}}>Saves</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Two-tab strip · segmented" tag="pill group · fg-fill on active" foot="Same toggle, denser feel — fits inside compact toolbars and filter rows" stack>
+              <div style={{display:'inline-flex', padding:2, background:'var(--input)', border:'1px solid var(--hair)', borderRadius:'var(--r-full)'}}>
+                <button style={{padding:'6px 14px', borderRadius:'var(--r-full)', background:'var(--fg)', color:'var(--bg)', fontSize:12, fontWeight:'var(--w-ui)', border:0}}>Builds</button>
+                <button style={{padding:'6px 14px', borderRadius:'var(--r-full)', background:'transparent', color:'var(--fg-soft)', fontSize:12, fontWeight:'var(--w-ui)', border:0}}>Saves</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Sort + select bar" tag="↕ sort + trailing controls" foot="Top-of-list toolbar — sort on the left, select / + on the right. Used on any list / masonry / table" stack>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%'}}>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6, fontSize:12, fontWeight:'var(--w-ui)'}}>
+                  <span style={{display:'inline-flex', flexDirection:'column', lineHeight:0.7, fontSize:9}}><span>▲</span><span>▼</span></span>
+                  Recents
+                </span>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6}}>
+                  <button className="wf-btn" style={{padding:'6px 12px', fontSize:11}}>Select</button>
+                  <button className="wf-btn" data-primary="true" style={{padding:'6px 12px', fontSize:11}} aria-label="Add"><Icons.Plus size={12}/></button>
+                </span>
+              </div>
+            </DsTile>
+
+            <DsTile title="Selection toolbar" tag="cancel · n selected · primary action" foot="Replaces sort+select bar when selection mode is active. Shows count + bulk action" stack>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%'}}>
+                <button style={{background:'none', border:0, color:'var(--fg-soft)', fontSize:12, padding:0, cursor:'pointer'}}>Cancel</button>
+                <span style={{fontSize:12, fontWeight:'var(--w-ui)'}}>3 Selected</span>
+                <button className="wf-btn" data-primary="true" style={{padding:'6px 14px', fontSize:11}}>Done</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Reference list row" tag="thumb + title + meta + counter" foot="Each entry in a Builds / Threads / Versions list — thumb-led, counter-trailing" stack>
+              <div style={{display:'flex', gap:12, alignItems:'center', width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:44, height:44, flexShrink:0}}>IMG</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:13, fontWeight:'var(--w-ui)', letterSpacing:'-0.01em'}}>Working title v3</div>
+                  <div style={{fontSize:11, color:'var(--fg-soft)', marginTop:2}}>Updated 2m · drafts</div>
+                </div>
+                <span style={{display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontFamily:'var(--font-mono)', color:'var(--fg-soft)', flexShrink:0}}>
+                  <Icons.Bookmark size={11}/> 32
+                </span>
+              </div>
+            </DsTile>
+
+            <DsTile title="Count metadata strip" tag="N items · ↗ from N · last updated" foot="Header beneath a title — total counts + provenance + freshness. Reads like a stat line" stack>
+              <div style={{display:'flex', alignItems:'center', gap:14, fontSize:12, color:'var(--fg-soft)', fontFamily:'var(--font-mono)', letterSpacing:'0.04em', flexWrap:'wrap'}}>
+                <span>54 Builds</span>
+                <span className="wf-dot"/>
+                <span>↗ from 354 saves</span>
+                <span className="wf-dot"/>
+                <span>updated 2d</span>
+              </div>
+            </DsTile>
+
+            <DsTile title="Progress micro-note" tag="goal-progress hint · 11 / 400" foot="Tiny target callout pinned beneath a primary CTA. '+15 to N' — generic for any milestone" stack>
+              <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:6, padding:8, width:'100%'}}>
+                <button style={{width:54, height:54, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0, display:'inline-flex', alignItems:'center', justifyContent:'center'}}>
+                  <Icons.Plus size={20}/>
+                </button>
+                <span style={{fontSize:11, color:'var(--fg-soft)'}}>+15 to hit 70</span>
+              </div>
+            </DsTile>
+          </div>
+        </DsGroup>
+
+        <DsGroup title="Feed & directory rows" tag="activity · invitation · suggestion · integration · search · picker — every list-row variant a feed product needs">
+          <div className="ds-grid c2">
+            <DsTile title="Activity row · text" tag="avatar + actor + verb + object + ts" foot="Plain activity entry — no media. Universal feed unit" stack>
+              <div style={{display:'flex', alignItems:'flex-start', gap:10, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div style={{width:28, height:28, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                  <span style={{fontWeight:'var(--w-ui)'}}>Anna</span>
+                  <span style={{color:'var(--fg-soft)'}}> added 17 items to </span>
+                  <span style={{fontWeight:'var(--w-ui)'}}>Beauty</span>
+                </div>
+                <span className="wf-meta" style={{fontSize:10, flexShrink:0}}>12s</span>
+              </div>
+            </DsTile>
+
+            <DsTile title="Activity row · with media" tag="row + horizontal thumb-strip" foot="Activity that references items — strip of thumbnails right of the line" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:8, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+                  <div style={{width:28, height:28, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                  <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                    <span style={{fontWeight:'var(--w-ui)'}}>Sumani</span>
+                    <span style={{color:'var(--fg-soft)'}}> updated </span>
+                    <span style={{fontWeight:'var(--w-ui)'}}>Skincare</span>
+                  </div>
+                  <span className="wf-meta" style={{fontSize:10, flexShrink:0}}>9s</span>
+                </div>
+                <div style={{display:'flex', gap:6, paddingLeft:38}}>
+                  {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{width:48, height:48, fontSize:8}}>IMG</div>)}
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Invite row · inline actions" tag="row + Decline / Accept buttons" foot="Invitation entry in a feed — accept / decline without leaving the list" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:8, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+                  <div style={{width:28, height:28, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                  <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                    <span style={{fontWeight:'var(--w-ui)'}}>Nate</span>
+                    <span style={{color:'var(--fg-soft)'}}> invited you to </span>
+                    <span style={{fontWeight:'var(--w-ui)'}}>LA Trip</span>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:8, paddingLeft:38}}>
+                  <button className="wf-btn" style={{padding:'6px 14px', fontSize:11}}>Decline</button>
+                  <button className="wf-btn" data-primary="true" style={{padding:'6px 14px', fontSize:11}}>Accept</button>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Suggestion prompt row" tag="suggestion-marker + prompt + CTA" foot="AI / system suggestion in a feed. Leading-dot atom marks system-authored vs. user-authored" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:8, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+                  <span style={{width:6, height:6, borderRadius:'50%', background:'var(--fg)', flexShrink:0, marginTop:6}}/>
+                  <div style={{flex:1, fontSize:12, lineHeight:1.5, color:'var(--fg-soft)'}}>
+                    Noticed a recurring theme in your last 21 items — want to make a project from it?
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:8, paddingLeft:18}}>
+                  <button className="wf-btn" style={{padding:'6px 14px', fontSize:11}}>Dismiss</button>
+                  <button className="wf-btn" data-primary="true" style={{padding:'6px 14px', fontSize:11}}>Make project</button>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Integration row · connect" tag="logo + name + Connect pill" foot="Available integration — single trailing pill triggers the OAuth handshake" stack>
+              <div style={{display:'flex', alignItems:'center', gap:12, width:'100%', padding:'12px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:28, height:28, fontSize:8, flexShrink:0}}>L</div>
+                <span style={{flex:1, fontSize:13, fontWeight:'var(--w-ui)'}}>LinkedIn</span>
+                <button className="wf-btn" style={{padding:'5px 14px', fontSize:11, textTransform:'none', letterSpacing:0}}>Connect</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Integration row · connected" tag="logo + name + handle + Disconnect" foot="Connected state — sub-line shows the linked handle / account; trailing pill becomes Disconnect" stack>
+              <div style={{display:'flex', alignItems:'center', gap:12, width:'100%', padding:'12px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:28, height:28, fontSize:8, flexShrink:0}}>IG</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Instagram</div>
+                  <div style={{fontSize:11, color:'var(--fg-soft)'}}>@handle</div>
+                </div>
+                <button className="wf-btn" style={{padding:'5px 14px', fontSize:11, textTransform:'none', letterSpacing:0}}>Disconnect</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Folder picker row" tag="cover + name + descriptor + chevron" foot="Used inside a 'move to' picker — small cover, name, parent path. Tap-target is the whole row" stack>
+              <div style={{display:'flex', alignItems:'center', gap:12, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:32, height:32, fontSize:8, flexShrink:0}}>F</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Brand strategy</div>
+                  <div style={{fontSize:11, color:'var(--fg-soft)'}}>Folder · 23 items</div>
+                </div>
+                <Icons.ChevR size={14}/>
+              </div>
+            </DsTile>
+
+            <DsTile title="Search recent row" tag="thumb + name + descriptor" foot="Pre-typed state of a search overlay — recent folders / projects / feeds the user opened" stack>
+              <div style={{display:'flex', alignItems:'center', gap:12, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:32, height:32, fontSize:8, flexShrink:0}}>IMG</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Pancake recipes</div>
+                  <div style={{fontSize:11, color:'var(--fg-soft)'}}>Stack · Food</div>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Search result · type-tag" tag="row + highlighted match + tag" foot="Typed-query state — same row shape, with type-tag label revealing what kind of thing the match is" stack>
+              <div style={{display:'flex', alignItems:'flex-start', gap:12, width:'100%', padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                <div className="wf-placeholder" style={{width:32, height:32, fontSize:8, flexShrink:0}}>IMG</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}><mark style={{background:'var(--fg)', color:'var(--bg)', padding:'0 2px'}}>Bran</mark>d strategy</div>
+                  <div style={{fontSize:10, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', marginTop:2, fontFamily:'var(--font-mono)'}}>Folder</div>
+                </div>
+              </div>
+            </DsTile>
+          </div>
+        </DsGroup>
+
     </DsFrame>
   );
 }
@@ -12627,7 +12961,7 @@ function DsMolecules() {
 function DsOrganisms() {
   return (
     <DsFrame
-      x={0} y={0} w={DS_FRAME_W_WIDE} h={11400}
+      x={0} y={0} w={DS_FRAME_W_WIDE} h={15600}
       kicker="LAYER · 04"
       title="Organisms."
       sub="Self-contained chrome — the things you recognize as 'a thing' in the product. Hold their own layout, accept props, and show up on every template or flow. Nav surfaces ship in multiple variants so each product context has the right chrome."
@@ -12921,6 +13255,581 @@ function DsOrganisms() {
         </DsTile>
       </DsGroup>
 
+      <DsGroup title="Mobile · Library product chrome — 6 cases" tag="390-wide · panel + masonry + activity + search + nav · for any catalog / library / collection / feed product">
+        <div className="ds-grid c2">
+          <DsTile title="Collection browse · grid" tag="cover-tile grid" foot="Folder / album / project picker — 2-up cover-tile grid" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="dark" style={{height: 660, padding:'24px 18px', overflow:'hidden'}}>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:14}}>
+                  {['STRATEGY','MOVIES','FOOD','TRAVEL','SOCIALS','BRAND'].map(label => (
+                    <div key={label} style={{position:'relative', aspectRatio:'1 / 1', background:'var(--input)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:1, height:'100%', background:'var(--hair)'}}>
+                        {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:7}}>IMG</div>)}
+                      </div>
+                      <div style={{position:'absolute', left:8, right:8, bottom:8, color:'var(--fg)', fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', fontWeight:'var(--w-title)'}}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Collection browse · list" tag="row list + search header" foot="Same surface, denser — when the user has many collections and grid scanning slows down" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:'24px 18px', overflow:'hidden'}}>
+                <div className="wf-input" style={{marginBottom:18}}>
+                  <Icons.Search size={14}/>
+                  <input placeholder="Search collections" readOnly/>
+                </div>
+                {['Brand strategy','Pancake recipes','Japan trip guide','Fitness pull','LinkedIn post ideas','Sunset shots'].map((n,i) => (
+                  <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'12px 0', borderTop: i ? '1px solid var(--hair)' : 'none'}}>
+                    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:1, width:36, height:36, background:'var(--hair)', borderRadius:'var(--r-1)', overflow:'hidden', flexShrink:0}}>
+                      {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:6}}>·</div>)}
+                    </div>
+                    <div style={{flex:1, minWidth:0}}>
+                      <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>{n}</div>
+                      <div style={{fontSize:11, color:'var(--fg-soft)'}}>Folder · {(i+1)*4} items</div>
+                    </div>
+                    <Icons.ChevR size={14}/>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Detail banner · actions" tag="cover + avatar + title + meta + 3-action row + tabs" foot="Project / album / collection detail header. Cover sits on top, three-action cluster sits beneath title + meta" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:0, overflow:'hidden'}}>
+                <div style={{position:'relative', height:140, background:'var(--wf-dark-panel)', display:'flex', alignItems:'flex-end', padding:'16px 18px'}}>
+                  <button style={{position:'absolute', top:14, left:14, background:'none', border:0, color:'var(--bone-soft)'}} aria-label="Back"><Icons.Back size={16}/></button>
+                  <button style={{position:'absolute', top:14, right:14, background:'none', border:0, color:'var(--bone-soft)'}} aria-label="Share"><Icons.Share size={16}/></button>
+                </div>
+                <div style={{padding:'16px 18px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:6}}>
+                    <div style={{width:20, height:20, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)'}}/>
+                    <span className="wf-meta" style={{fontSize:11}}>@author</span>
+                  </div>
+                  <div style={{fontSize:20, fontWeight:'var(--w-title)', letterSpacing:'-0.02em', lineHeight:1.15}}>Brand strategy hub</div>
+                  <div style={{fontSize:12, color:'var(--fg-soft)', marginTop:6, lineHeight:1.5}}>The shared library for the brand identity system — positioning, voice, references.</div>
+                  <div style={{display:'flex', gap:14, alignItems:'center', marginTop:10, fontSize:11, color:'var(--fg-soft)', fontFamily:'var(--font-mono)', letterSpacing:'0.04em'}}>
+                    <span>54 builds</span><span className="wf-dot"/><span>↗ 354 saves</span>
+                  </div>
+                  <div style={{display:'flex', gap:8, marginTop:14, flexWrap:'wrap'}}>
+                    <button className="wf-btn" data-primary="true" style={{padding:'8px 16px', fontSize:11, textTransform:'none', letterSpacing:0}}>Update</button>
+                    <button className="wf-btn" style={{padding:'8px 16px', fontSize:11, textTransform:'none', letterSpacing:0}}>Edit</button>
+                    <button className="wf-btn" style={{padding:'8px 16px', fontSize:11, textTransform:'none', letterSpacing:0}}>+ Connect</button>
+                    <button className="wf-btn" style={{padding:'8px 12px', fontSize:11}} aria-label="More"><Icons.MoreH size={14}/></button>
+                  </div>
+                  <div style={{display:'flex', gap:24, marginTop:18, borderBottom:'1px solid var(--hair)'}}>
+                    <button style={{padding:'10px 0', fontWeight:'var(--w-ui)', fontSize:13, background:'none', border:0, borderBottom:'2px solid var(--fg)'}}>Builds</button>
+                    <button style={{padding:'10px 0', fontSize:13, color:'var(--fg-soft)', background:'none', border:0}}>Saves</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Detail banner · pinned compact" tag="row banner + actions in trailing dropdown" foot="Same shell, scroll-condensed — when the user scrolls into the body. Title compresses to a row" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:0, overflow:'hidden'}}>
+                <div style={{position:'sticky', top:0, padding:'14px 18px', background:'var(--bg)', borderBottom:'1px solid var(--hair)', display:'flex', alignItems:'center', gap:10}}>
+                  <button style={{background:'none', border:0}} aria-label="Back"><Icons.Back size={16}/></button>
+                  <div style={{width:24, height:24, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                  <span style={{flex:1, fontSize:13, fontWeight:'var(--w-ui)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>Brand strategy hub</span>
+                  <button className="wf-btn" data-primary="true" style={{padding:'5px 12px', fontSize:11, textTransform:'none', letterSpacing:0}}>Update</button>
+                  <button style={{background:'none', border:0}} aria-label="More"><Icons.MoreH size={14}/></button>
+                </div>
+                <div style={{padding:18}}>
+                  <div className="sf-skel h22" style={{width:'48%', marginBottom:10}}/>
+                  <div className="sf-skel h14" style={{width:'72%', marginBottom:6}}/>
+                  <div className="sf-skel h14" style={{width:'62%'}}/>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:18}}>
+                    <div className="wf-placeholder" style={{aspectRatio:'1 / 1', fontSize:9}}>IMG</div>
+                    <div className="wf-placeholder" style={{aspectRatio:'1 / 1', fontSize:9}}>IMG</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Filtered masonry · pill row" tag="title + pill filter + sort + masonry" foot="Pinterest-style library — title at top, horizontal pill row of categories, sort + select, two-column masonry beneath" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:0, overflow:'hidden'}}>
+                <div style={{padding:'18px 18px 12px'}}>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10}}>
+                    <span style={{fontSize:24, fontWeight:'var(--w-title)', letterSpacing:'-0.02em'}}>Saves</span>
+                    <span style={{display:'inline-flex', gap:14}}>
+                      <button style={{background:'none', border:0}} aria-label="Search"><Icons.Search size={16}/></button>
+                      <button style={{background:'none', border:0}} aria-label="Add"><Icons.Plus size={16}/></button>
+                    </span>
+                  </div>
+                  <div style={{display:'flex', gap:6, overflowX:'auto', marginBottom:10, paddingBottom:4}}>
+                    {['All','Brand','Skincare','Fitness','Beauty','Travel'].map((p,i) => (
+                      <span key={p} className="wf-pill" data-active={i===0 ? 'true' : undefined} style={{whiteSpace:'nowrap'}}>{p}</span>
+                    ))}
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                    <span style={{display:'inline-flex', alignItems:'center', gap:6, fontSize:12, fontWeight:'var(--w-ui)'}}>
+                      <span style={{display:'inline-flex', flexDirection:'column', lineHeight:0.7, fontSize:9}}><span>▲</span><span>▼</span></span>
+                      Recents
+                    </span>
+                    <button className="wf-btn" style={{padding:'5px 12px', fontSize:11}}>Select</button>
+                  </div>
+                </div>
+                <div style={{padding:'0 18px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+                  {[140,180,120,160,150,170].map((h,i) => (
+                    <div key={i} className="wf-placeholder" style={{height:h, fontSize:9}}>IMG</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Filtered masonry · segmented" tag="title + segmented control + masonry" foot="Same shell, two-state filter — when the categories collapse to a binary (Mine / All, Live / Draft, Public / Private)" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:0, overflow:'hidden'}}>
+                <div style={{padding:'18px 18px 12px'}}>
+                  <div style={{fontSize:24, fontWeight:'var(--w-title)', letterSpacing:'-0.02em', marginBottom:14}}>Library</div>
+                  <div style={{display:'inline-flex', padding:2, background:'var(--input)', border:'1px solid var(--hair)', borderRadius:'var(--r-full)', marginBottom:10}}>
+                    <button style={{padding:'6px 18px', borderRadius:'var(--r-full)', background:'var(--fg)', color:'var(--bg)', fontSize:12, fontWeight:'var(--w-ui)', border:0}}>Mine</button>
+                    <button style={{padding:'6px 18px', borderRadius:'var(--r-full)', background:'transparent', color:'var(--fg-soft)', fontSize:12, fontWeight:'var(--w-ui)', border:0}}>All</button>
+                  </div>
+                </div>
+                <div style={{padding:'0 18px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+                  {[160,140,180,120,150,170].map((h,i) => (
+                    <div key={i} className="wf-placeholder" style={{height:h, fontSize:9}}>IMG</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Activity feed · chronological" tag="large title + reverse-chron stream" foot="Mixed activity stream — actor verbs, invites, AI suggestions all interleaved by recency" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:'18px', overflow:'hidden'}}>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14}}>
+                  <span style={{fontSize:24, fontWeight:'var(--w-title)', letterSpacing:'-0.02em'}}>Activity</span>
+                  <button style={{background:'none', border:0}} aria-label="Search"><Icons.Search size={16}/></button>
+                </div>
+                {[
+                  {a:'Sumani', v:'updated', o:'Skincare', t:'9s', sug:false},
+                  {a:'Anna', v:'added 17 items to', o:'Beauty', t:'12s', sug:false},
+                  {a:'Nate', v:'invited you to', o:'LA Trip', t:'6h', invite:true},
+                  {a:'Sumani', v:'noticed a recurring theme — want to make a project from 21 items?', o:'', t:'1d', sug:true},
+                  {a:'You', v:'created', o:'Brand strategy', t:'2d', sug:false},
+                ].map((r, i) => (
+                  <div key={i} style={{display:'flex', flexDirection:'column', gap:8, padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                    <div style={{display:'flex', alignItems:'flex-start', gap:10}}>
+                      {r.sug
+                        ? <span style={{width:6, height:6, borderRadius:'50%', background:'var(--fg)', flexShrink:0, marginTop:6, marginLeft:11}}/>
+                        : <div style={{width:24, height:24, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                      }
+                      <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                        <span style={{fontWeight:'var(--w-ui)'}}>{r.a}</span>
+                        <span style={{color:'var(--fg-soft)'}}> {r.v} </span>
+                        {r.o && <span style={{fontWeight:'var(--w-ui)'}}>{r.o}</span>}
+                      </div>
+                      <span className="wf-meta" style={{fontSize:10, flexShrink:0}}>{r.t}</span>
+                    </div>
+                    {r.invite && (
+                      <div style={{display:'flex', gap:8, paddingLeft:34}}>
+                        <button className="wf-btn" style={{padding:'5px 12px', fontSize:11}}>Decline</button>
+                        <button className="wf-btn" data-primary="true" style={{padding:'5px 12px', fontSize:11}}>Accept</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Activity feed · grouped by day" tag="day-headers · sub-stack per day" foot="Same stream, grouped — Today / Yesterday / This week. Use when activity is sparse (weekly digest products)" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:'18px', overflow:'hidden'}}>
+                <div style={{fontSize:24, fontWeight:'var(--w-title)', letterSpacing:'-0.02em', marginBottom:14}}>Activity</div>
+                {[['Today',[['Anna','added 17 items to','Beauty','12s']]], ['Yesterday',[['Nate','invited you to','LA Trip','6h'],['You','created','Brand strategy','2d']]]].map(([day, rows]) => (
+                  <div key={day} style={{marginBottom:10}}>
+                    <div className="wf-kicker" style={{fontSize:9, marginBottom:6}}>{day}</div>
+                    {rows.map((r,i) => (
+                      <div key={i} style={{display:'flex', alignItems:'flex-start', gap:10, padding:'8px 0', borderTop: i ? '1px solid var(--hair)' : '1px solid var(--hair)'}}>
+                        <div style={{width:24, height:24, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                        <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                          <span style={{fontWeight:'var(--w-ui)'}}>{r[0]}</span>
+                          <span style={{color:'var(--fg-soft)'}}> {r[1]} </span>
+                          <span style={{fontWeight:'var(--w-ui)'}}>{r[2]}</span>
+                        </div>
+                        <span className="wf-meta" style={{fontSize:10, flexShrink:0}}>{r[3]}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Search overlay · recents" tag="search field + recent rows" foot="Empty-typed state of search — recent folders / projects / feeds the user opened" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:'14px 18px', overflow:'hidden'}}>
+                <div className="wf-input" style={{marginBottom:18}}>
+                  <Icons.Search size={14}/>
+                  <input placeholder="Search projects and circuits" readOnly/>
+                </div>
+                <div className="wf-kicker" style={{marginBottom:6}}>Recent</div>
+                {[['Pancake recipes','Stack · Food'],['Food','Folder'],['Travel','Folder'],['Japan trip guide','Project'],['LinkedIn post ideas','Feed · Socials']].map(([n,d],i) => (
+                  <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'10px 0', borderTop: i ? '1px solid var(--hair)' : '1px solid var(--hair)'}}>
+                    <div className="wf-placeholder" style={{width:32, height:32, fontSize:8}}>IMG</div>
+                    <div style={{flex:1, minWidth:0}}>
+                      <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>{n}</div>
+                      <div style={{fontSize:11, color:'var(--fg-soft)'}}>{d}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Search overlay · results" tag="typed query + grouped matches" foot="Typed-query state — same field, results shown with type-tag and highlighted match" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 660, padding:'14px 18px', overflow:'hidden'}}>
+                <div className="wf-input" style={{marginBottom:18}}>
+                  <Icons.Search size={14}/>
+                  <input value="Brar" readOnly/>
+                  <Icons.Plus size={12} style={{transform:'rotate(45deg)', opacity:0.5}}/>
+                </div>
+                {[['Brand strategy','Folder'],['Asian Brands','Stack · Fashion'],['Girly Brands','Stack · Fashion'],['Sapour Branding','Folder'],['Brand patterns','Project']].map(([n,d],i) => (
+                  <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'10px 0', borderTop: i ? '1px solid var(--hair)' : '1px solid var(--hair)'}}>
+                    <div className="wf-placeholder" style={{width:32, height:32, fontSize:8}}>IMG</div>
+                    <div style={{flex:1, minWidth:0}}>
+                      <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}><mark style={{background:'var(--fg)', color:'var(--bg)', padding:'0 2px'}}>{n.slice(0,3)}</mark>{n.slice(3)}</div>
+                      <div style={{fontSize:10, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', marginTop:2, fontFamily:'var(--font-mono)'}}>{d}</div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{marginTop:14, paddingTop:14, borderTop:'1px solid var(--hair)', fontSize:11, color:'var(--fg-soft)', textAlign:'center'}}>SEE 52 RELATED IMPORTS</div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="BottomNav · 5-tab + center FAB · with progress" tag="4 outline tabs + raised FAB + progress micro-note" foot="Memory / library / saving products — center FAB for the primary creation action; progress note hangs below to nudge a goal" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 200, background:'var(--wf-light-bg)', padding:0, position:'relative'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, padding:'12px 18px 22px', background:'var(--bg)', borderTop:'1px solid var(--hair)'}}>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-around'}}>
+                    {[<Icons.Search size={18}/>, <Icons.Filter size={18}/>, null, <Icons.Globe size={18}/>, null].map((I, i) => (
+                      <div key={i} style={{display:'flex', flexDirection:'column', alignItems:'center', gap:4, color: i===0 ? 'var(--fg)' : 'var(--fg-soft)'}}>
+                        {i === 2
+                          ? <button style={{width:54, height:54, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0, display:'inline-flex', alignItems:'center', justifyContent:'center', marginTop:-22, boxShadow:'0 2px 12px rgba(0,0,0,0.18)'}}><Icons.Plus size={22}/></button>
+                          : i === 4
+                            ? <div style={{width:18, height:18, borderRadius:'50%', background:'var(--fg)'}}/>
+                            : I
+                        }
+                        {i === 2 && <span style={{fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-soft)', marginTop:-2}}>Create</span>}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{textAlign:'center', fontSize:10, color:'var(--fg-soft)', marginTop:8}}>+15 saves to hit 70</div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="BottomNav · 5-tab + center FAB · plain" tag="4 outline tabs + raised FAB · no caption" foot="Same shape without the progress micro-note — when no specific milestone applies" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 180, background:'var(--wf-light-bg)', padding:0, position:'relative'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, padding:'12px 18px 22px', background:'var(--bg)', borderTop:'1px solid var(--hair)'}}>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-around'}}>
+                    {[<Icons.Search size={18}/>, <Icons.Filter size={18}/>, null, <Icons.Globe size={18}/>, null].map((I, i) => (
+                      <div key={i} style={{display:'flex', alignItems:'center', justifyContent:'center', color: i===0 ? 'var(--fg)' : 'var(--fg-soft)'}}>
+                        {i === 2
+                          ? <button style={{width:54, height:54, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0, display:'inline-flex', alignItems:'center', justifyContent:'center', marginTop:-22, boxShadow:'0 2px 12px rgba(0,0,0,0.18)'}}><Icons.Plus size={22}/></button>
+                          : i === 4
+                            ? <div style={{width:18, height:18, borderRadius:'50%', background:'var(--fg)'}}/>
+                            : I
+                        }
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+        </div>
+      </DsGroup>
+
+      <DsGroup title="Mobile · Action sheets, modals & confirmations — 10 cases" tag="bottom sheets · pickers · confirmations · toasts · empty states · edit mode — every async-completion or destructive surface a content product needs">
+        <div className="ds-grid c2">
+          <DsTile title="Action sheet · icon list" tag="handle + title + icon-leading rows + cancel" foot="Bottom sheet with action set — Import / Insert / Manage / Select. Each row has a leading icon" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  <div style={{padding:'0 18px 12px', borderBottom:'1px solid var(--hair)', textAlign:'center', fontSize:11, color:'var(--fg-soft)'}}>3 saves added to Brand strategy</div>
+                  {[[<Icons.Download size={16}/>,'Import Photos & Videos'],[<Icons.Plus size={16}/>,'Insert Link'],[<Icons.Globe size={16}/>,'Select From Library'],[<Icons.User size={16}/>,'Manage Integrations']].map(([I,n],i) => (
+                    <div key={i} style={{display:'flex', alignItems:'center', gap:14, padding:'14px 18px', borderTop: i ? '1px solid var(--hair)' : 'none'}}>
+                      <span style={{color:'var(--fg-soft)'}}>{I}</span>
+                      <span style={{fontSize:14}}>{n}</span>
+                      <Icons.ChevR size={14} style={{marginLeft:'auto', color:'var(--fg-mute)'}}/>
+                    </div>
+                  ))}
+                  <div style={{padding:'14px 18px 0', textAlign:'center', borderTop:'1px solid var(--hair)', fontSize:14, fontWeight:'var(--w-ui)'}}>Cancel</div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Action sheet · plain list" tag="handle + plain-text rows" foot="No icons — when actions are textual / similar in shape (Edit / Move / Duplicate / Hide)" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  {['Edit','Move to…','Duplicate','Hide','Report'].map((n,i) => (
+                    <div key={n} style={{padding:'14px 18px', textAlign:'center', fontSize:14, borderTop: i ? '1px solid var(--hair)' : 'none'}}>{n}</div>
+                  ))}
+                  <div style={{padding:'14px 18px 0', textAlign:'center', borderTop:'1px solid var(--hair)', fontSize:14, fontWeight:'var(--w-ui)'}}>Cancel</div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Confirmation sheet · destructive" tag="title + sub + filled Remove + Cancel" foot="Destructive action confirmation — bottom sheet, filled fg-color action, plain Cancel" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', padding:'24px 18px 16px'}}>
+                  <div style={{fontSize:20, fontWeight:'var(--w-title)', letterSpacing:'-0.02em'}}>Delete 3 saves?</div>
+                  <div style={{fontSize:13, color:'var(--fg-soft)', lineHeight:1.5, marginTop:6}}>Choosing to delete will permanently remove the saves from your library, and any folders or builds they're in.</div>
+                  <button className="wf-btn" data-primary="true" style={{width:'100%', marginTop:18, padding:'14px 16px', fontSize:14, textTransform:'none', letterSpacing:0}}>Remove</button>
+                  <button style={{width:'100%', marginTop:8, padding:'12px 16px', fontSize:14, color:'var(--fg-soft)', background:'none', border:0}}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Confirmation sheet · success" tag="title + sub + dismiss + secondary action" foot="Positive confirmation — task complete, primary dismiss, secondary 'view it'. Same shell, opposite intent" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', padding:'24px 18px 16px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:8}}>
+                    <span style={{width:28, height:28, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', display:'inline-flex', alignItems:'center', justifyContent:'center'}}><Icons.Check size={14}/></span>
+                    <div style={{fontSize:18, fontWeight:'var(--w-title)', letterSpacing:'-0.02em'}}>Build raised.</div>
+                  </div>
+                  <div style={{fontSize:13, color:'var(--fg-soft)', lineHeight:1.5}}>You've added 3 saves to Brand strategy. Your build count is now 57.</div>
+                  <button className="wf-btn" data-primary="true" style={{width:'100%', marginTop:18, padding:'14px 16px', fontSize:14, textTransform:'none', letterSpacing:0}}>Done</button>
+                  <button className="wf-btn" style={{width:'100%', marginTop:8, padding:'12px 16px', fontSize:14, textTransform:'none', letterSpacing:0}}>Open Brand strategy</button>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Folder picker sheet" tag="search + breadcrumb + folder rows" foot="Move-to / save-to picker — search, parent folder breadcrumb, list of destinations" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 480, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, top:60, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px', overflow:'hidden'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  <div style={{padding:'0 18px 12px', borderBottom:'1px solid var(--hair)'}}>
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10}}>
+                      <span style={{fontSize:15, fontWeight:'var(--w-title)'}}>Move saves</span>
+                      <button style={{background:'none', border:0, fontSize:13, color:'var(--fg-soft)'}}>Cancel</button>
+                    </div>
+                    <div className="wf-input">
+                      <Icons.Search size={14}/>
+                      <input placeholder="Search every folder" readOnly/>
+                    </div>
+                  </div>
+                  <div style={{padding:'0 18px'}}>
+                    <div className="wf-kicker" style={{padding:'12px 0 6px'}}>Sapour</div>
+                    {[['Sapour Campaign Concepts','Feed'],['Potential Partnerships','Stack'],['Sapour Brand Strat','Project'],['Brand patterns','Project']].map(([n,d],i) => (
+                      <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'10px 0', borderTop: i ? '1px solid var(--hair)' : '1px solid var(--hair)'}}>
+                        <div className="wf-placeholder" style={{width:30, height:30, fontSize:8}}>IMG</div>
+                        <div style={{flex:1, minWidth:0}}>
+                          <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>{n}</div>
+                          <div style={{fontSize:11, color:'var(--fg-soft)'}}>{d}</div>
+                        </div>
+                        <button className="wf-btn" style={{padding:'4px 10px', fontSize:10}}>New build</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Insert-link sheet + toast" tag="input sheet · success toast above" foot="Async-input sheet → toast confirms result. Toast appears above the sheet on commit" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 480, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:18, right:18, top:18, padding:'12px 14px', background:'var(--fg)', color:'var(--bg)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:10}}>
+                  <Icons.Check size={14}/>
+                  <span>Congrats — you've raised your build count.</span>
+                </div>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  <div style={{padding:'0 18px'}}>
+                    <div style={{fontSize:13, fontWeight:'var(--w-ui)', marginBottom:8}}>Insert Link</div>
+                    <div className="wf-input">
+                      <input placeholder="https://" readOnly/>
+                    </div>
+                    <button className="wf-btn" data-primary="true" style={{width:'100%', marginTop:14, padding:'12px 16px', fontSize:14, textTransform:'none', letterSpacing:0}}>Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Integrations sheet · manage" tag="connected list + add row" foot="Settings sheet — currently connected providers list, with a + Add Integrations row at bottom" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 420, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  <div style={{padding:'0 18px'}}>
+                    <div style={{fontSize:15, fontWeight:'var(--w-title)', marginBottom:14}}>Manage Integrations</div>
+                    <div style={{display:'flex', alignItems:'center', gap:12, padding:'12px 0', borderTop:'1px solid var(--hair)'}}>
+                      <div className="wf-placeholder" style={{width:28, height:28, fontSize:8}}>IG</div>
+                      <div style={{flex:1, minWidth:0}}>
+                        <div style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Instagram</div>
+                        <div style={{fontSize:11, color:'var(--fg-soft)'}}>@handle</div>
+                      </div>
+                      <button className="wf-btn" style={{padding:'5px 12px', fontSize:11, textTransform:'none', letterSpacing:0}}>Disconnect</button>
+                    </div>
+                    <div style={{display:'flex', alignItems:'center', gap:12, padding:'14px 0', borderTop:'1px solid var(--hair)'}}>
+                      <span style={{width:28, height:28, borderRadius:'50%', border:'1px dashed var(--hair-2)', display:'inline-flex', alignItems:'center', justifyContent:'center'}}><Icons.Plus size={12}/></span>
+                      <span style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Add Integrations</span>
+                    </div>
+                    <button style={{width:'100%', marginTop:14, padding:'12px 16px', fontSize:14, color:'var(--fg-soft)', background:'none', border:0}}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Integrations sheet · add" tag="search + provider list with Connect" foot="Discovery state of integrations — searchable list of available providers, each with a Connect pill" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 480, padding:0, position:'relative', background:'rgba(18,13,11,0.5)'}}>
+                <div style={{position:'absolute', left:0, right:0, bottom:0, top:60, background:'var(--bg)', borderRadius:'12px 12px 0 0', padding:'10px 0 16px', overflow:'hidden'}}>
+                  <div style={{width:36, height:4, borderRadius:'var(--r-full)', background:'var(--fg)', opacity:0.35, margin:'0 auto 12px'}}/>
+                  <div style={{padding:'0 18px 12px'}}>
+                    <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:10}}>
+                      <button style={{background:'none', border:0}} aria-label="Back"><Icons.Back size={14}/></button>
+                      <span style={{fontSize:14, fontWeight:'var(--w-ui)'}}>Add Integrations</span>
+                    </div>
+                    <div className="wf-input">
+                      <Icons.Search size={14}/>
+                      <input placeholder="Search Integrations" readOnly/>
+                    </div>
+                  </div>
+                  <div style={{padding:'0 18px'}}>
+                    {['LinkedIn','Slack','Figma','Canva','Salesforce','Manus','Notion'].map((n,i) => (
+                      <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'10px 0', borderTop:'1px solid var(--hair)'}}>
+                        <div className="wf-placeholder" style={{width:24, height:24, fontSize:7}}>{n[0]}</div>
+                        <span style={{flex:1, fontSize:13, fontWeight:'var(--w-ui)'}}>{n}</span>
+                        <button className="wf-btn" style={{padding:'4px 12px', fontSize:10, textTransform:'uppercase', letterSpacing:'0.04em'}}>Connect</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Empty collection · decorative" tag="dotted grid + + glyph" foot="Empty stack / album / project — grid scaffolding hints + tap-to-add" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="dark" style={{height: 380, padding:'40px 24px', overflow:'hidden'}}>
+                <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gridTemplateRows:'repeat(4, 1fr)', gap:24, height:200, alignContent:'center', justifyItems:'center'}}>
+                  {Array.from({length:16}).map((_,i) => (
+                    <span key={i} style={{width:3, height:3, borderRadius:'50%', background:'var(--fg)', opacity:0.25, display:'inline-block'}}/>
+                  ))}
+                </div>
+                <button style={{display:'block', margin:'24px auto 0', width:42, height:42, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0}}><Icons.Plus size={16}/></button>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Empty list · glyph + CTA" tag="centered glyph + title + sub + primary" foot="Standard empty state — glyph, headline, body, primary action. Reuses .sfw-center pattern" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:'24px', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center'}}>
+                <div className="sfw-center" style={{maxWidth:260}}>
+                  <div className="glyph"><Icons.Bookmark size={22}/></div>
+                  <h1>No saves yet.</h1>
+                  <p>Pull in items from your platforms or paste a link to get started.</p>
+                  <div className="acts">
+                    <button className="wf-btn" data-primary="true">Import</button>
+                    <button className="wf-btn">Insert link</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Edit-style mode bar" tag="header bar + Done · resize-handle tiles" foot="Long-press into edit mode. Header swaps to title + Done; tiles get resize handles" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, overflow:'hidden'}}>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px', borderBottom:'1px solid var(--hair)'}}>
+                  <span style={{fontSize:13, fontWeight:'var(--w-ui)'}}>Edit Style</span>
+                  <button className="wf-btn" data-primary="true" style={{padding:'5px 14px', fontSize:11, textTransform:'none', letterSpacing:0}}>Done</button>
+                </div>
+                <div style={{padding:18, display:'grid', gridTemplateColumns:'1fr 1fr', gap:14}}>
+                  {[1,2,3,4].map(i => (
+                    <div key={i} style={{position:'relative', aspectRatio:'1 / 1', border:'1px dashed var(--hair-2)', borderRadius:'var(--r-1)', background:'var(--input)'}}>
+                      <span style={{position:'absolute', top:-4, right:-4, width:10, height:10, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+                      <span style={{position:'absolute', bottom:-4, left:-4, width:10, height:10, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Group-edit naming bar" tag="back + title input + done · keyboard above" foot="Inline rename of a group / folder / project — full-width input, sticky save in header" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 380, padding:0, overflow:'hidden'}}>
+                <div style={{display:'flex', alignItems:'center', gap:10, padding:'14px 18px', borderBottom:'1px solid var(--hair)'}}>
+                  <button style={{background:'none', border:0}} aria-label="Back"><Icons.Back size={14}/></button>
+                  <span style={{flex:1, fontSize:13, fontWeight:'var(--w-ui)'}}>Edit group</span>
+                  <button className="wf-btn" data-primary="true" style={{padding:'5px 14px', fontSize:11, textTransform:'none', letterSpacing:0}}>Done</button>
+                </div>
+                <div style={{padding:'24px 18px'}}>
+                  <span className="wf-label">Group name</span>
+                  <div className="wf-input"><input defaultValue="ENTERTAINMENT" readOnly/></div>
+                  <div className="wf-meta" style={{marginTop:8, fontSize:11}}>Uppercase tracked label. Reusable on any folder cover.</div>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Toast · success" tag="filled fg pill · check + line" foot="Pinned-top success toast — 3-second display, swipe to dismiss" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 140, padding:'18px', position:'relative'}}>
+                <div style={{padding:'12px 14px', background:'var(--fg)', color:'var(--bg)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:10}}>
+                  <Icons.Check size={14}/>
+                  <span>Build raised — count is now 57.</span>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Toast · action + undo" tag="line + trailing action link" foot="Reversible action toast — 'Removed 3 saves · Undo'. Trailing link to revert" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 140, padding:'18px', position:'relative'}}>
+                <div style={{padding:'12px 14px', background:'var(--fg)', color:'var(--bg)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:14}}>
+                  <span style={{flex:1}}>Removed 3 saves.</span>
+                  <button style={{background:'none', border:0, color:'var(--bg)', fontWeight:'var(--w-title)', fontSize:12, textDecoration:'underline'}}>Undo</button>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+
+          <DsTile title="Toast · error" tag="hairline-bordered alert variant" foot="Error toast — same shell, hair border + Info icon to distinguish from success" stack>
+            <div className="ds-specimen bleed">
+              <div className="wf ki-mobile" data-mode="light" style={{height: 140, padding:'18px', position:'relative'}}>
+                <div style={{padding:'12px 14px', background:'var(--bg)', color:'var(--fg)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:10}}>
+                  <Icons.Info size={14}/>
+                  <span style={{flex:1}}>Couldn't reach Instagram. Saved locally — will retry.</span>
+                  <button style={{background:'none', border:0, color:'var(--fg)', fontWeight:'var(--w-title)', fontSize:12, textDecoration:'underline'}}>Retry</button>
+                </div>
+              </div>
+            </div>
+          </DsTile>
+        </div>
+      </DsGroup>
+
     </DsFrame>
   );
 }
@@ -12929,7 +13838,7 @@ function DsOrganisms() {
 function DsPatterns() {
   return (
     <DsFrame
-      x={0} y={0} w={DS_FRAME_W} h={5800}
+      x={0} y={0} w={DS_FRAME_W} h={6800}
       kicker="LAYER · 05"
       title="Patterns."
       sub="Repeatable arrangements of organisms that solve a recurring user-facing problem. How the library reads, not just what's in it."
@@ -13368,6 +14277,140 @@ function DsPatterns() {
             </div>
           </DsTile>
         </DsGroup>
+
+        <DsGroup title="Library & creation conventions" tag="how content products read · selection · suggestion · hierarchy · cover-to-body · long-press · toast">
+          <div className="ds-grid c2">
+            <DsTile title="Quad collage convention" tag="cover formula · 4 thumbs in 2×2" foot="Folders / albums / projects use a 4-thumb collage cover; if there are fewer than 4, fill with placeholder; if more, the 4th tile shows '+N'" stack>
+              <div style={{display:'flex', gap:14, alignItems:'flex-start'}}>
+                <div style={{flex:1}}>
+                  <div className="wf-kicker" style={{marginBottom:6}}>4 items</div>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:1, aspectRatio:'1 / 1', background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                    {[1,2,3,4].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:7}}>·</div>)}
+                  </div>
+                </div>
+                <div style={{flex:1}}>
+                  <div className="wf-kicker" style={{marginBottom:6}}>22 items</div>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:1, aspectRatio:'1 / 1', background:'var(--hair)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)', overflow:'hidden'}}>
+                    {[1,2,3].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:0, fontSize:7}}>·</div>)}
+                    <div style={{background:'var(--fg)', color:'var(--bg)', display:'grid', placeItems:'center', fontSize:13, fontWeight:'var(--w-title)'}}>+18</div>
+                  </div>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Cover header → light body" tag="dark/decorated banner → light masonry" foot="Detail surfaces split: top half is decorated header (cover + meta + actions), bottom half is light content body. Brand fills the header in §Brand; wireframe uses dark panel" stack>
+              <div style={{width:'100%', borderRadius:'var(--r-1)', overflow:'hidden', border:'1px solid var(--hair-2)'}}>
+                <div style={{height:60, background:'var(--wf-dark-panel)', padding:'10px 12px', color:'var(--bone-soft)', fontSize:10, display:'flex', flexDirection:'column', justifyContent:'flex-end'}}>
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:9, opacity:0.5, textTransform:'uppercase', letterSpacing:'0.08em'}}>HEADER · cover</div>
+                  <div style={{fontSize:13, fontWeight:'var(--w-title)', color:'var(--bone)', marginTop:2}}>Brand strategy</div>
+                </div>
+                <div style={{height:80, background:'var(--bg)', padding:'10px 12px', display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:6}}>
+                  {[1,2,3].map(i => <div key={i} className="wf-placeholder" style={{borderRadius:'var(--r-1)', fontSize:8}}>IMG</div>)}
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Selection mode · entry" tag="tap 'Select' → row enters select state" foot="Tapping the trailing 'Select' control on a list/masonry header puts the surface into selection mode. Tiles get a tap-target overlay; toolbar swaps" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:10, width:'100%'}}>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 10px', border:'1px solid var(--hair)', borderRadius:'var(--r-1)'}}>
+                  <span style={{fontSize:11, color:'var(--fg-soft)'}}>↕ Recents</span>
+                  <button className="wf-btn" style={{padding:'4px 10px', fontSize:10}}>Select</button>
+                </div>
+                <div style={{textAlign:'center', fontSize:11, color:'var(--fg-mute)'}}>↓</div>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 10px', border:'1px solid var(--fg)', borderRadius:'var(--r-1)', background:'var(--fg)', color:'var(--bg)'}}>
+                  <span style={{fontSize:11}}>Cancel</span>
+                  <span style={{fontSize:11, fontWeight:'var(--w-ui)'}}>3 Selected</span>
+                  <span style={{fontSize:11, fontWeight:'var(--w-ui)'}}>Done</span>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Selection mode · in-mode" tag="tile gets tap-target overlay · counter increments" foot="In selection mode, each tap toggles a tile's selected state; selection toolbar updates count. Trailing actions surface (move, delete, share)" stack>
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, width:'100%'}}>
+                {[true,false,true].map((sel,i) => (
+                  <div key={i} style={{position:'relative', aspectRatio:'1 / 1', background:'var(--input)', border: sel ? '2px solid var(--fg)' : '1px solid var(--hair-2)', borderRadius:'var(--r-1)'}}>
+                    {sel && <span style={{position:'absolute', top:4, right:4, width:18, height:18, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', display:'inline-flex', alignItems:'center', justifyContent:'center'}}><Icons.Check size={10}/></span>}
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:8, display:'flex', gap:8, justifyContent:'center'}}>
+                <button className="wf-btn" style={{padding:'5px 12px', fontSize:11}}>Move</button>
+                <button className="wf-btn" style={{padding:'5px 12px', fontSize:11}}>Share</button>
+                <button className="wf-btn" data-primary="true" style={{padding:'5px 12px', fontSize:11}}>Delete</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Progress promotion" tag="primary CTA + goal micro-note" foot="Below any creation CTA, optional progress text nudges a known target ('+N to hit M'). Shown only when a goal is active" stack>
+              <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:8, padding:'12px 0', width:'100%'}}>
+                <button style={{width:54, height:54, borderRadius:'50%', background:'var(--fg)', color:'var(--bg)', border:0, display:'inline-flex', alignItems:'center', justifyContent:'center'}}><Icons.Plus size={22}/></button>
+                <span style={{fontSize:9, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-soft)'}}>Create</span>
+                <span style={{fontSize:11, color:'var(--fg-soft)'}}>+15 to hit 70</span>
+              </div>
+            </DsTile>
+
+            <DsTile title="AI-suggestion → action" tag="leading-dot row → primary action → outcome" foot="System notices a pattern → presents a one-line prompt with a primary action → outcome promotes the suggestion to a real entity (project, draft, group)" stack>
+              <div style={{display:'flex', alignItems:'flex-start', gap:8, padding:'10px 12px', border:'1px solid var(--hair)', borderRadius:'var(--r-1)', width:'100%'}}>
+                <span style={{width:6, height:6, borderRadius:'50%', background:'var(--fg)', flexShrink:0, marginTop:6}}/>
+                <div style={{flex:1, fontSize:12, lineHeight:1.5, color:'var(--fg-soft)'}}>Noticed a recurring theme — make a project from 21 items?</div>
+                <button className="wf-btn" data-primary="true" style={{padding:'5px 12px', fontSize:11, flexShrink:0}}>Make</button>
+              </div>
+            </DsTile>
+
+            <DsTile title="Invite acceptance · inline" tag="invite row → Decline / Accept inline" foot="Invitations resolve in-place — no detail screen needed. Decline closes; Accept replaces with confirmation row" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:8, width:'100%', padding:'10px 12px', border:'1px solid var(--hair)', borderRadius:'var(--r-1)'}}>
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <div style={{width:24, height:24, borderRadius:'50%', background:'var(--input)', border:'1px solid var(--hair-2)', flexShrink:0}}/>
+                  <div style={{flex:1, fontSize:12, lineHeight:1.5}}>
+                    <span style={{fontWeight:'var(--w-ui)'}}>Nate</span>
+                    <span style={{color:'var(--fg-soft)'}}> invited you to </span>
+                    <span style={{fontWeight:'var(--w-ui)'}}>LA Trip</span>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:8, paddingLeft:34}}>
+                  <button className="wf-btn" style={{padding:'4px 10px', fontSize:10}}>Decline</button>
+                  <button className="wf-btn" data-primary="true" style={{padding:'4px 10px', fontSize:10}}>Accept</button>
+                </div>
+              </div>
+            </DsTile>
+
+            <DsTile title="Hierarchy ladder" tag="Folder › Group › Project › Item › Reference" foot="Universal taxonomy ladder for content products — every list / picker / breadcrumb uses the same five rungs (rename per product if needed)" stack>
+              <div style={{width:'100%', display:'flex', flexDirection:'column', gap:0}}>
+                {['Folder','Group','Project','Item','Reference'].map((n,i) => (
+                  <div key={n} style={{display:'flex', alignItems:'center', gap:12, padding:'8px 0', paddingLeft: i*14, borderTop: i ? '1px solid var(--hair)' : 'none'}}>
+                    <span style={{fontSize:11, fontFamily:'var(--font-mono)', color:'var(--fg-mute)', width:14}}>{['F','G','P','I','R'][i]}</span>
+                    <span style={{fontSize:12, fontWeight:'var(--w-ui)'}}>{n}</span>
+                    <span style={{fontSize:10, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--fg-mute)', fontFamily:'var(--font-mono)', marginLeft:'auto'}}>L{i+1}</span>
+                  </div>
+                ))}
+              </div>
+            </DsTile>
+
+            <DsTile title="Long-press → edit-style" tag="resting tile → press-hold → edit mode" foot="Long-press on any cover tile drops the surface into edit-style mode: tiles get resize handles, header swaps to title + Done" stack>
+              <div style={{display:'flex', alignItems:'center', gap:12, width:'100%'}}>
+                <div style={{flex:1, aspectRatio:'1 / 1', background:'var(--input)', border:'1px solid var(--hair-2)', borderRadius:'var(--r-1)'}}/>
+                <span style={{fontSize:14, color:'var(--fg-mute)'}}>→</span>
+                <div style={{position:'relative', flex:1, aspectRatio:'1 / 1', background:'var(--input)', border:'1px dashed var(--hair-2)', borderRadius:'var(--r-1)'}}>
+                  <span style={{position:'absolute', top:-4, right:-4, width:10, height:10, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+                  <span style={{position:'absolute', bottom:-4, left:-4, width:10, height:10, border:'1px solid var(--fg)', background:'var(--bg)', borderRadius:'50%'}}/>
+                </div>
+              </div>
+              <div style={{textAlign:'center', fontSize:11, color:'var(--fg-soft)', marginTop:8}}>resting → long-press 600ms → edit-style</div>
+            </DsTile>
+
+            <DsTile title="Toast confirmation" tag="async commit → top toast → auto-dismiss" foot="Any async user-driven action (insert link, import, save) confirms with a top-pinned toast — never blocks input. 3-second auto-dismiss + swipe to clear" stack>
+              <div style={{display:'flex', flexDirection:'column', gap:8, width:'100%'}}>
+                <div style={{padding:'10px 12px', background:'var(--fg)', color:'var(--bg)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:10}}>
+                  <Icons.Check size={14}/>
+                  <span style={{flex:1}}>Build raised — count is now 57.</span>
+                </div>
+                <div style={{padding:'10px 12px', background:'var(--fg)', color:'var(--bg)', borderRadius:'var(--r-1)', fontSize:12, display:'flex', alignItems:'center', gap:14}}>
+                  <span style={{flex:1}}>Removed 3 saves.</span>
+                  <span style={{fontWeight:'var(--w-title)', textDecoration:'underline'}}>Undo</span>
+                </div>
+              </div>
+            </DsTile>
+          </div>
+        </DsGroup>
     </DsFrame>
   );
 }
@@ -13387,20 +14430,20 @@ function DsZone() {
         <DsFoundations/>
       </Section>
 
-      <Section x={x + DS_FRAME_W + DS_COL_GAP}           y={0}           w={DS_FRAME_W}      h={3560}  num="A" name="Atoms"       tag="Irreducible units">
+      <Section x={x + DS_FRAME_W + DS_COL_GAP}           y={0}           w={DS_FRAME_W}      h={4400}  num="A" name="Atoms"       tag="Irreducible units">
         <DsAtoms/>
       </Section>
 
-      <Section x={x + (DS_FRAME_W + DS_COL_GAP) * 2}     y={0}           w={DS_FRAME_W}      h={4720}  num="M" name="Molecules"   tag="Atoms composed · one job">
+      <Section x={x + (DS_FRAME_W + DS_COL_GAP) * 2}     y={0}           w={DS_FRAME_W}      h={6300}  num="M" name="Molecules"   tag="Atoms composed · one job">
         <DsMolecules/>
       </Section>
 
       {/* Row 2 — whole things & their arrangements (O · P) */}
-      <Section x={x}                                     y={DS_ROW_2_Y}  w={DS_FRAME_W_WIDE} h={11400} num="O" name="Organisms"   tag="Chrome · self-contained things">
+      <Section x={x}                                     y={DS_ROW_2_Y}  w={DS_FRAME_W_WIDE} h={15600} num="O" name="Organisms"   tag="Chrome · self-contained things">
         <DsOrganisms/>
       </Section>
 
-      <Section x={x + DS_FRAME_W_WIDE + DS_COL_GAP}      y={DS_ROW_2_Y}  w={DS_FRAME_W}      h={5800}  num="P" name="Patterns"    tag="Recurring arrangements">
+      <Section x={x + DS_FRAME_W_WIDE + DS_COL_GAP}      y={DS_ROW_2_Y}  w={DS_FRAME_W}      h={6800}  num="P" name="Patterns"    tag="Recurring arrangements">
         <DsPatterns/>
       </Section>
     </>
@@ -13533,7 +14576,7 @@ function Section({ x, y, w, h, num, name, tag, children }) {
 function IntroCard({ x, y }) {
   return (
     <div className="intro-card" style={{ left: x, top: y }}>
-      <div className="num">Aither · Wireframe Library · v0.3</div>
+      <div className="num">Aither · Rendered Design System · v0.3</div>
       <h1>One system, three zones.<br/>Atoms · templates · flows.</h1>
       <p className="body">
         Pan east through the Aither product surface. Foundations, atoms, molecules,

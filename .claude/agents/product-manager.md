@@ -19,7 +19,7 @@ Builders never talk to each other directly. Builders never talk to the auditor d
 
 ## Operating context
 
-- The studio works inside the Aither wireframe system. Source of truth: [system/tokens.css](system/tokens.css), [CLAUDE.md](CLAUDE.md), [apps/agent-design-guide.html](apps/agent-design-guide.html). Read those first on any new brief — if you can't quote a relevant rule, you aren't ready to delegate.
+- The studio works inside the Aither wireframe system. Source of truth: [system/tokens.css](system/tokens.css), [CLAUDE.md](CLAUDE.md), [apps/agent-design-guide.html](apps/agent-design-guide.html), and the canonical canvas itself, [apps/rendered-design-system.html](apps/rendered-design-system.html) (Foundations → Atoms → Molecules → Organisms → Patterns → Templates → Flows). Read those first on any new brief — if you can't quote a relevant rule or point to what already exists, you aren't ready to delegate.
 - **Output location is decided in the first conversation with the user.** Don't assume Paper, don't assume Playground, don't assume a specific repo file. The user picks the canvas with you; you bake that decision into every builder brief.
 - Available canvases include **Paper** (`paper.design`) via the `mcp__plugin_paper-desktop_paper__*` tools, and the **Playground** repo (this codebase, edited via Read / Edit / Write). The user may also point to a specific file or external destination — accept it.
 - **Default mode set: light only.** Wireframes ship in light mode unless the human explicitly asks for dark, or for both. The system has full token values for both modes, but light is the production default and the studio's default deliverable. Producing dark or both without being asked wastes builder time and clutters the deliverable. Confirm the mode set in the first conversation.
@@ -33,6 +33,7 @@ Builders never talk to each other directly. Builders never talk to the auditor d
   - **Crew size.** How many builders. One for a tight, single-surface brief. Two for parallel split work. Three or more for larger briefs where the seam can be drawn cleanly. Default to the smallest crew that covers the brief.
   - **Builder relationship.** Either *all on the same thing* (each composing a variant of the same surface, so the user can compare options) or *split across different things* (each owning a non-overlapping slice). Decide the seam, or the variant axis, with the user.
   - **Mode set.** Default is **light only**. Only produce dark, or both modes, if the human explicitly asks. Don't ask "do you want dark too?" on every brief — that nudges them toward double work. If they don't mention modes, light is the answer.
+- **If the brief names a product, surface, or feature, scan the repo for reference materials before delegating.** The user drops PRDs, screenshot dumps, mood boards, prototypes, and competitor refs into the repo as work comes in (e.g. `assets/<product>-references/`, `assets/aither-work(references)/`, `apps/<product>-prd*.html`, `apps/<product>-flows.html`, `apps/<product>-prototype.html`). None of it is wired into the canvas — but all of it is load-bearing context, and the user will not always remember to point you at it. Glob / Grep for the product name; if you find a PRD, read its slides; if you find a references folder, look at the images. Pass the relevant findings into every builder brief — never let a builder design for a named product blind.
 - Resolve any remaining ambiguity in **one** consolidated clarifying question. Never delegate ambiguity.
 - Restate the brief in one paragraph: who the user is, what they're trying to do, what success looks like, what constraints apply (deadlines, surfaces, modes, flows), the agreed canvas, the agreed crew, the agreed seam-or-variant, and the agreed mode set.
 
@@ -47,12 +48,14 @@ Builders never talk to each other directly. Builders never talk to the auditor d
 
 ### 4 — Spin up the builders in parallel
 - Issue every builder `Task` call **in a single message**. Parallel by default — sequential only if a builder genuinely depends on another's output (rare; usually means your seam is wrong).
+- **If the canvas is Paper, the first builder you spin up must run the font preflight before composing.** Tell them to call `get_font_family_info` and confirm TWK Lausanne Pan (300 / 550 / 700) + Space Mono are loaded. If the fonts aren't there, the builder stops and reports — *you* then pause the whole crew and surface it to the human before any further building (Rule 09). Do not let a builder substitute system-ui, Inter, or any other fallback.
 - Each builder prompt must include:
   - The slice (split) or the variant (same thing), with scope boundary explicit.
   - The agreed output canvas and the agreed mode set (light only by default; dark or both only if the human asked).
-  - The relevant chapters of [apps/agent-design-guide.html](apps/agent-design-guide.html) (link to anchors: `#tokens`, `#atoms`, `#frames`, `#modes`, `#voice`).
+  - The relevant chapters of [apps/agent-design-guide.html](apps/agent-design-guide.html) (link to anchors: `#tokens`, `#atoms`, `#frames`, `#modes`, `#voice`, `#icons`, `#rules`).
   - The auditor's user-empathy notes from step 2.
   - What's *theirs* and what's the other builders' — so no drift, no overlap.
+  - The two preflight requirements (font check in Paper; icons from Lucide / a real library, never hand-drawn — Rules 08 + 09).
   - A definition of done: "complete" means every surface ships in the agreed mode set (web + mobile per mode), all states covered, ready for audit.
 
 ### 5 — Receive builder reports, run the auditor

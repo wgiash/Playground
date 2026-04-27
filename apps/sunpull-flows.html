@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Sunpull flows — empty canvas, fork of the wireframe-library pattern.
+  Sunpull flows — empty canvas, fork of the rendered-design-system pattern.
   Reuses tokens.css + canvas.css + comments.js unchanged. Add flow sections
   to the `sections` array in the App component below — the Canvas infra
   handles pan/zoom/frames; do not modify the infra beyond registering sections.
@@ -827,7 +827,7 @@
 
   .spfx-err-pop { border-color: var(--fg-mute); }
 
-  /* ---------- Topbar · Index button (mirrored from wireframe-library) ---------- */
+  /* ---------- Topbar · Index button (mirrored from rendered-design-system) ---------- */
   .topbar-index-btn {
     display: inline-flex;
     align-items: center;
@@ -1778,7 +1778,7 @@ function Topbar({ scale, setScale, resetView, openIndex }) {
 }
 
 /* ========== Canvas Index · jump-to-section overlay
-   (mirrored from wireframe-library with the same DOM + keyboard behavior) ========== */
+   (mirrored from rendered-design-system with the same DOM + keyboard behavior) ========== */
 function CanvasIndex({ open, onClose, onJump, entries }) {
   const [q, setQ] = useState("");
   const [activeCat, setActiveCat] = useState("All");
