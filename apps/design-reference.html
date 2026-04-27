@@ -959,6 +959,37 @@
     </ul>
   </section>
 
+  <!-- ===== About Aither ===== -->
+  <section class="ds-section" id="about" data-title="About Aither">
+    <span class="kicker">Manual</span>
+    <h2>About Aither.</h2>
+    <p class="lede">Aither is a design and technology studio. We work directly with founders, emerging brands, and large companies across every space — consumer, enterprise, government, aerospace. Past partners include Google, Sony, Spotify, the U.S. Treasury, and USAID. Past projects include Partiful, Singuli, Flow Labs, Sentropy, Goldcast, and Descartes Labs.</p>
+
+    <p>This library exists so we can produce <strong>high-fidelity, Aither-branded wireframes</strong> that can quickly become finals. The system is the through-line between a brief and a shipped product. The output is paired (web + mobile, dark + light), grounded in tokens, and faithful enough to brand that the jump from wireframe to launch is incremental, not a redesign.</p>
+
+    <div class="rule">
+      <span class="v">Frame of mind</span>
+      <p class="r">Compose for a real product, not a placeholder.</p>
+      <p><strong>Why.</strong> These wireframes are meant to ship. Generic stand-in content (<em>"Lorem ipsum"</em>, <em>"Item 1, 2, 3"</em>) makes the wireframe untestable and re-anchors the visual hierarchy when real copy arrives.</p>
+      <p><strong>How.</strong> Use plausible domain content for whichever product you're composing for. The example wireframes in <code>templates/</code> show event-domain content (drawn from the Partiful project) — that's an example, not the canon. A finance dashboard, a CRM, a marketplace, a control panel — all live equally inside this system as long as they speak in the brand posture below.</p>
+    </div>
+
+    <h3>Brand posture</h3>
+    <ul>
+      <li><strong>Future-making, not loud.</strong> Aither's positioning is <em>"design partners enthused in future-making, effusive in the process of co-creating."</em> That tone shows up as: confidence, restraint, no novelty for novelty's sake.</li>
+      <li><strong>Hierarchy by weight and size, never color</strong> (Rule 04). The page should feel like a printed editorial, not a marketing site.</li>
+      <li><strong>Bone over white.</strong> Light mode is bone (#EAE4E2), never pure white. Pure white reads as a different brand.</li>
+      <li><strong>Minimal chrome.</strong> Carry only the chrome the surface actually needs. No ornamentation, no decorative dividers, no breadcrumbs unless the IA earns them.</li>
+      <li><strong>Editorial density.</strong> When in doubt about list density, treat the row like a tracklist (YT Music) or a magazine table of contents — meta on a second line, leading mark, breathing room between groups.</li>
+    </ul>
+
+    <h3>Anti-references</h3>
+    <p>What an Aither wireframe should <em>not</em> look like: a generic SaaS template, a Material Design dashboard, a fintech screen with color-coded statuses, a social app with brand-color CTAs and gradient pills. If a referenced pattern would put the work there, surface the conflict before composing.</p>
+
+    <h3>Studio shorthand</h3>
+    <p>Where useful, lift voice from <a href="https://aither.co" target="_blank" rel="noreferrer">aither.co</a>: <em>"shipping products, brands, and transformations for legacy-makers"</em> · <em>"future-spired"</em> · <em>"ambitious founders and teams."</em> Use sparingly and only when authentic — don't paste studio copy into a product.</p>
+  </section>
+
   <!-- ===== 02 · Standing rules ===== -->
   <section class="ds-section" id="rules" data-title="Standing rules">
     <span class="kicker">Manual</span>
@@ -983,14 +1014,14 @@
       <span class="v">Rule 03</span>
       <p class="r">Respect the atomic taxonomy.</p>
       <p><strong>Why.</strong> The canvas is organized Foundations → Atoms → Molecules → Organisms → Patterns. Forcing a new item into the wrong layer rots the whole structure.</p>
-      <p><strong>How.</strong> When adding to the canvas, decide which layer the item belongs to (see §03), and place it under the correct labelled header. If it doesn't fit a layer, flag it instead of forcing it.</p>
+      <p><strong>How.</strong> When adding to the canvas, decide which layer the item belongs to (see §Atomic taxonomy), and place it under the correct labelled header. If it doesn't fit a layer, flag it instead of forcing it.</p>
     </div>
 
     <div class="rule">
       <span class="v">Rule 04</span>
       <p class="r">Color: none. Emphasis by weight and size only.</p>
       <p><strong>Why.</strong> Wireframes communicate hierarchy through type and spacing — not hue. Color in a wireframe reads as branding intent, which is wrong at this stage.</p>
-      <p><strong>How.</strong> Use bone, dark, and the canvas neutrals. Warm and cool tones (§04) exist as system colors but are not used to indicate state, severity, or selection in wireframes. Selection = filled background; severity = position; state = label.</p>
+      <p><strong>How.</strong> Use bone, dark, and the canvas neutrals. Warm and cool tones (§Color) exist as system colors but are not used to indicate state, severity, or selection in wireframes. Selection = filled background; severity = position; state = label.</p>
     </div>
 
     <div class="rule">
@@ -1011,7 +1042,7 @@
       <div class="tax-row">
         <span class="layer">Foundations</span>
         <div>
-          <div class="desc">The non-rendered system layer: color, type, spacing, radii, motion, grid. Documented here in §04–§09. New tokens are forbidden (Rule 01).</div>
+          <div class="desc">The non-rendered system layer: color, type, spacing, radii, motion, grid. Documented here in §Color–§Modes. New tokens are forbidden (Rule 01).</div>
           <div class="examples">color · type · spacing · radii · motion · grid · modes</div>
         </div>
       </div>
@@ -1296,7 +1327,7 @@ font-weight: 600;</code>
       <li><strong>Between molecules in an organism</strong> (form rows, list rows): <code>--s-4</code> to <code>--s-6</code>.</li>
       <li><strong>Between organism sections</strong> on a page: <code>--s-12</code> to <code>--s-16</code>.</li>
       <li><strong>Between top-level sections</strong> (between H1 sections of a doc): <code>--s-20</code> to <code>--s-24</code>.</li>
-      <li><strong>Frame side margin</strong> on the canvas: 24px (locked, see §13 Grid).</li>
+      <li><strong>Frame side margin</strong> on the canvas: 24px (locked, see §Grid).</li>
     </ul>
   </section>
 
@@ -1387,7 +1418,7 @@ font-weight: 600;</code>
   <section class="ds-section" id="atoms" data-title="Atoms">
     <span class="kicker">Components</span>
     <h2>Atoms.</h2>
-    <p class="lede">The shared primitives every wireframe is built from. Each lives under <code>.wf-*</code> in <code>system/tokens.css</code> and inherits its palette from the parent <code>.wf[data-mode]</code> wrapper (§09).</p>
+    <p class="lede">The shared primitives every wireframe is built from. Each lives under <code>.wf-*</code> in <code>system/tokens.css</code> and inherits its palette from the parent <code>.wf[data-mode]</code> wrapper (§Modes).</p>
 
     <div class="atom-grid">
 
@@ -1479,6 +1510,103 @@ font-weight: 600;</code>
       </div>
 
     </div>
+  </section>
+
+  <!-- ===== Iconography ===== -->
+  <section class="ds-section" id="icons" data-title="Iconography">
+    <span class="kicker">Components</span>
+    <h2>Iconography.</h2>
+    <p class="lede">Lucide-style line icons. 1.5px stroke, 24×24 viewBox, default render at 18px. Stroke uses <code>currentColor</code> so icons inherit from their parent — never set an icon's color directly.</p>
+
+    <p>The full set lives in <code>system/icons.jsx</code> as <code>window.Icons</code>. Use what's there before drawing a new one. If you need an icon that isn't in the set, raise it for review rather than inlining a one-off SVG.</p>
+
+    <h3>Set</h3>
+    <pre><code>navigation : Back · ChevL · ChevR · ChevD
+search     : Search · Filter
+actions    : Plus · Check · More · MoreH · Download · Share · Heart · Bookmark · Pin · Pin2 · Play · PlayOutline
+content    : Calendar · Map · Globe · User · Info
+status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Size.</strong> Default 18px. Tap targets at 20–24px. Status bar icons at 14px. Never below 12px.</li>
+      <li><strong>Stroke.</strong> 1.5px on all line icons. Status-bar icons (Signal/Wifi/Battery) are filled, not stroked.</li>
+      <li><strong>Color.</strong> Always <code>currentColor</code>. To dim an icon, dim the parent. Never <code>fill="#…"</code>.</li>
+      <li><strong>Alignment.</strong> Pair an icon with text using <code>display: inline-flex; gap: var(--s-2)</code>. Vertically centre on the cap height of adjacent text, not the line height.</li>
+      <li><strong>Decoration.</strong> Don't decorate (no badges, no gradients, no drop shadows). The line is the icon.</li>
+    </ul>
+
+    <div class="dodont">
+      <div class="cell do">
+        <span class="verb">Do</span>
+        <code>&lt;Icons.Plus size={18} /&gt;
+&lt;span&gt;Add event&lt;/span&gt;</code>
+        <p class="note">Reuse the kit. Inherits color from parent.</p>
+      </div>
+      <div class="cell never">
+        <span class="verb">Never</span>
+        <code>&lt;svg width="20" stroke="#EAE4E2"
+     stroke-width="2"&gt; … &lt;/svg&gt;</code>
+        <p class="note">Off-spec stroke, hardcoded color, one-off SVG.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Frames & pairing ===== -->
+  <section class="ds-section" id="frames" data-title="Frames &amp; pairing">
+    <span class="kicker">Patterns</span>
+    <h2>Frames &amp; pairing.</h2>
+    <p class="lede">A <em>frame</em> is a single rendered surface — one screen, one mode, one device. Every frame on the canvas is wrapped in <code>.wf[data-mode]</code> (§Modes), positioned by the canvas, and labelled with a kicker + title above it.</p>
+
+    <h3>Canonical sizes</h3>
+    <div class="taxonomy">
+      <div class="tax-row">
+        <span class="layer">Web</span>
+        <div>
+          <div class="desc">1440 × 900. Desktop viewport. 12-col grid, 24px gutter, 24px side margin (§Grid).</div>
+          <div class="examples">1440 × 900 · 12-col · 24/24</div>
+        </div>
+      </div>
+      <div class="tax-row">
+        <span class="layer">Mobile</span>
+        <div>
+          <div class="desc">390 × 844 (iPhone class). 4-col grid, 24px gutter, 24px side margin. Includes the mobile status bar (Signal/Wifi/Battery).</div>
+          <div class="examples">390 × 844 · 4-col · 24/24</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>The pairing rule</h3>
+    <div class="rule">
+      <span class="v">Rule (frames)</span>
+      <p class="r">Every surface ships four frames: web × dark, web × light, mobile × dark, mobile × light.</p>
+      <p><strong>Why.</strong> Dark is the product default. Light is the annotated review context. Web and mobile are paired so we never design one in isolation. Missing a quadrant means the surface isn't done.</p>
+      <p><strong>How.</strong> When adding a new surface to the canvas, register the four frames together as a row labelled by the surface name. The canvas displays them side-by-side in the order: web-dark · web-light · mobile-dark · mobile-light.</p>
+    </div>
+
+    <h3>Frame anatomy</h3>
+    <p>Every frame is composed in this order, top-to-bottom:</p>
+    <pre><code>┌──────────────────────────────────────┐
+│  status bar     (mobile only)        │
+│──────────────────────────────────────│
+│  app chrome     .ki-hnav (web)       │
+│                 .ki-mnav (mobile)    │
+│──────────────────────────────────────│
+│                                      │
+│  content        the screen itself    │
+│                                      │
+│──────────────────────────────────────│
+│  footer         .ki-footer (web)     │
+│                 .ki-bnav (mobile)    │
+└──────────────────────────────────────┘</code></pre>
+    <p>Status bar, app chrome, and footer are <strong>frozen kit components</strong> defined in <code>system/chrome.css</code> under the <code>.ki-*</code> prefix. Use them as-is. Don't restyle them per frame. The content area is yours.</p>
+
+    <h3>Density</h3>
+    <ul>
+      <li><strong>Lists.</strong> Row height 56–72px on web, 64–76px on mobile. Editorial rhythm — meta on a second line, leading mark at 32–40px, trailing action at 28–32px.</li>
+      <li><strong>Forms.</strong> Field height ~44px (input padding 12/14). 16–24px vertical between fields.</li>
+      <li><strong>Cards.</strong> 24–32px internal padding. Cards never sit alone — they're either gridded or stacked with a hairline.</li>
+    </ul>
   </section>
 
   <!-- ===== 11 · Composition recipes ===== -->
@@ -1573,6 +1701,80 @@ never:
 - exclamation marks
 - "Oops"
 - decorative illustration</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Pattern templates ===== -->
+  <section class="ds-section" id="patterns" data-title="Pattern templates">
+    <span class="kicker">Patterns</span>
+    <h2>Pattern templates.</h2>
+    <p class="lede">Three pattern templates ship with the system. They are the answer to "what kind of screen is this?" Every event-domain surface so far maps to one of them. Source under <code>templates/</code>; baked into <code>apps/wireframe-library.html</code>.</p>
+
+    <p>If your surface needs a fourth pattern, surface the gap before inventing one. Most "new" patterns are an existing pattern with a different content density.</p>
+
+    <div class="recipe">
+      <div class="recipe-title">Pattern · Dense list</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Listing pages — <em>events near you</em>, <em>my hosted events</em>, <em>past attendees</em>. Anywhere the user is scanning many items of the same kind.</p>
+          <p style="margin: 0 0 12px;"><strong>Reference.</strong> YT Music tracklist rhythm — number/poster-leading, second-line meta, trailing duration/action.</p>
+          <p style="margin: 0;"><strong>Web</strong> uses the full canvas as the list. <strong>Mobile</strong> compacts the row into two lines (title + meta) with a leading 40–48px poster.</p>
+        </div>
+        <pre><code>row anatomy
+  [idx?] [POSTER 40] [title]
+                    [host · date · venue]
+                    [duration / status]
+                    [actions]
+
+  flex-shrink: 0 on POSTER and trailing
+  --s-4 / 16px between rows
+  .wf-hair between groups, not rows</code></pre>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-title">Pattern · Editorial detail</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Detail pages — a single event, a single host, a single venue. The hero carries the identity; the body explains.</p>
+          <p style="margin: 0 0 12px;"><strong>Reference.</strong> YT Music artist + Aither event detail. Full-bleed hero, overlaid meta, sections beneath.</p>
+          <p style="margin: 0;"><strong>Web</strong> is hero-led with a content stack below (about · lineup · location · attendees). <strong>Mobile</strong> ships the scrolled state — sticky compact header with title + RSVP CTA.</p>
+        </div>
+        <pre><code>web layout
+  [hero full-bleed, 480–560h]
+    └ overlaid: kicker / title / meta / RSVP
+
+  [section] About
+  [section] Lineup
+  [section] Location (.ki-map)
+  [section] Attendees
+
+mobile layout
+  [hero POSTER, square]
+  [sticky compact: title + RSVP]
+  [section stack…]</code></pre>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-title">Pattern · Multi-step form</div>
+      <div class="recipe-anatomy">
+        <div class="recipe-render">
+          <p style="margin: 0 0 12px;"><strong>Use it for.</strong> Creation flows — <em>create event</em>, <em>set up venue</em>, <em>onboarding</em>. Anywhere a user produces something across more than one screen.</p>
+          <p style="margin: 0 0 12px;"><strong>Web</strong> uses a left progress rail with stacked sections on the right. Steps for event creation: <em>Cover &amp; headline · Host &amp; venue · When it happens · Capacity &amp; RSVP</em>.</p>
+          <p style="margin: 0;"><strong>Mobile</strong> shows step-of-N at the top, stacked inputs below, and a sticky bottom bar with <em>Skip</em> + primary CTA.</p>
+        </div>
+        <pre><code>web layout
+  [thin top: brand · save &amp; exit]
+  [left rail 280w: step list]
+  [right: section stack]
+  [section]: .wf-label + .wf-input rows
+
+mobile layout
+  [progress 2/3 at top]
+  [stacked .wf-label + .wf-input]
+  [pinned bottom: Skip · Continue]</code></pre>
       </div>
     </div>
   </section>
@@ -1690,7 +1892,7 @@ never:
       <div class="file-row"><span class="path">shared/firebase-config.js</span><span class="badge" data-state="edit">Edit</span><span class="what">Firebase keys. Edit only when auth project changes.</span></div>
       <div class="file-row"><span class="path">shared/comments.js</span><span class="badge" data-state="frozen">Frozen</span><span class="what">In-page comment system. Don't modify.</span></div>
       <div class="file-row"><span class="path">shared/comments-brand.css</span><span class="badge" data-state="edit">Edit</span><span class="what">Comment system styling. Token-bound.</span></div>
-      <div class="file-row"><span class="path">CLAUDE.md</span><span class="badge" data-state="edit">Edit</span><span class="what">Project rules read by every agent. Source of truth for §02.</span></div>
+      <div class="file-row"><span class="path">CLAUDE.md</span><span class="badge" data-state="edit">Edit</span><span class="what">Project rules read by every agent. Source of truth for §Standing rules.</span></div>
     </div>
   </section>
 
@@ -1703,13 +1905,13 @@ never:
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hardcoded hex codes in component styles.</p><p>Always <code>var(--token)</code>. The hex below is the same color but unsubscribed from the system.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apercu Pro inside a wireframe.</p><p>Apercu is display-only. Wireframes use <code>--font-ui</code> (Lausanne / Inter) and <code>--font-mono</code>.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Color used to indicate state, severity, or selection in a wireframe.</p><p>Use weight, size, position, or filled-fg inversion. Color in a wireframe reads as branding intent (Rule 04).</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">A new H1/H2 size, a new spacing value, a new radius.</p><p>The scale is sparse on purpose. Pick the closest existing token (§05, §06, §07).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">A new H1/H2 size, a new spacing value, a new radius.</p><p>The scale is sparse on purpose. Pick the closest existing token (§Typography, §Spacing, §Radii).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Modify <code>system/canvas.css</code>, <code>system/chrome.css</code>, <code>shared/comments.js</code>, or pan/zoom logic in <code>system/app.jsx</code>.</p><p>Frozen infrastructure (Rule 02). Add new content under scoped classes; don't edit the frame.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Hand-edit <code>&lt;nav id="index-nav"&gt;</code> inside a deck, or write slide numbers into <code>.tag</code> / <code>.page</code>.</p><p>The deck script rebuilds those on load — your edits are discarded.</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Animate <code>all</code>, animate layout properties, or invent a duration.</p><p>One <code>--dur</code>, one <code>--ease</code>, on color/border/background/transform only (§08).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Animate <code>all</code>, animate layout properties, or invent a duration.</p><p>One <code>--dur</code>, one <code>--ease</code>, on color/border/background/transform only (§Motion).</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Ship a flow without auth and at least one error state.</p><p>Rule 05. If they're missing from the source, write them or flag the gap.</p></div>
     <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Apologetic, cute, or exclamatory copy.</p><p>Wireframes communicate in short declarative sentences. No <em>"oops"</em>, no exclamation marks.</p></div>
-    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§03).</p></div>
+    <div class="rule" data-tone="warn"><span class="v">Never</span><p class="r">Force an item into the wrong taxonomy layer.</p><p>If a thing doesn't fit Foundations / Atoms / Molecules / Organisms / Patterns / Flows, raise it for review (§Atomic taxonomy).</p></div>
   </section>
 
 </main>
