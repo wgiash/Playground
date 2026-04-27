@@ -960,8 +960,8 @@
       <div class="qs-step">
         <span class="num">02</span>
         <div class="body">
-          <span class="title">Open the four frames.</span>
-          <span class="sub">Every surface ships as four frames: <strong>web 1440 × 900</strong> and <strong>mobile 390 × 844</strong>, each in <strong>dark</strong> and <strong>light</strong>. Wrap each in <code>.wf[data-mode]</code>.</span>
+          <span class="title">Open the frames in the agreed mode set.</span>
+          <span class="sub">Default is <strong>light only</strong>: <code>web-light + mobile-light</code> = 2 frames per surface. Dark only or both modes only when the human asked the PM for them. Frame sizes: <strong>web 1440 × 900</strong>, <strong>mobile 390 × 844</strong>. Wrap each in <code>.wf[data-mode]</code>.</span>
           <span class="ref">→ §Frames &amp; pairing · §Modes</span>
         </div>
       </div>
@@ -2000,10 +2000,8 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
     </div>
 
     <h3>Frame anatomy</h3>
-    <p>Every frame is composed in this order, top-to-bottom:</p>
+    <p>Every frame is composed in this order, top-to-bottom. No OS or device chrome — the frame starts at the product's first pixel (Rule 06).</p>
     <pre><code>┌──────────────────────────────────────┐
-│  status bar     (mobile only)        │
-│──────────────────────────────────────│
 │  app chrome     .ki-hnav (web)       │
 │                 .ki-mnav (mobile)    │
 │──────────────────────────────────────│
@@ -2014,7 +2012,7 @@ status bar : Signal · Wifi · Battery   (filled, mobile only)</code></pre>
 │  footer         .ki-footer (web)     │
 │                 .ki-bnav (mobile)    │
 └──────────────────────────────────────┘</code></pre>
-    <p>Status bar, app chrome, and footer are <strong>frozen kit components</strong> defined in <code>system/chrome.css</code> under the <code>.ki-*</code> prefix. Use them as-is. Don't restyle them per frame. The content area is yours.</p>
+    <p>App chrome and footer are <strong>frozen kit components</strong> defined in <code>system/chrome.css</code> under the <code>.ki-*</code> prefix. Use them as-is. Don't restyle them per frame. The content area is yours.</p>
 
     <h3>Density</h3>
     <ul>
@@ -2485,7 +2483,7 @@ data-title="Short label"    On slides / sections; overrides the H1 in the
     <p class="lede">A frame is not done until every item below is true. Run through this list before declaring a surface shipped, and run it again whenever a frame is touched. Done is a state, not a verb.</p>
 
     <div class="checklist">
-      <div class="check-row"><span class="box"></span><span class="text"><strong>Paired.</strong> The surface ships as four frames: web-dark · web-light · mobile-dark · mobile-light. Missing a quadrant means the surface isn't done. (§Frames &amp; pairing)</span></div>
+      <div class="check-row"><span class="box"></span><span class="text"><strong>Paired.</strong> The surface ships in the mode set the PM agreed with the human (light only by default; dark only or both only if asked), paired across web and mobile. No extra frames in modes that weren't agreed. (§Frames &amp; pairing)</span></div>
       <div class="check-row"><span class="box"></span><span class="text"><strong>Token-bound.</strong> No raw hex, no raw px, no font names — every value goes through <code>var(--token)</code>. Search the file for <code>#</code>, <code>px</code> outside tokens, and font literals. (§Color · §Typography · §Spacing)</span></div>
       <div class="check-row"><span class="box"></span><span class="text"><strong>Atomic.</strong> Built from <code>.wf-*</code> atoms and <code>.ki-*</code> chrome only. No bespoke component CSS introduced for this frame. (§Atoms · §Naming conventions)</span></div>
       <div class="check-row"><span class="box"></span><span class="text"><strong>Mode-clean.</strong> Atoms inherit palette from the <code>.wf[data-mode]</code> wrapper. No hardcoded fg / bg / border colours inside an atom. (§Modes)</span></div>
